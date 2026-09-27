@@ -4,7 +4,9 @@ import unittest
 import json
 import subprocess
 import tempfile
-from unittest.mock import patch
+from contextlib import ExitStack
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 SPEC = importlib.util.spec_from_file_location(
     'e0', Path(__file__).resolve().parents[1] / 'scripts/colab/e0.py')
@@ -30,6 +32,131 @@ class EvidenceChecks(unittest.TestCase):
             self.assertNotIn('sensitive-output', (output / 'e0.json').read_text())
             with self.assertRaises(FileExistsError):
                 e0.run(Path(tmp), output)
+
+    def test_known_preflight_failure_has_fixed_code(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / 'run'
+            ok = subprocess.CompletedProcess(['nvidia-smi'], 0, 'mock hardware')
+            with patch.object(e0.subprocess, 'run', return_value=ok), \
+                    patch.object(e0.platform, 'system', return_value='Windows'):
+                with self.assertRaises(e0.E0Failure):
+                    e0.run(Path(tmp), output)
+            report = json.loads((output / 'e0.json').read_text())
+            self.assertEqual(report['status'], 'FAILED')
+            self.assertEqual(report['stage'], 'preflight')
+            self.assertEqual(report['failure_code'], 'WRONG_PLATFORM')
+
+    def test_unknown_and_sensitive_exceptions_are_sanitized(self):
+        sensitive = 'hf_FAKE_TEST_SECRET /private/local/path Traceback: raw failure'
+        for exc, expected in (
+                (RuntimeError(sensitive), 'UNKNOWN_FAILURE'),
+                (e0.E0Failure('GPU_NOT_A100', sensitive), 'GPU_NOT_A100'),
+                (e0.E0Failure(sensitive, sensitive), 'UNKNOWN_FAILURE')):
+            with self.subTest(error_type=type(exc).__name__, code=expected), \
+                    tempfile.TemporaryDirectory() as tmp:
+                output = Path(tmp) / 'run'
+                with patch.object(e0.subprocess, 'run', side_effect=exc):
+                    with self.assertRaises(RuntimeError):
+                        e0.run(Path(tmp), output)
+                text = (output / 'e0.json').read_text()
+                report = json.loads(text)
+                self.assertEqual(report['status'], 'FAILED')
+                self.assertEqual(report['failure_code'], expected)
+                self.assertEqual(report['error_type'], type(exc).__name__)
+                for fragment in (sensitive, 'hf_FAKE_TEST_SECRET', '/private/local/path',
+                                 'Traceback', 'raw failure'):
+                    self.assertNotIn(fragment, text)
+
+    def test_mocked_runtime_classification_and_success(self):
+        # Exercise the wrapper only: no real GPU, package import or download.
+        pins = json.loads((e0.ROOT / 'references/source_manifest.json').read_text())
+
+        class GatedRepoError(RuntimeError):
+            pass
+
+        for case, expected in (
+                ('success', None), ('gated', 'HF_GATED_ACCESS'),
+                ('cuda', 'CUDA_UNAVAILABLE'), ('gpu', 'GPU_NOT_A100'),
+                ('smoke', 'CUDA_SMOKE_FAILED'),
+                ('exit', 'OFFICIAL_INFERENCE_FAILED'),
+                ('metric', 'INFERENCE_METRIC_INVALID')):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as tmp, \
+                    ExitStack() as stack:
+                upstream = Path(tmp) / 'upstream'
+                sample = upstream / 'demo_data/droid_sample'
+                sample.mkdir(parents=True)
+                (sample / 'episode.parquet').write_bytes(b'mocked sample')
+                (sample / 'episode.mp4').write_bytes(b'mocked video')
+                (upstream / 'uv.lock').write_bytes(b'mocked lock')
+                torch = Mock(__version__=pins['environment']['torch'])
+                torch.version = SimpleNamespace(cuda='mocked')
+                torch.cuda.is_available.return_value = case != 'cuda'
+                torch.cuda.get_device_name.return_value = 'mock GPU' if case == 'gpu' else 'mock A100'
+                torch.cuda.get_device_properties.return_value = SimpleNamespace(total_memory=0)
+                torch.ones.return_value.sum.return_value.item.return_value = 1
+                if case == 'smoke':
+                    torch.ones.side_effect = RuntimeError('sensitive CUDA detail')
+                hub = Mock()
+                hub.HfApi.return_value.model_info.return_value.sha = pins['backbone']['revision']
+                hub.snapshot_download.side_effect = lambda repo, revision: str(
+                    Path(tmp) / (pins['backbone']['revision'] if revision == 'main' else revision))
+                if case == 'gated':
+                    hub.hf_hub_download.side_effect = GatedRepoError('hf_FAKE_TEST_SECRET /private/path')
+
+                def command(args, **kwargs):
+                    stdout, code = 'mock command output', 0
+                    if args[:2] == ['git', 'rev-parse']:
+                        stdout = pins['upstream']['commit']
+                    elif args[:2] in (['git', 'status'], ['git', 'submodule']):
+                        stdout = ''
+                    elif args[0] == 'ffmpeg':
+                        stdout = 'ffmpeg version 7.0'
+                    elif args[0] == e0.sys.executable:
+                        self.assertNotIn('HF_TOKEN', kwargs['env'])
+                        stdout = self.good if case != 'metric' else 'invalid metrics: hf_FAKE_TEST_SECRET'
+                        code = 1 if case == 'exit' else 0
+                    return subprocess.CompletedProcess(args, code, stdout)
+
+                real_digest = e0.digest
+                stack.enter_context(patch.object(e0, 'digest', side_effect=lambda path:
+                    pins['upstream']['lock_sha256'] if Path(path).name == 'uv.lock'
+                    else real_digest(path)))
+                stack.enter_context(patch.object(e0.subprocess, 'run', side_effect=command))
+                stack.enter_context(patch.object(e0.platform, 'system', return_value='Linux'))
+                stack.enter_context(patch.object(e0.platform, 'machine', return_value='x86_64'))
+                stack.enter_context(patch.object(e0.sys, 'version_info', (3, 12)))
+                stack.enter_context(patch.object(e0.importlib.metadata, 'version',
+                                                return_value=pins['environment']['torchcodec']))
+                stack.enter_context(patch.object(e0.importlib.metadata, 'distributions', return_value=[]))
+                stack.enter_context(patch.dict(e0.sys.modules, {
+                    'torch': torch, 'torchcodec': Mock(), 'huggingface_hub': hub,
+                    'huggingface_hub.errors': SimpleNamespace(GatedRepoError=GatedRepoError),
+                }))
+                stack.enter_context(patch.dict(e0.os.environ, {'HF_TOKEN': 'hf_FAKE_TEST_SECRET'}))
+                output = Path(tmp) / 'run'
+                if expected:
+                    with self.assertRaises(RuntimeError):
+                        e0.run(upstream, output)
+                else:
+                    e0.run(upstream, output)
+                text = (output / 'e0.json').read_text()
+                report = json.loads(text)
+                self.assertNotIn('hf_FAKE_TEST_SECRET', text)
+                self.assertNotIn('/private/path', text)
+                self.assertNotIn('sensitive CUDA detail', text)
+                if expected:
+                    self.assertEqual(report['status'], 'FAILED')
+                    self.assertEqual(report['failure_code'], expected)
+                    if case == 'gated':
+                        self.assertEqual(report['error_type'], 'GatedRepoError')
+                        self.assertEqual(report['stage'], 'gated_access_and_snapshots')
+                else:
+                    self.assertEqual(report['status'], 'PASS')
+                    self.assertEqual(report['evaluation_episode_count'], 4)
+                    self.assertNotIn('failure_code', report)
+                    for run in report['runs']:
+                        self.assertEqual(run['episodes'], e0.parse_metrics(self.good, 0))
+                        self.assertNotIn('failure_code', run)
 
     def test_two_finite_episode_results(self):
         result = e0.parse_metrics(self.good, 0)

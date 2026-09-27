@@ -84,7 +84,16 @@ import os
 import tempfile
 from google.colab import userdata
 run_env = os.environ.copy()
-run_env['HF_TOKEN'] = userdata.get('HF_TOKEN')
+try:
+    token = userdata.get("HF_TOKEN")
+except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
+    token = None
+if not token:
+    raise RuntimeError(
+        "HF_TOKEN Colab secret is missing or notebook access is disabled."
+    )
+run_env["HF_TOKEN"] = token
+del token
 run_env['HF_HOME'] = tempfile.mkdtemp(prefix='e0-hf-', dir='/content')
 run_env['HF_HUB_DISABLE_TELEMETRY'] = '1'
 run_env['WANDB_MODE'] = 'disabled'

@@ -17,10 +17,15 @@ inference runs and exact code/model/environment provenance.
 - Verified official upstream HEAD and model SHAs, dependency pins, CLI and sample
   metadata; recorded differences from the plan's older minimum-version notes.
 - Added the scoped workflow and failure-aware result capture.
+- E0 compact evidence now includes sanitized, allow-listed failure classification;
+  unknown exceptions use UNKNOWN_FAILURE without raw messages or tracebacks.
+- Colab HF_TOKEN preflight explicitly fails for missing or not-shared secrets;
+  isolated HF_HOME and child-process-only token passing are preserved.
 
 ## Current checkpoint
 G0 hygiene implementation and local checks complete; preserve a clean tree after commit.
-E0 runtime pending: no Colab A100 inference evidence exists yet.
+E0 runtime remains incomplete/pending: actual A100 inference has not been run,
+and no Colab A100 inference evidence exists yet.
 
 ## Decisions and reasons
 - Use official standalone inference unmodified; pin code, lock and model snapshots.
@@ -31,12 +36,14 @@ E0 runtime pending: no Colab A100 inference evidence exists yet.
   between 01 and _Robotics did not identify an existing directory.
 
 ## Verification evidence
-- `python -m unittest discover -s tests -v`: 5 tests passed, including failure
-  persistence, overwrite refusal, missing/duplicate results, nonfinite metrics
-  and nonzero process exits. These are wrapper tests, not model inference.
+- `python -m unittest discover -s tests -v`: 8 tests passed (the original five
+  plus sanitized known/unknown failure evidence and mocked runtime coverage).
+  Sensitive messages are excluded; successful metric evidence has no failure code.
+  These are wrapper tests, not model inference.
 - Python AST/compile checks passed for both modules and four Python Colab cells;
   Git Bash `bash -n` passed for the installation cell. Source JSON parsed.
-- `git diff --cached --check`: passed; all nine added files were reviewed.
+- `git diff --check` and `git diff --cached --check`: passed; all four
+  hardening changes were reviewed.
 - `git check-ignore`: excluded representative secrets, weights, data, media,
   raw evidence and bundle paths. Added text files were all under 100 KB and no
   common HF/GitHub token or private-key patterns matched (limited pattern check).
