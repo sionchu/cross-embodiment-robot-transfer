@@ -1,0 +1,36 @@
+{
+  "status": "FAILED",
+  "gate": "E0",
+  "stage": "gpu_allocation",
+  "failure_code": "GPU_NOT_A100",
+  "attempt_date": "2026-09-28",
+  "requested_runtime": {
+    "provider": "Google Colab",
+    "accelerator": "A100",
+    "high_memory": true
+  },
+  "observed_runtime": {
+    "allocated_gpu": "T4",
+    "colab_status": "Selected GPU type was unavailable; Colab connected a T4 instead.",
+    "subscription_state_observed": "not_subscribed",
+    "compute_units_available_observed": 0
+  },
+  "execution": {
+    "project_head_expected": "9de23777b1dc89b63552a92a44cf755cbbad22e4",
+    "project_bundle_sha256": "5F33A49ECE02CA204897592C9CA4015875F770D3A12008C89284CBDD3FA54561",
+    "notebook_name": "E0_GR00T_N17_A100.ipynb",
+    "notebook_requested_a100": true,
+    "project_bundle_clone_started": false,
+    "gr00t_install_started": false,
+    "hf_gated_access_checked": false,
+    "e0_runner_started": false,
+    "inference_started": false,
+    "inference_metrics_claimed": false
+  },
+  "evidence_boundary": {
+    "source": "Observed Colab UI through the user's signed-in Aside Google session.",
+    "raw_screenshot_committed": false,
+    "raw_screenshot_sha256": "43F9707F9EBCE9EE2A07DB001AF3C1FDE57924FEA716F20A158BB57C8643E0FF",
+    "note": "Execution was stopped at the GPU allocation gate. Raw browser evidence stays outside Git."
+  }
+}

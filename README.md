@@ -4,8 +4,10 @@ An evidence-first study of GR00T adaptation to a simulated UR10e insertion task.
 The canonical scope and gate plan are in [AGENTS.md](AGENTS.md).
 
 Current slice: repository hygiene and the official N1.7 DROID sanity workflow.
-A100 execution and both checkpoint results are **not yet verified**. No custom
-fine-tuning or simulator implementation may start before E0 passes.
+A real Colab E0 allocation attempt on 2026-09-28 requested A100 high-memory, but
+Colab allocated T4 instead, so the run stopped at `GPU_NOT_A100` before install or
+inference. Both checkpoint results remain **unverified**. No custom fine-tuning or
+simulator implementation may start before E0 passes.
 
 - [Colab A100 E0 workflow](scripts/colab/README.md)
 - [Pinned sources and environment](references/source_manifest.json)

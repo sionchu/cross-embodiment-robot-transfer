@@ -21,11 +21,18 @@ inference runs and exact code/model/environment provenance.
   unknown exceptions use UNKNOWN_FAILURE without raw messages or tracebacks.
 - Colab HF_TOKEN preflight explicitly fails for missing or not-shared secrets;
   isolated HF_HOME and child-process-only token passing are preserved.
+- Attempted the real Colab runtime gate on 2026-09-28 through the signed-in Aside
+  Google session. The notebook requested A100 high-memory, but Colab explicitly
+  reported the selected GPU type unavailable and allocated T4 instead.
+- Stopped before bundle clone, GR00T installation, gated-model access or inference;
+  no inference metrics were produced. Sanitized failure evidence is committed under
+  `artifacts/environment/2026-09-28-colab-a100-unavailable.json`.
 
 ## Current checkpoint
-G0 hygiene implementation and local checks complete; preserve a clean tree after commit.
-E0 runtime remains incomplete/pending: actual A100 inference has not been run,
-and no Colab A100 inference evidence exists yet.
+G0 hygiene implementation and local checks complete.
+E0 runtime was attempted but remains incomplete. The A100 allocation gate failed with
+`GPU_NOT_A100`: Colab allocated T4 instead of the requested A100. No GR00T install,
+HF gated-access check or inference was started.
 
 ## Decisions and reasons
 - Use official standalone inference unmodified; pin code, lock and model snapshots.
@@ -48,22 +55,31 @@ and no Colab A100 inference evidence exists yet.
   raw evidence and bundle paths. Added text files were all under 100 KB and no
   common HF/GitHub token or private-key patterns matched (limited pattern check).
 - Official source links and immutable revisions are in references/.
+- Colab runtime evidence: the fresh notebook visibly targeted `A100 high-memory`;
+  Colab then reported the selected GPU type unavailable and connected a T4. The
+  resource panel also showed no active subscription/compute units. Execution was
+  stopped and the T4 runtime was terminated. Raw screenshot evidence remains outside
+  Git; its SHA-256 is recorded in the sanitized JSON artifact.
 
 ## Not executed
-Linux dependency install, gated access with owner credentials, A100 GPU inference,
-and all E1+ work. No public push, release, or reference-repository modification.
+Linux dependency installation, HF/Cosmos gated-access validation, both GR00T
+checkpoint inference runs, and all E1+ work. No public push, release, or
+reference-repository modification.
 
 ## Blockers
-No connected Colab A100 runtime or owner-approved HF secret is available in this
-session. The supplied Colab workflow is ready for the owner to run; runtime
-compatibility and metrics are unverified until its evidence is returned.
+An actual A100 runtime is the current blocker. The current Colab account accepted
+an A100-high-memory request but reported A100 unavailable and allocated T4; its
+resource panel showed no available compute units. Do not weaken the E0 gate to T4.
+HF secret/gated access has not yet been tested because execution stopped earlier.
 
 ## Modified files
 .gitignore, .gitattributes, README.md, references/source_manifest.json,
 references/gr00t_contract.md, scripts/colab/README.md, scripts/colab/e0.py,
-tests/test_e0.py, HANDOFF.md.
+tests/test_e0.py, HANDOFF.md, and
+artifacts/environment/2026-09-28-colab-a100-unavailable.json.
 
 ## Next concrete action
-Run the Colab workflow on A100 and review both checkpoint logs and result JSON.
-If environment installation fails, preserve the log and diagnose the actual error
-before adjusting a pin. E0 remains the earliest incomplete experiment.
+Obtain a real A100 runtime (for example by making A100 capacity/compute units
+available on the intended Colab account) and rerun the same pinned E0 workflow.
+Do not start E1. Once A100 is confirmed by `nvidia-smi`, continue to installation,
+gated-access validation and both official checkpoint inference runs.
