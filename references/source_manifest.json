@@ -1,0 +1,45 @@
+{
+  "verified_on": "2026-09-28",
+  "upstream": {
+    "url": "https://github.com/NVIDIA/Isaac-GR00T",
+    "commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+    "license": "Apache-2.0 (code; not a blanket license for model weights)",
+    "lock_sha256": "0d67d3b0dd41b28375bbc2351eefc9e064cbad2d1c40682a52b97fc625a60f19"
+  },
+  "models": [
+    {"id": "nvidia/GR00T-N1.7-3B", "revision": "2fc962b973bccdd5d8ce4f67cc63b264d6886495", "license": "NVIDIA Open Model License Agreement, per pinned model card"},
+    {"id": "nvidia/GR00T-N1.7-DROID", "revision": "05e7cc97e40dbd33b0890c35cc0214fcb0547ab5", "license": "NVIDIA Open Model License Agreement, per pinned model card"}
+  ],
+  "backbone": {
+    "id": "nvidia/Cosmos-Reason2-2B",
+    "revision": "9ce19a195e423419c349abfc86fd07178b230561",
+    "gated": true,
+    "license": "Custom terms; owner must approve on the Hugging Face model page"
+  },
+  "dataset": {
+    "id": "NVIDIA/Isaac-GR00T:demo_data/droid_sample",
+    "version": "same as upstream commit",
+    "source_id": "lerobot/droid_1.0.1",
+    "source_revision_observed": "0eabc778f959c54b8c5aa3626cc1128d2d2e54d4",
+    "source_license": "Apache-2.0, per Hugging Face dataset card",
+    "note": "Use bundled sample at the pinned Git commit; do not regenerate it from the moving full dataset."
+  },
+  "environment": {
+    "platform": "Linux x86_64, NVIDIA A100",
+    "python": "3.12",
+    "uv": "0.12.5",
+    "torch": "2.9.0",
+    "cuda_wheel_index": "cu128",
+    "torchcodec": "0.8.0",
+    "ffmpeg_major": [4, 5, 6, 7]
+  },
+  "official_files_reviewed": [
+    "README.md", "LICENSE", "pyproject.toml", "uv.lock", ".gitmodules",
+    "examples/DROID/README.md", "getting_started/data_preparation.md",
+    "getting_started/finetune_new_embodiment.md",
+    "scripts/deployment/standalone_inference_script.py",
+    "gr00t/model/modules/qwen3_backbone.py",
+    "gr00t/configs/data/embodiment_configs.py",
+    "demo_data/droid_sample/meta/info.json", "demo_data/droid_sample/meta/modality.json"
+  ]
+}

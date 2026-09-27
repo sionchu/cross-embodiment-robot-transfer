@@ -1,0 +1,40 @@
+# Local environments and secrets
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+!.env.example
+*credentials*.json
+*secret*.json
+.token
+token
+.ipynb_checkpoints/
+# External payloads and caches
+.external/
+.cache/
+hf_cache/
+.huggingface/
+wandb/
+checkpoints/
+weights/
+datasets/
+raw_data/
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.parquet
+*.h5
+*.hdf5
+*.mp4
+*.mov
+*.avi
+*.webm
+*.zip
+*.tar*
+# Raw execution logs may contain machine-specific paths; review before exporting.
+artifacts/runtime/
+*.bundle
