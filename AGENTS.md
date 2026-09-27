@@ -1,8 +1,46 @@
 # Cross-Embodiment Robot Transfer — Codex Execution Plan
 
 Status: canonical project instruction
-Date: 2026-09-27
+Date: 2026-09-28
 Owner intent: build an evidence-first public portfolio/research project, not a demo that merely name-drops VLA models.
+
+## New Codex chat bootstrap — read this first
+
+This file is the **single source of truth for a brand-new Codex chat**. Assume the new chat has no access to the prior ChatGPT discussion, no memory of why this project was chosen, and no hidden context beyond files and tools it can inspect.
+
+Do **not** ask the user to restate the previous discussion. Everything required to start P0 is documented here. When something is not documented, verify it from the repository, the local machine, or the official/public source instead of inventing context.
+
+Repository to open and modify:
+- `D:\Workspace\01_Robotics\cross-embodiment-robot-transfer`
+- This repository starts intentionally minimal. At the initial committed state, `AGENTS.md` is the canonical artifact and implementation files may not exist yet.
+
+Read-only implementation reference:
+- `C:\aerospace-olp-ros2-isaacsim`
+- It contains already-validated local examples for NVIDIA official UR10e loading, cuMotion/RMPflow control, Isaac Replicator RGB capture, deterministic tests and video recording.
+- Inspect and reuse the smallest generic pieces where useful, but do not modify this reference repository and do not create a runtime dependency on its absolute path.
+
+Available execution environments:
+- Local Windows workstation: RTX 4070 Ti 12 GB, Isaac Sim 6.0.1 at `C:\isaacsim`, Python 3.12, `uv`, Git, Git LFS, FFmpeg, ROS 2 workspace available.
+- Cloud training: the user can obtain a Google Colab NVIDIA A100. Treat actual A100 VRAM as unknown until `nvidia-smi` is recorded in that Colab session.
+- Hugging Face authentication / gated-model approval may require the user to perform the login or approval step. Do not store secrets in the repository.
+
+### Mandatory first actions in a new Codex chat
+
+1. Read this `AGENTS.md` completely before changing anything.
+2. Run `git status --short`, `git log --oneline --decorate -5`, and inspect the current tree.
+3. Confirm the repository is still at the expected minimal/bootstrap state; if it has progressed, continue from the actual latest state instead of replaying this plan from the beginning.
+4. Re-verify time-sensitive upstream GR00T/LeRobot interfaces against the pinned/current official sources before implementing their schemas or CLI commands.
+5. Start at the **earliest incomplete gate**. On the initial state that means G0 repository hygiene, then E0 official GR00T N1.7 sanity validation.
+6. Make the smallest coherent change, run its verification, review the diff, then commit it. Do not scaffold the whole future folder tree up front.
+
+### Initial new-chat objective
+
+The first session should normally produce only the minimal G0/E0 foundation:
+- hygiene files needed now (`.gitignore`, minimal README only if useful, environment/reference manifest structure);
+- a reproducible Colab/Linux GR00T N1.7 sanity workflow that begins with `nvidia-smi`, pins the upstream commit, checks gated model access, and runs the official DROID sample inference;
+- no UR10e scene implementation until the official GR00T environment and data contract are proven working.
+
+Do not spend the first session on Premiere, LinkedIn copy, UI polish, extra models, or broad project scaffolding.
 
 ## 0. Mission
 
