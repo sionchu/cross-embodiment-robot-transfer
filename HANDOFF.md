@@ -4,13 +4,15 @@
 Complete the G0/E0 foundation before custom transfer experiments.
 
 ## Scope
-Repository hygiene, pinned official GR00T N1.7/DROID interfaces and Colab A100
-sanity execution. AGENTS.md remains canonical. No simulator, training or E1 work.
+Repository hygiene, pinned official GR00T N1.7/DROID interfaces and provider-agnostic
+GPU execution. E0 is an inference sanity gate and needs 16 GB+ VRAM; E5 fine-tuning later
+needs 40 GB+ VRAM. AGENTS.md remains canonical. The existing Colab notebook/CLI are
+optional adapters. No simulator, training or E1 work.
 
 ## Acceptance criteria
 G0: clean committed tree, no credentials/large payloads, ignore rules and source
-licenses documented. E0: real A100 evidence, gated access, both official sample
-inference runs and exact code/model/environment provenance.
+licenses documented. E0: real Linux x86_64 NVIDIA CUDA evidence with at least 16 GB-class
+VRAM, gated access, both official sample inference runs and exact code/model/environment provenance.
 
 ## Completed
 - Inspected bootstrap HEAD ff6ec2a and the complete AGENTS.md; no user changes.
@@ -25,16 +27,21 @@ inference runs and exact code/model/environment provenance.
   Google session. The notebook requested A100 high-memory, but Colab explicitly
   reported the selected GPU type unavailable and allocated T4 instead.
 - Stopped before bundle clone, GR00T installation, gated-model access or inference;
-  no inference metrics were produced. Sanitized failure evidence is committed under
+  no inference metrics were produced. Sanitized allocation evidence is committed under
   `artifacts/environment/2026-09-28-colab-a100-unavailable.json`.
+- Follow-up Google One support confirmed on 2026-09-28 that the bundled Google AI Pro
+  Colab CCU benefit is currently reported for Canada, Mexico and the United States, not
+  South Korea; support stated that separate provisioning/escalation or a no-extra-cost
+  South Korea path is not available. Sanitized regional-policy evidence is committed under
+  `artifacts/environment/2026-09-28-colab-region-ineligible.json`.
 
 ## Current checkpoint
 G0 hygiene implementation and local checks complete.
-E0 runtime was attempted but remains incomplete. The first allocation surfaced T4 instead
-of the requested A100, but follow-up account inspection identified the upstream blocker:
-the active Google AI Pro 5TB subscription is not being provisioned into Colab. Colab
-shows 0 compute units even though the plan is officially eligible for 200 CCU. No GR00T
-install, HF gated-access check or inference was started.
+E0 runtime was attempted but remains incomplete. The first Colab allocation surfaced T4.
+After re-checking NVIDIA's official hardware guide, T4-class 16 GB VRAM is sufficient for
+E0 inference; the earlier A100-only E0 gate was overly strict. South Korea is not currently
+eligible for the bundled Google AI Pro Colab CCU benefit, but that does not block free-tier
+T4 inference sanity. No GR00T install, HF gated-access check or inference was started yet.
 
 ## Decisions and reasons
 - Use official standalone inference unmodified; pin code, lock and model snapshots.
@@ -69,23 +76,24 @@ checkpoint inference runs, and all E1+ work. No public push, release, or
 reference-repository modification.
 
 ## Blockers
-The current blocker is Colab entitlement provisioning, not a decision to buy more compute.
-The same Google account has a verified active Google AI Pro (5 TB) subscription billed
-directly through Google Play, but Colab shows 0 compute units and no included-benefit
-claim/activate control. Official Google documentation says eligible Google AI Pro members
-receive 200 CCU. Do not purchase Pay As You Go or Colab Pro as a workaround. Once the
-included entitlement appears, request A100 again and keep the E0 A100 gate unchanged.
-HF secret/gated access has not yet been tested because execution stopped earlier.
+E0 is no longer blocked on A100/40 GB compute. It can run on an authorized Linux x86_64
+NVIDIA CUDA GPU with 16 GB+ VRAM, including a measured free-tier T4. The current expected
+next blocker is Hugging Face/Cosmos gated access because that has not yet been tested.
+For E5 fine-tuning, 40 GB+ VRAM will still be required. Google AI Pro's bundled Colab CCU
+benefit is not available to this South Korea account; support said it cannot be separately
+provisioned or escalated. Do not use VPN/region spoofing or false account-country workarounds.
 
 ## Modified files
 .gitignore, .gitattributes, README.md, references/source_manifest.json,
 references/gr00t_contract.md, scripts/colab/README.md, scripts/colab/e0.py,
 tests/test_e0.py, HANDOFF.md,
 artifacts/environment/2026-09-28-colab-a100-unavailable.json, and
-artifacts/environment/2026-09-28-google-ai-pro-colab-entitlement-missing.json.
+artifacts/environment/2026-09-28-colab-region-ineligible.json.
 
 ## Next concrete action
-Resolve the missing Google AI Pro → Colab 200 CCU entitlement on the existing account;
-do not purchase additional Colab compute. Then rerun the same pinned E0 workflow and
-request A100. Do not start E1. Once A100 is confirmed by `nvidia-smi`, continue to
-installation, gated-access validation and both official checkpoint inference runs.
+Rerun E0 on the Colab free-tier T4 (or any other authorized Linux NVIDIA GPU with 16 GB+
+VRAM). The official Colab CLI is installed in WSL2 and can be used for terminal lifecycle
+and `colab usage` evidence after one-time OAuth authorization. Do not start E1. Once
+`nvidia-smi` and the runner confirm the 16 GB inference gate, continue to installation,
+gated-access validation and both official checkpoint inference runs. Reserve 40 GB+ GPU
+access for E5 fine-tuning.

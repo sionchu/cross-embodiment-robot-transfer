@@ -25,13 +25,15 @@
     "note": "Use bundled sample at the pinned Git commit; do not regenerate it from the moving full dataset."
   },
   "environment": {
-    "platform": "Linux x86_64, NVIDIA A100",
+    "platform": "Linux x86_64, NVIDIA CUDA GPU",
     "python": "3.12",
     "uv": "0.12.5",
     "torch": "2.9.0",
     "cuda_wheel_index": "cu128",
     "torchcodec": "0.8.0",
-    "ffmpeg_major": [4, 5, 6, 7]
+    "ffmpeg_major": [4, 5, 6, 7],
+    "inference_min_vram_bytes": 16000000000,
+    "finetune_min_vram_bytes": 40000000000
   },
   "official_files_reviewed": [
     "README.md", "LICENSE", "pyproject.toml", "uv.lock", ".gitmodules",

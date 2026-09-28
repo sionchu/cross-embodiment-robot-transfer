@@ -1,7 +1,7 @@
 # Verified GR00T N1.7 contract
 
 Verified 2026-09-28 against commit `51d4c89f72fda44cbf77285c6a8114b52676b8a1`.
-These are source checks; a successful A100 run is still required.
+These are source checks; a successful real-GPU E0 inference run is still required.
 
 ## Environment
 
@@ -11,7 +11,9 @@ transformers 4.57.3, flash-attn 2.8.3 and torchcodec 0.8.0. Linux torch wheels
 come from cu128. The [installation guide](https://github.com/NVIDIA/Isaac-GR00T/blob/51d4c89f72fda44cbf77285c6a8114b52676b8a1/README.md)
 requires FFmpeg 4-7 for this torchcodec version. Use the upstream lock unchanged.
 This supersedes AGENTS.md's older minimum-version notes for this pinned E0 run.
-Driver compatibility and available A100 VRAM must be measured in Colab.
+The official hardware guide separates inference and fine-tuning: E0 inference needs
+16 GB+ VRAM, while later fine-tuning needs 40 GB+ VRAM. Driver compatibility and
+actual device memory must be measured at runtime.
 
 ## Data and policy
 

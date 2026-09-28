@@ -50,7 +50,7 @@ class EvidenceChecks(unittest.TestCase):
         sensitive = 'hf_FAKE_TEST_SECRET /private/local/path Traceback: raw failure'
         for exc, expected in (
                 (RuntimeError(sensitive), 'UNKNOWN_FAILURE'),
-                (e0.E0Failure('GPU_NOT_A100', sensitive), 'GPU_NOT_A100'),
+                (e0.E0Failure('GPU_MEMORY_INSUFFICIENT', sensitive), 'GPU_MEMORY_INSUFFICIENT'),
                 (e0.E0Failure(sensitive, sensitive), 'UNKNOWN_FAILURE')):
             with self.subTest(error_type=type(exc).__name__, code=expected), \
                     tempfile.TemporaryDirectory() as tmp:
@@ -76,7 +76,7 @@ class EvidenceChecks(unittest.TestCase):
 
         for case, expected in (
                 ('success', None), ('gated', 'HF_GATED_ACCESS'),
-                ('cuda', 'CUDA_UNAVAILABLE'), ('gpu', 'GPU_NOT_A100'),
+                ('cuda', 'CUDA_UNAVAILABLE'), ('vram', 'GPU_MEMORY_INSUFFICIENT'),
                 ('smoke', 'CUDA_SMOKE_FAILED'),
                 ('exit', 'OFFICIAL_INFERENCE_FAILED'),
                 ('metric', 'INFERENCE_METRIC_INVALID')):
@@ -91,8 +91,10 @@ class EvidenceChecks(unittest.TestCase):
                 torch = Mock(__version__=pins['environment']['torch'])
                 torch.version = SimpleNamespace(cuda='mocked')
                 torch.cuda.is_available.return_value = case != 'cuda'
-                torch.cuda.get_device_name.return_value = 'mock GPU' if case == 'gpu' else 'mock A100'
-                torch.cuda.get_device_properties.return_value = SimpleNamespace(total_memory=0)
+                torch.cuda.get_device_name.return_value = 'mock NVIDIA CUDA GPU'
+                torch.cuda.get_device_properties.return_value = SimpleNamespace(
+                    total_memory=12_000_000_000 if case == 'vram' else 24_000_000_000
+                )
                 torch.ones.return_value.sum.return_value.item.return_value = 1
                 if case == 'smoke':
                     torch.ones.side_effect = RuntimeError('sensitive CUDA detail')

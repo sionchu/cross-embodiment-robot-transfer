@@ -1,8 +1,10 @@
-# Colab A100: official N1.7 E0
+# Colab / Cloud GPU adapter: official N1.7 E0
 
-Status: workflow prepared; A100 installation/inference NOT RUN in the initial
-Windows session. Use a fresh Colab Linux x86_64 A100 runtime. Actual VRAM is
-recorded, never assumed. The owner must approve Cosmos model access beforehand.
+Status: workflow prepared; official inference has not yet completed. E0 requires
+Linux x86_64 with a measured NVIDIA CUDA GPU of at least 16 GB-class VRAM; a free
+T4 is acceptable if it passes the runner's VRAM gate. Fine-tuning later requires
+40 GB+ VRAM. Actual hardware is recorded, never assumed. The owner must approve
+Cosmos model access beforehand.
 This workflow downloads upstream dependencies and three model snapshots; inspect
 available disk/RAM first. It does not start training or publish anything.
 
@@ -15,6 +17,27 @@ git bundle create project.bundle HEAD
 Upload that bundle when requested below. A bundle preserves the project commit
 without requiring a public push. Run each fenced code block as a separate Colab
 cell, in order. Stop on any failed cell; do not skip checks to mark E0 complete.
+
+### Optional: official Colab CLI operator
+
+Google's official `googlecolab/google-colab-cli` can replace most browser lifecycle
+work. On Linux/macOS (or Windows via WSL2):
+
+```text
+uv tool install google-colab-cli
+colab version
+colab usage
+colab new -s e0 --gpu T4
+colab status -s e0
+colab stop -s e0
+```
+
+The first account command starts Google's OAuth flow. `colab usage` is the preferred
+way to record compute-unit balance. `colab new --gpu A100` requests A100 but does not
+bypass subscription, regional, quota or capacity restrictions. For this South Korea
+account, Google One support reported the bundled AI Pro Colab CCU benefit as currently
+available only in Canada, Mexico and the United States. The CLI is therefore an
+automation/evidence tool, not an entitlement workaround.
 
 ## 1. Record hardware before installation
 
@@ -31,8 +54,9 @@ preflight.mkdir(exist_ok=False)
 (preflight / 'ram.txt').write_text(subprocess.check_output(['free', '-h'], text=True))
 ```
 
-Confirm A100 in the output. If a prior attempt created these directories, use a
-fresh runtime; this procedure intentionally refuses to reuse stale results.
+Confirm that the GPU has at least 16 GB-class VRAM in the output. If a prior
+attempt created these directories, use a fresh runtime; this procedure intentionally
+refuses to reuse stale results.
 
 ## 2. Upload and check out the committed project
 
@@ -74,8 +98,9 @@ packages; no custom minimal dependency fork is maintained here.
 
 ## 4. Use the owner's Colab secret, then run both checkpoints
 
-Add an approved read token as the Colab secret named `HF_TOKEN` and grant this
-notebook access. Never paste a token into a cell or print it. The script checks
+When using the browser notebook, add an approved read token as the Colab secret
+named `HF_TOKEN` and grant this notebook access. Never paste a token into a cell or
+print it. The script checks
 a gated config download before downloading full snapshots. The token is passed
 only through the child environment; no token login file is written by this flow.
 
@@ -102,7 +127,7 @@ try:
         '/content/Isaac-GR00T/.venv/bin/python',
         '/content/transfer/scripts/colab/e0.py',
         '--upstream', '/content/Isaac-GR00T',
-        '--output', '/content/transfer/artifacts/runtime/e0-a100',
+        '--output', '/content/transfer/artifacts/runtime/e0-gpu',
     ], env=run_env, check=True)
 finally:
     run_env.pop('HF_TOKEN', None)
@@ -127,13 +152,13 @@ Run this cell even when the previous cell fails:
 ```python
 import json
 import shutil
-run_dir = Path('/content/transfer/artifacts/runtime/e0-a100')
+run_dir = Path('/content/transfer/artifacts/runtime/e0-gpu')
 if run_dir.exists():
     shutil.copytree('/content/e0-preflight', run_dir / 'preflight', dirs_exist_ok=True)
     report = run_dir / 'e0.json'
     if report.exists():
         print(json.loads(report.read_text())['status'])
-    archive = shutil.make_archive('/content/e0-a100', 'zip', run_dir)
+    archive = shutil.make_archive('/content/e0-gpu', 'zip', run_dir)
 else:
     archive = shutil.make_archive('/content/e0-preflight', 'zip', '/content/e0-preflight')
 files.download(archive)

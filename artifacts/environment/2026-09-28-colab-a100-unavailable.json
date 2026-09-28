@@ -32,5 +32,7 @@
     "raw_screenshot_committed": false,
     "raw_screenshot_sha256": "43F9707F9EBCE9EE2A07DB001AF3C1FDE57924FEA716F20A158BB57C8643E0FF",
     "note": "Execution was stopped at the GPU allocation gate. Raw browser evidence stays outside Git."
-  }
+  },
+  "historical_gate_superseded": true,
+  "current_assessment": "The observed T4 allocation is not an E0 failure under the corrected GR00T N1.7 hardware contract: E0 inference requires 16 GB+ VRAM, while 40 GB+ applies to later fine-tuning. A fresh T4 E0 run is required."
 }

@@ -21,7 +21,7 @@ Read-only implementation reference:
 
 Available execution environments:
 - Local Windows workstation: RTX 4070 Ti 12 GB, Isaac Sim 6.0.1 at `C:\isaacsim`, Python 3.12, `uv`, Git, Git LFS, FFmpeg, ROS 2 workspace available.
-- Cloud training: the user can obtain a Google Colab NVIDIA A100. Treat actual A100 VRAM as unknown until `nvidia-smi` is recorded in that Colab session.
+- Cloud compute: E0 inference requires an authorized Linux x86_64 NVIDIA CUDA GPU with at least 16 GB-class VRAM; the later GR00T fine-tuning stage requires 40 GB+ VRAM. Google AI Pro's bundled Colab CCU benefit is not available to this South Korea account as of 2026-09-28, but free-tier T4 may still satisfy the E0 inference gate when Colab allocates it.
 - Hugging Face authentication / gated-model approval may require the user to perform the login or approval step. Do not store secrets in the repository.
 
 ### Mandatory first actions in a new Codex chat
@@ -37,7 +37,7 @@ Available execution environments:
 
 The first session should normally produce only the minimal G0/E0 foundation:
 - hygiene files needed now (`.gitignore`, minimal README only if useful, environment/reference manifest structure);
-- a reproducible Colab/Linux GR00T N1.7 sanity workflow that begins with `nvidia-smi`, pins the upstream commit, checks gated model access, and runs the official DROID sample inference;
+- a reproducible Linux 16 GB+ GPU GR00T N1.7 inference-sanity workflow (Colab is optional) that begins with `nvidia-smi`, pins the upstream commit, checks gated model access, and runs the official DROID sample inference;
 - no UR10e scene implementation until the official GR00T environment and data contract are proven working.
 
 Do not spend the first session on Premiere, LinkedIn copy, UI polish, extra models, or broad project scaffolding.
@@ -88,10 +88,12 @@ Reference-only local repository:
 - `uv`, Git, and Git LFS available.
 - Existing ROS 2 Jazzy workspace exists, but ROS 2 is **not required for P0**.
 
-### Cloud training
-- Google Colab with NVIDIA A100 available.
-- First cell must run `nvidia-smi` and record actual GPU model and VRAM.
-- GR00T N1.7 official guidance: 40 GB+ VRAM for fine-tuning; default fine-tuning trains projector + flow-matching DiT action head and is documented as staying below roughly 35 GB peak VRAM.
+### Cloud compute
+- E0 inference: use any authorized Linux x86_64 NVIDIA CUDA environment with at least 16 GB-class VRAM. A free-tier T4 is acceptable if it passes the measured VRAM gate.
+- E5 fine-tuning: use at least 40 GB VRAM; A100/L40/H100 or equivalent is appropriate.
+- First step must run `nvidia-smi` and record actual GPU model and VRAM.
+- GR00T N1.7 official guidance: inference minimum 16 GB+ VRAM; fine-tuning minimum 40 GB+ VRAM. Default fine-tuning trains projector + flow-matching DiT action head and is documented as staying below roughly 35 GB peak VRAM.
+- 2026-09-28 infrastructure finding: Google One support reported the bundled Google AI Pro Colab CCU benefit as available to Canada, Mexico and the United States, not South Korea. Treat zero bundled CCU on this account as current regional policy, not a provisioning bug. Do not use VPN/region spoofing or account-country workarounds.
 ## 4. Primary open model
 
 ### NVIDIA Isaac GR00T N1.7
@@ -268,7 +270,7 @@ Recommended model image resolution:
 ## 9. Research experiment matrix
 
 ### E0 — official installation sanity gate
-On Colab A100:
+On an authorized Linux NVIDIA GPU with at least 16 GB-class VRAM:
 1. record `nvidia-smi`;
 2. clone official Isaac-GR00T with submodules;
 3. authenticate to Hugging Face without storing token in notebook output;
@@ -470,9 +472,9 @@ references/
 ```
 
 Do not create empty folder forests. A directory should appear only with a real artifact or source file.
-## 14. Colab A100 workflow
+## 14. Cloud GPU workflow
 
-Create a reproducible notebook or Python/Markdown workflow under `scripts/colab/`.
+Maintain the existing Colab notebook/Markdown adapter under `scripts/colab/`, but keep the E0 runner provider-agnostic. Colab is only one possible front end; any Linux NVIDIA GPU provider that satisfies the current stage's measured VRAM gate is acceptable. The official `googlecolab/google-colab-cli` is preferred for terminal automation when Colab is used.
 
 First cells/steps:
 1. `nvidia-smi`.
@@ -492,11 +494,11 @@ Training rules:
 - export the best/final checkpoint identity, not the full weight blob, into Git evidence;
 - do not silently resume an old run with changed data.
 
-If Colab provides A100 40 GB:
+If the selected GPU is 40–48 GB-class:
 - use official default N1.7 fine-tuning first;
 - do not enable `--tune-llm` or `--tune-visual` in P0.
 
-If A100 80 GB:
+If the selected GPU has materially more VRAM (for example A100/H100 80 GB):
 - still keep default fine-tuning for experimental comparability unless a later ablation explicitly tests more tuning.
 
 ## 15. Local Isaac Sim workflow
@@ -511,7 +513,7 @@ P0 local responsibility:
 Keep model training off the local 12 GB GPU if it creates avoidable memory workarounds.
 A remote-policy architecture is acceptable:
 ```text
-A100 / Colab or other GPU server
+40 GB+ Linux NVIDIA GPU server
 GR00T policy server
         |
         | predicted action chunk
@@ -525,10 +527,10 @@ closed-loop rollout + recording
 
 However, Colab inbound networking can be awkward. Do not make a fragile live network bridge a P0 requirement.
 A safer P0 workflow is:
-- train checkpoint on Colab;
+- train checkpoint on the selected authorized Linux GPU environment;
 - download checkpoint;
 - run inference where supported;
-- or perform evaluation in a Linux GPU environment with a compatible simulator/client.
+- or perform evaluation in a compatible Linux GPU environment.
 
 Choose the simplest reproducible route supported by the actual environment after E0.
 
@@ -550,10 +552,11 @@ Optional:
 
 Keep Isaac Sim Python and general ML Python environments separate unless official compatibility proves otherwise.
 
-### Colab / Linux
+### Cloud / Linux
 Required for GR00T N1.7:
-- Linux;
-- NVIDIA A100;
+- Linux x86_64;
+- E0 inference: NVIDIA CUDA GPU with at least 16 GB-class VRAM;
+- E5 fine-tuning: NVIDIA CUDA GPU with at least 40 GB VRAM;
 - Python 3.12 per current official N1.7 guidance;
 - CUDA 12.6+;
 - PyTorch 2.7+;
@@ -800,7 +803,7 @@ If a planned technology becomes incompatible with the actual runtime, prefer the
 P0 sequence:
 1. scaffold repo and hygiene files;
 2. create reference/source manifest;
-3. build Colab E0 GR00T sanity notebook/script;
+3. build provider-agnostic E0 GR00T sanity runner plus the optional Colab notebook adapter;
 4. verify source FIRe real peg dataset schema and compatibility;
 5. implement deterministic UR10e insertion environment;
 6. implement expert rollout + target dataset recording;

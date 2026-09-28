@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Only these fixed labels may enter compact failure evidence.
 FAILURE_CODES = frozenset({
-    'GPU_NOT_A100', 'WRONG_PLATFORM', 'PYTHON_VERSION_MISMATCH',
+    'GPU_MEMORY_INSUFFICIENT', 'WRONG_PLATFORM', 'PYTHON_VERSION_MISMATCH',
     'UPSTREAM_REVISION_MISMATCH', 'UPSTREAM_DIRTY', 'LOCK_HASH_MISMATCH',
     'SUBMODULE_MISMATCH', 'PROJECT_DIRTY', 'FFMPEG_VERSION_MISMATCH',
     'TORCH_VERSION_MISMATCH', 'TORCHCODEC_VERSION_MISMATCH',
@@ -113,8 +113,12 @@ def run(upstream, output):
             raise E0Failure('TORCHCODEC_VERSION_MISMATCH', 'Torchcodec does not match the pinned environment')
         if not torch.cuda.is_available():
             raise E0Failure('CUDA_UNAVAILABLE', 'CUDA is required for this gate')
-        if 'A100' not in torch.cuda.get_device_name(0):
-            raise E0Failure('GPU_NOT_A100', 'An actual A100 is required for this gate')
+        gpu_props = torch.cuda.get_device_properties(0)
+        if gpu_props.total_memory < pins['environment']['inference_min_vram_bytes']:
+            raise E0Failure(
+                'GPU_MEMORY_INSUFFICIENT',
+                'E0 inference requires a 16 GB-class or larger NVIDIA CUDA GPU',
+            )
         try:
             smoke = torch.ones(1, device='cuda').sum().item()
         except RuntimeError as exc:
@@ -126,7 +130,9 @@ def run(upstream, output):
         environment = {
             'python': platform.python_version(), 'os': platform.system(),
             'machine': platform.machine(), 'gpu': torch.cuda.get_device_name(0),
-            'vram_bytes': torch.cuda.get_device_properties(0).total_memory,
+            'vram_bytes': gpu_props.total_memory,
+            'required_min_vram_bytes': pins['environment']['inference_min_vram_bytes'],
+            'finetune_min_vram_bytes': pins['environment']['finetune_min_vram_bytes'],
             'torch_cuda': torch.version.cuda, 'torch': torch.__version__,
             'packages': packages, 'ffmpeg': ffmpeg,
             'uv': checked(['uv', '--version']), 'git': checked(['git', '--version']),

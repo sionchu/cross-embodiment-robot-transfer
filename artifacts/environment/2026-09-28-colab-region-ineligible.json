@@ -1,0 +1,45 @@
+{
+  "status": "OBSERVED",
+  "gate": "INFRA",
+  "stage": "colab_ai_plan_regional_eligibility",
+  "failure_code": "COLAB_AI_PLAN_REGION_INELIGIBLE",
+  "observed_date": "2026-09-28",
+  "subscription_context": {
+    "plan": "Google AI Pro (5 TB)",
+    "trial": false,
+    "family_group": false
+  },
+  "public_documentation": {
+    "google_ai_pro_help": "https://support.google.com/googleone/answer/14534406?hl=en",
+    "google_developers_blog": "https://developers.googleblog.com/colab-is-now-part-of-your-google-ai-plan/",
+    "documented_benefit": "Google AI Pro members get 200 CCUs; rollout is limited to Colab supported countries."
+  },
+  "support_confirmation": {
+    "south_korea_eligible": false,
+    "reprovisioning_available": false,
+    "escalation_available": false,
+    "support_case_identifier_committed": false,
+    "reported_eligible_countries": [
+      "Canada",
+      "Mexico",
+      "United States"
+    ],
+    "official_no_extra_cost_path_for_south_korea": false
+  },
+  "colab_observed": {
+    "signup_page_compute_units": 0,
+    "free_claim_or_activate_control_visible": false
+  },
+  "interpretation": "For this South Korea account, zero bundled Google AI Pro Colab CCU is expected current regional policy rather than a provisioning bug. This does not block E0 inference because free-tier T4-class 16 GB compute can satisfy the official GR00T N1.7 inference minimum when available; 40 GB+ remains required for later fine-tuning.",
+  "prohibited_workarounds": [
+    "VPN or region spoofing",
+    "false account-country changes",
+    "terms-violating alternate-account workarounds"
+  ],
+  "privacy": {
+    "account_identifier_committed": false,
+    "billing_amount_or_order_data_committed": false,
+    "raw_support_chat_committed": false,
+    "sanitized_summary_only": true
+  }
+}
