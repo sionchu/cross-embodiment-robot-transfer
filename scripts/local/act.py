@@ -1,0 +1,197 @@
+"""Maintained LeRobot ACT on the single canonical GR00T v2 dataset."""
+import argparse
+import csv
+import hashlib
+import importlib.metadata
+import json
+from pathlib import Path
+import random
+import subprocess
+import time
+
+import av
+import numpy as np
+import pandas as pd
+from PIL import Image
+import torch
+from lerobot.configs.types import FeatureType, PolicyFeature
+from lerobot.policies.act.configuration_act import ACTConfig
+from lerobot.policies.act.modeling_act import ACTPolicy as LeRobotACT
+
+from dataset import ROOT, VIDEO, jsonl, validate, write_json
+
+IMAGE_SIZE=(320,240)
+IMAGE_MEAN=torch.tensor([.485,.456,.406])[:,None,None]
+IMAGE_STD=torch.tensor([.229,.224,.225])[:,None,None]
+
+
+def image_tensor(rgb):
+    rgb=np.asarray(rgb)
+    if rgb.shape!=(480,640,3) or rgb.dtype!=np.uint8:
+        raise ValueError('INVALID_RGB')
+    resized=np.array(Image.fromarray(rgb).resize(IMAGE_SIZE,Image.Resampling.BILINEAR))
+    return (torch.from_numpy(resized).permute(2,0,1).float()/255-IMAGE_MEAN)/IMAGE_STD
+
+
+class CanonicalDataset(torch.utils.data.Dataset):
+    """Runtime adapter only: no second dataset or files are produced."""
+    def __init__(self, root, horizon):
+        self.horizon=horizon
+        self.statistics=json.loads((root/'meta/stats.json').read_text())
+        self.states=[]; self.actions=[]; self.images=[]; self.ends=[]
+        for episode in jsonl(root/'meta/episodes.jsonl'):
+            i=episode['episode_index']
+            frame=pd.read_parquet(root/f'data/chunk-000/episode_{i:06d}.parquet')
+            self.states.extend(np.stack(frame['observation.state']))
+            self.actions.extend(np.stack(frame.action))
+            with av.open(str(root/f'videos/chunk-000/{VIDEO}/episode_{i:06d}.mp4')) as container:
+                decoded=[image_tensor(f.to_ndarray(format='rgb24')) for f in container.decode(video=0)]
+            if len(decoded)!=len(frame):
+                raise ValueError('DECODE_LENGTH_MISMATCH')
+            self.images.extend(decoded)
+            self.ends.extend([len(self.states)]*len(frame))
+        self.states=self.normalize(torch.tensor(np.asarray(self.states)),'observation.state')
+        self.actions=self.normalize(torch.tensor(np.asarray(self.actions)),'action')
+
+    def normalize(self, values, key):
+        s=self.statistics[key]
+        return (values-torch.tensor(s['mean']))/torch.tensor(s['std']).clamp_min(1e-6)
+
+    def __len__(self):
+        return len(self.states)
+
+    def __getitem__(self, index):
+        ids=torch.arange(index,index+self.horizon)
+        pad=ids>=self.ends[index]
+        ids=ids.clamp(max=self.ends[index]-1)
+        return {'observation.state':self.states[index],VIDEO:self.images[index],
+                'action':self.actions[ids],'action_is_pad':pad}
+
+
+class ACTPolicy:
+    """Observation {state: (6,), front: uint8 HWC} -> physical (16,6) deltas."""
+    def __init__(self, checkpoint):
+        self.model=LeRobotACT.from_pretrained(checkpoint,local_files_only=True,strict=True)
+        self.device=next(self.model.parameters()).device
+        self.metadata=json.loads((Path(checkpoint)/'normalization.json').read_text())
+        self.stats=self.metadata['statistics']
+
+    def reset(self):
+        self.model.reset()
+
+    @torch.inference_mode()
+    def predict(self, observation):
+        state=np.asarray(observation['state'],dtype=np.float32)
+        if state.shape!=(6,) or not np.isfinite(state).all():
+            raise ValueError('INVALID_STATE')
+        s=self.stats['observation.state']; a=self.stats['action']
+        state=(torch.from_numpy(state)-torch.tensor(s['mean']))/torch.tensor(s['std']).clamp_min(1e-6)
+        batch={'observation.state':state[None].to(self.device),
+               VIDEO:image_tensor(observation['front'])[None].to(self.device)}
+        normalized=self.model.predict_action_chunk(batch)[0].cpu()
+        chunk=(normalized*torch.tensor(a['std']).clamp_min(1e-6)+torch.tensor(a['mean'])).numpy()
+        if chunk.shape!=(self.model.config.chunk_size,6) or not np.isfinite(chunk).all():
+            raise ValueError('INVALID_ACTION_CHUNK')
+        return chunk
+
+
+def train(args):
+    if not torch.cuda.is_available():
+        raise RuntimeError('CUDA_REQUIRED')
+    args.output.mkdir(parents=True,exist_ok=False)
+    checkpoint=ROOT/'checkpoints'/args.output.name
+    if checkpoint.exists():
+        raise FileExistsError('CHECKPOINT_ALREADY_EXISTS')
+    pins=json.loads((ROOT/'references/source_manifest.json').read_text())
+    installed=json.loads(importlib.metadata.distribution('lerobot').read_text('direct_url.json'))
+    if installed['vcs_info']['commit_id']!=pins['local']['lerobot']['commit']:
+        raise ValueError('LEROBOT_PIN_MISMATCH')
+    evidence=validate(args.dataset)
+    recorded=json.loads((ROOT/'artifacts/datasets/validation.json').read_text())
+    if evidence['dataset_sha256']!=recorded['dataset_sha256'] or recorded['official_loader']!='PASS':
+        raise ValueError('DATASET_EVIDENCE_MISMATCH')
+    # Seed list must already be versioned; learned evaluation cannot define it later.
+    frozen=subprocess.check_output(['git','show','HEAD:configs/seeds.json'],cwd=ROOT)
+    if json.loads(frozen)!=json.loads((ROOT/'configs/seeds.json').read_text()):
+        raise ValueError('EVALUATION_SEEDS_NOT_COMMITTED')
+    random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    torch.set_num_threads(4)
+    torch.backends.cudnn.benchmark=False
+    torch.backends.cudnn.deterministic=True
+    config=ACTConfig(device='cuda',chunk_size=16,n_action_steps=1,
+        input_features={VIDEO:PolicyFeature(FeatureType.VISUAL,(3,240,320)),
+                        'observation.state':PolicyFeature(FeatureType.STATE,(6,))},
+        output_features={'action':PolicyFeature(FeatureType.ACTION,(6,))},
+        pretrained_backbone_weights=None,optimizer_lr=1e-4,optimizer_lr_backbone=1e-4)
+    model=LeRobotACT(config).cuda()
+    data=CanonicalDataset(args.dataset,config.chunk_size)
+    loader=torch.utils.data.DataLoader(data,batch_size=args.batch_size,shuffle=True,num_workers=0,
+                                       generator=torch.Generator().manual_seed(args.seed))
+    optimizer=torch.optim.AdamW(model.get_optim_params(),lr=config.optimizer_lr,
+                                weight_decay=config.optimizer_weight_decay)
+    tracked=next(p for p in model.parameters() if p.requires_grad)
+    before=tracked.detach().clone()
+    context={'project_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+        'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        'dependency_lock_sha256':hashlib.sha256((ROOT/'scripts/local/requirements.lock.txt').read_bytes()).hexdigest(),
+        'gr00t_commit':pins['upstream']['commit'],'lerobot_commit':pins['local']['lerobot']['commit'],
+        'dataset_id':args.dataset.name,'dataset_sha256':evidence['dataset_sha256'],
+        'train_seeds':evidence['train_seeds'],'held_out_seeds':evidence['held_out_seeds'],
+        'training_seed':args.seed,'steps':args.steps,'batch_size':args.batch_size,'initialization':'from scratch',
+        'device':torch.cuda.get_device_name(0),'device_total_bytes':torch.cuda.get_device_properties(0).total_memory,
+        'packages':{k:importlib.metadata.version(k) for k in ('torch','torchvision','lerobot','av','numpy')},
+        'checkpoint':checkpoint.relative_to(ROOT).as_posix(),'resume':False}
+    write_json(args.output/'run.json',context)
+    config.save_pretrained(args.output)
+    torch.cuda.reset_peak_memory_stats(); start=time.perf_counter(); losses=[]
+    iterator=iter(loader)
+    with (args.output/'loss.csv').open('w',newline='') as stream:
+        writer=csv.DictWriter(stream,fieldnames=['step','loss','l1_loss','kld_loss','grad_norm'])
+        writer.writeheader()
+        for step in range(1,args.steps+1):
+            try: batch=next(iterator)
+            except StopIteration: iterator=iter(loader); batch=next(iterator)
+            batch={k:v.cuda() for k,v in batch.items()}
+            model.train(); optimizer.zero_grad(set_to_none=True)
+            loss,metrics=model(batch)
+            if not torch.isfinite(loss): raise RuntimeError('NONFINITE_LOSS')
+            loss.backward()
+            norm=torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
+            optimizer.step()
+            value=float(loss.detach()); losses.append(value)
+            writer.writerow({'step':step,'loss':value,**metrics,'grad_norm':float(norm)})
+            if step==1 or step%50==0:
+                stream.flush(); print(json.dumps({'step':step,'loss':value,'elapsed_s':time.perf_counter()-start}),flush=True)
+    torch.cuda.synchronize(); elapsed=time.perf_counter()-start
+    changed=float((tracked.detach()-before).abs().max())
+    if changed<=0: raise RuntimeError('WEIGHTS_DID_NOT_CHANGE')
+    model.save_pretrained(checkpoint)
+    write_json(checkpoint/'normalization.json',{'statistics':data.statistics,'image_size_wh':list(IMAGE_SIZE),
+        'image_mean':[.485,.456,.406],'image_std':[.229,.224,.225],'dataset_sha256':evidence['dataset_sha256']})
+    probe={k:v[:1] for k,v in batch.items() if k not in ('action','action_is_pad')}
+    expected=model.predict_action_chunk(probe).cpu()
+    reloaded=LeRobotACT.from_pretrained(checkpoint,local_files_only=True,strict=True)
+    actual=reloaded.predict_action_chunk(probe).cpu()
+    if not torch.allclose(expected,actual,atol=1e-6,rtol=0) or not torch.isfinite(actual).all():
+        raise RuntimeError('CHECKPOINT_RELOAD_MISMATCH')
+    summary={**context,'status':'PASS','elapsed_s':elapsed,'first_loss':losses[0],
+        'last_loss':losses[-1],'first_50_mean_loss':float(np.mean(losses[:50])),
+        'last_50_mean_loss':float(np.mean(losses[-50:])),
+        'peak_allocated_bytes':torch.cuda.max_memory_allocated(),'tracked_parameter_max_change':changed,
+        'checkpoint_files_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in checkpoint.iterdir() if p.is_file()},
+        'reload':'PASS','reload_chunk_shape':list(actual.shape),'evaluation':'NOT_RUN'}
+    write_json(args.output/'summary.json',summary)
+    print(json.dumps(summary,indent=2),flush=True)
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
+    parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--steps',type=int,default=1000)
+    parser.add_argument('--batch-size',type=int,default=8)
+    parser.add_argument('--seed',type=int,default=20260929)
+    args=parser.parse_args()
+    if args.steps<1 or args.batch_size<1: parser.error('steps and batch-size must be positive')
+    train(args)

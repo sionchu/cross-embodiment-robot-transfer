@@ -25,10 +25,11 @@ Unavailable GR00T execution must not acquire fabricated metrics.
 - Deliberate 15 mm miss terminated COLLISION at 98.3386 N; reviewed actual RGB frames.
 
 ## Current checkpoint
-G2 canonical dataset is verified: 10 successful episodes, 487 frames. Pinned official
-GR00T loader and action round-trip PASS are in artifacts/datasets/validation.json.
-This is scripted expert/data evidence, not learned control. Fixed held-out seeds
-1000-1019 are in configs/seeds.json before ACT training; 0 and 1 are development only.
+G3 ACT training is verified: actual RTX 4070 Ti training for 1,000 steps, a real
+206,355,696-byte model.safetensors and strict checkpoint reload with identical finite
+(1,16,6) output. The checkpoint is checkpoints/act-10-001 (ignored). Closed-loop
+checkpoint control is the next gate. Held-out seeds 1000-1019 were committed in
+0392ba1 before training; 0 and 1 are development only.
 No E0 PASS artifact is committed; GR00T remains independent and compute-deferred.
 
 ## Decisions and reasons
@@ -39,6 +40,14 @@ No E0 PASS artifact is committed; GR00T remains independent and compute-deferred
 - Keep exact upstream/model pins and existing E0 failure diagnostics.
 
 ## Verification evidence
+- .venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-10-001:
+  exit 0; 1,000 actual CUDA optimizer steps, 81.258 s; tracked weights changed.
+- artifacts/training/act-10-001/{config.json,run.json,loss.csv,summary.json}: actual
+  architecture, upstream pins, dataset/source hashes, all step losses and reload PASS.
+- First/last 50-step mean loss: 8.666316 / 0.358156. This is training loss, not task success.
+- Checkpoint model SHA256: 957d617972c5ae2d37b3060c57223e330d191dee8becec98a06b00e29e015631.
+- .venv/Scripts/python.exe -m unittest discover -s tests -v: 26 passed, including actual
+  checkpoint physical-action inference, repeatability, episode padding and normalization.
 - scripts/local/setup.ps1: exit 0; locked environment, torch 2.9.0+cu128 and RTX 4070 Ti CUDA.
 - C:\isaacsim\python.bat scripts/local/insertion.py --seeds 10 11 12 13 14 15 16 17 18 19 --record --output artifacts/runtime/demos-01:
   exit 0; all 10 SUCCESS, no contact, 487 distinct per-episode RGB frames total.
@@ -66,19 +75,20 @@ No E0 PASS artifact is committed; GR00T remains independent and compute-deferred
 - Staged source digest and committed image digests match the measured evidence.
 
 ## Not executed
-ACT training and learned closed-loop evaluation. GR00T fine-tuning and real UR10e deployment. No cloud rerun.
+Learned closed-loop evaluation, GR00T model/fine-tuning and real UR10e deployment. No cloud rerun.
 
 ## Blockers
 No E0 prerequisite blocks local P0. GR00T execution remains compute-deferred and the
-last recorded inference failed. Local data/ML environment has working CUDA; training feasibility is not yet measured.
+last recorded inference failed. Local CUDA training and checkpoint reload are verified; no local blocker is known.
 
 ## Modified files
-G2 slice: recorder, canonical exporter/validator, corruption tests, seed/modality
-configs, isolated ML setup and dependency lock, source manifest, dataset evidence,
-README/HANDOFF and the root-only raw-dataset ignore rule.
+G3 slice: scripts/local/act.py, tests/test_act.py, scripts/local/README.md,
+artifacts/training/act-10-001/ compact evidence, README.md and HANDOFF.md.
 
 ## Next concrete action
-Train maintained LeRobot ACT on the single datasets/ur10e_10 dataset using .venv.
-Record actual CUDA training/loss, checkpoint and reload before connecting inference
-to Isaac Sim. Keep the two Python environments isolated. Then execute fixed held-out
-closed-loop evaluation and implement/validate the real GR00T adapter contract.
+Connect ACTPolicy.predict to InsertionEnv using a small local subprocess boundary:
+Isaac Sim Python and the ML .venv must remain isolated. Send front RGB/state, receive
+actual checkpoint action chunks, apply declared action bounds and log any clipping.
+Debug transport on development seeds only, then run the committed 20 held-out seeds
+for both expert and ACT without tuning on their outcomes. Preserve failures. Implement
+and validate the real GR00T adapter contract, then generate the compact comparison.

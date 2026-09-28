@@ -13,7 +13,10 @@ and [local execution/action contract](scripts/local/README.md). Ten successful e
 demonstrations now form one canonical dataset: 487 synchronized RGB/state/action
 frames. Schema, corruption checks, the pinned official GR00T episode loader and
 its action normalization round-trip passed; see [G2 evidence](artifacts/datasets/validation.json).
-ACT training and learned-policy evaluation have not yet run.
+Maintained LeRobot ACT has now trained from scratch on the RTX 4070 Ti for 1,000
+steps and reloaded its real checkpoint successfully. See [G3 training evidence](artifacts/training/act-10-001/summary.json)
+and [per-step loss](artifacts/training/act-10-001/loss.csv). Learned-policy closed-loop
+evaluation has not yet run; the training result does not establish insertion success.
 
 E0 is an independent GR00T runtime gate, not a prerequisite for local target learning.
 The existing project record reports a T4 pinned installation and gated access followed

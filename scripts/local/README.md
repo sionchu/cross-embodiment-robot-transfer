@@ -76,3 +76,29 @@ this same dataset through a runtime adapter.
 not a world-absolute pose command. The pinned official episode loader read all 487
 frames and its action processor round-tripped every action. This verifies the data
 contract; it does not establish GR00T model execution or target-policy competence.
+
+
+## ACT training
+
+```powershell
+.venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-10-001
+```
+
+Use a new run name; this command never resumes or overwrites a checkpoint. It checks
+the canonical dataset hash and installed LeRobot Git revision, then trains the
+maintained ACT implementation on CUDA for 1,000 steps with batch size 8 and seed
+20260929. The ResNet18/ACT model starts from scratch, predicts 16 actions and uses
+one new observation per control step. The architecture retains upstream defaults
+except the explicit input dimensions, chunk length and learning rates (1e-4).
+
+RGB is resized from 640x480 to 320x240 with PIL bilinear interpolation and normalized
+with ImageNet channel constants; state/action use training-set mean/std with a 1e-6
+standard-deviation floor. Future action chunks are padded only within their own
+episode and masked in the loss. No development or held-out observations enter training.
+
+The run writes model `config.json`, provenance `run.json`, every-step `loss.csv` and
+`summary.json`. The real weights and normalization metadata are saved under ignored
+`checkpoints/<run-name>/`. The summary identifies every checkpoint file by SHA256
+and requires a strict reload to reproduce a finite action chunk. Training PASS does
+not imply closed-loop task success. `ACTPolicy.predict` returns physical task-frame
+deltas; the simulator applies its declared action limits and must record clipping.
