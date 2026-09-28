@@ -36,7 +36,8 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
 ## Current checkpoint
 Latest 10-demo ImageNet H16 model failed both development seeds 0/1. H1 diagnostic also
 failed both, so shorter training horizon has not solved the issue. No new held-out result.
-No training/simulator job remains active. Source candidate frames have been visually inspected; episode 29 wrist_view selected.
+Controlled training act-10-h1-backbonelr-001 is active: only backbone LR 1e-4 → 1e-5,
+5000 steps, same ten demos/seed/ImageNet initialization/H1/K1. Await real outcome. Source candidate frames have been visually inspected; episode 29 wrist_view selected.
 Pinned hashes, observed pose-derived trajectories and ANALOGOUS_TASK audit are saved.
 Physical source geometry/frame provenance remains unresolved; paired study is unexecuted.
 
@@ -63,8 +64,8 @@ Physical source geometry/frame provenance remains unresolved; paired study is un
 - artifacts/training/act-10-imagenet-001/ and artifacts/eval/act-10-imagenet-dev-001/: 0/2.
 - artifacts/training/act-10-h1-001/ and artifacts/eval/act-10-h1-dev-001/: 5000 CUDA steps,
   reload PASS, 0/2 collisions; checkpoint 090185e98a540e369d44fcc5676f3152f8166d0048e38bdbae42f7ddcd245d0c.
-- .venv/Scripts/python.exe -m unittest discover -s tests -v: 33 passed, no skips;
-  artifacts/runtime/horizon-regression-tests.log. E0 PASS strings are mocked fixtures only.
+- .venv/Scripts/python.exe -m unittest discover -s tests -v: 35 passed, no skips;
+  artifacts/runtime/source-regression-tests.log. E0 PASS strings are mocked fixtures only.
 - artifacts/environment/gr00t_local_contract.json: integration PASS, model/target checkpoint NOT_RUN.
 
 ## Not executed

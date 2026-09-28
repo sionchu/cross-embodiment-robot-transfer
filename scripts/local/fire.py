@@ -201,7 +201,11 @@ def main():
     ax.scatter(0, 0, 0, marker="x", s=60, c="black", label="Recorded terminal EEF anchor")
     ax.set(xlabel="x (recorded units)", ylabel="y (recorded units)", zlabel="z (recorded units)", title="FIRe measured EEF trajectories / terminal-pose frame")
     all_xyz = np.concatenate([pd.read_csv(trajectory_dir / f"episode_{e:06d}.csv")[[k + "_recorded_units" for k in "xyz"]].to_numpy() for e in EPISODES])
-    ax.set_box_aspect(np.maximum(np.ptp(all_xyz, axis=0), 1e-6))
+    center = (all_xyz.min(axis=0) + all_xyz.max(axis=0)) / 2
+    radius = max(np.ptp(all_xyz, axis=0).max(), 1e-6) * .56
+    ax.set(xlim=(center[0]-radius, center[0]+radius), ylim=(center[1]-radius, center[1]+radius), zlim=(center[2]-radius, center[2]+radius))
+    ax.set_box_aspect((1, 1, 1))
+    ax.tick_params(labelsize=8)
     ax.legend(fontsize=8); fig.tight_layout()
     fig.savefig(trajectory_dir / "trajectory.png", dpi=150); plt.close(fig)
     print(json.dumps({"report": str(REPORT), "episodes": len(candidates), "videos_verified": 9, "selected_clip_sha256": sha(clip)}))
