@@ -34,14 +34,18 @@ VRAM, gated access, both official sample inference runs and exact code/model/env
   South Korea; support stated that separate provisioning/escalation or a no-extra-cost
   South Korea path is not available. Sanitized regional-policy evidence is committed under
   `artifacts/environment/2026-09-28-colab-region-ineligible.json`.
+- Retried E0 on a real Colab Tesla T4. Bundle and project-HEAD checks passed, and the GPU
+  preflight reached the pinned dependency install. `uv sync --locked` then failed because
+  the aarch64 torchcodec local wheel was still an unresolved Git LFS pointer. The workflow
+  now pulls that wheel LFS object explicitly before sync; upstream lock/project files remain
+  unmodified.
 
 ## Current checkpoint
 G0 hygiene implementation and local checks complete.
-E0 runtime was attempted but remains incomplete. The first Colab allocation surfaced T4.
-After re-checking NVIDIA's official hardware guide, T4-class 16 GB VRAM is sufficient for
-E0 inference; the earlier A100-only E0 gate was overly strict. South Korea is not currently
-eligible for the bundled Google AI Pro Colab CCU benefit, but that does not block free-tier
-T4 inference sanity. No GR00T install, HF gated-access check or inference was started yet.
+E0 runtime was attempted on a real T4 and remains incomplete. After correcting the earlier
+A100-only gate, the T4 reached dependency installation successfully. The current retry fix
+resolves the pinned aarch64 torchcodec LFS wheel before `uv sync --locked`. HF gated-access
+check and model inference have not been reached yet.
 
 ## Decisions and reasons
 - Use official standalone inference unmodified; pin code, lock and model snapshots.
@@ -52,6 +56,8 @@ T4 inference sanity. No GR00T install, HF gated-access check or inference was st
   between 01 and _Robotics did not identify an existing directory.
 
 ## Verification evidence
+- Real Colab T4 allocation reached the pinned install path; `nvidia-smi` reported Tesla T4
+  with 15360 MiB VRAM. Bundle and project HEAD checks passed before installation.
 - `python -m unittest discover -s tests -v`: 8 tests passed (the original five
   plus sanitized known/unknown failure evidence and mocked runtime coverage).
   Sensitive messages are excluded; successful metric evidence has no failure code.
@@ -71,14 +77,16 @@ T4 inference sanity. No GR00T install, HF gated-access check or inference was st
   Git; its SHA-256 is recorded in the sanitized JSON artifact.
 
 ## Not executed
-Linux dependency installation, HF/Cosmos gated-access validation, both GR00T
-checkpoint inference runs, and all E1+ work. No public push, release, or
-reference-repository modification.
+A complete Linux dependency installation, HF/Cosmos gated-access validation, both GR00T
+checkpoint inference runs, and all E1+ work. The first T4 install attempt stopped during
+`uv sync --locked` at the unresolved LFS wheel issue described above. No public push,
+release, or reference-repository modification.
 
 ## Blockers
 E0 is no longer blocked on A100/40 GB compute. It can run on an authorized Linux x86_64
-NVIDIA CUDA GPU with 16 GB+ VRAM, including a measured free-tier T4. The current expected
-next blocker is Hugging Face/Cosmos gated access because that has not yet been tested.
+NVIDIA CUDA GPU with 16 GB+ VRAM, including the measured free-tier T4. The first T4 install
+failure had a concrete local cause (unresolved LFS wheel) and is fixed in the workflow. The
+next expected blocker is Hugging Face/Cosmos gated access because that has not yet been tested.
 For E5 fine-tuning, 40 GB+ VRAM will still be required. Google AI Pro's bundled Colab CCU
 benefit is not available to this South Korea account; support said it cannot be separately
 provisioned or escalated. Do not use VPN/region spoofing or false account-country workarounds.

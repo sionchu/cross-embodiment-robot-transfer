@@ -15,6 +15,11 @@ The official hardware guide separates inference and fine-tuning: E0 inference ne
 16 GB+ VRAM, while later fine-tuning needs 40 GB+ VRAM. Driver compatibility and
 actual device memory must be measured at runtime.
 
+The pinned project also declares an aarch64-only local `torchcodec` wheel under
+`[tool.uv.sources]`. Even on x86_64, `uv sync --locked` inspects source metadata, so a
+`GIT_LFS_SKIP_SMUDGE=1` checkout must resolve that wheel's LFS object before sync. Pull
+both the DROID sample and `scripts/deployment/dgpu/wheels/torchcodec-0.8.0-cp312-cp312-linux_aarch64.whl`; otherwise uv reads the LFS pointer text as a wheel and fails with an invalid ZIP header.
+
 ## Data and policy
 
 The [data guide](https://github.com/NVIDIA/Isaac-GR00T/blob/51d4c89f72fda44cbf77285c6a8114b52676b8a1/getting_started/data_preparation.md)

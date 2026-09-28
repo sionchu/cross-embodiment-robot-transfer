@@ -83,16 +83,19 @@ GIT_LFS_SKIP_SMUDGE=1 git clone --no-checkout https://github.com/NVIDIA/Isaac-GR
 cd /content/Isaac-GR00T
 GIT_LFS_SKIP_SMUDGE=1 git checkout --detach "$PIN"
 GIT_LFS_SKIP_SMUDGE=1 git submodule update --init --recursive
-git lfs pull --include='demo_data/droid_sample/**' --exclude=''
+git lfs pull --include='demo_data/droid_sample/**,scripts/deployment/dgpu/wheels/torchcodec-0.8.0-cp312-cp312-linux_aarch64.whl' --exclude=''
 test "$(git rev-parse HEAD)" = "$PIN"
 uv sync --locked --python 3.12 2>&1 | tee /content/e0-preflight/uv-sync.log
 .venv/bin/python -c 'import gr00t, torch, torchcodec; print(torch.__version__, torch.version.cuda)'
 ffmpeg -version
 ```
 
-The pin uses cu128 PyTorch 2.9.0 and FFmpeg 4-7. If the Colab driver, system
-libraries, resolver, or disk cannot support the pinned environment, retain the
-failure output and stop. Do not silently change torch/CUDA or regenerate uv.lock.
+The pin uses cu128 PyTorch 2.9.0 and FFmpeg 4-7. The scoped LFS pull intentionally
+includes the aarch64 torchcodec wheel even on x86_64 because uv inspects its local-source
+metadata during `uv sync --locked`; leaving it as a Git LFS pointer causes an invalid ZIP
+header failure before platform markers can exclude it from installation. If the Colab
+driver, system libraries, resolver, or disk cannot support the pinned environment, retain
+the failure output and stop. Do not silently change torch/CUDA or regenerate uv.lock.
 The pipeline above installs the official default dependency set, including GPU
 packages; no custom minimal dependency fork is maintained here.
 
