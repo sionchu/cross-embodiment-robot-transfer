@@ -103,3 +103,15 @@ no source bridge or final media claim exists yet.
   exact optimization cause remains under investigation, not asserted.
 - Running act-overfit-001: episode 0 only (seed 10), 5000 steps, same architecture
   and full-training-set normalization; no extra data or changed success detector.
+
+### Recovery checkpoint
+- `act-overfit-001`: 5000 steps on episode 0, reload PASS, but same-seed
+  `act-overfit-train-002` COLLISION. No demonstration expansion is justified yet.
+- Visual projection RMS: baseline ~6770, failed overfit ~35918; first attention
+  max probability >.99 for ~99% of queries. See feature_probe.json.
+- Running `act-overfit-002`: same episode/seed/5000 steps/LRs; ONLY visual backbone
+  initialization changed to official ImageNet ResNet18. Await checkpoint and run
+  same-condition test before claiming the correction works or training all 10 demos.
+- Fixed explicit relative --checkpoint path resolution after pre-simulation
+  failure `act-overfit-train-001`. No action/controller/detector change.
+- New traces include post-action state, contact force and terminal state.

@@ -1,0 +1,54 @@
+{
+  "project_commit": "42048768bc8b06b8560e98da507fe89e2be034ff",
+  "source_sha256": "571b222cac0ce88f4c01c4c2f1424df6558535c9c084960264f4e7625d08d466",
+  "dependency_lock_sha256": "bbfe4c75ba9f4f49128d3e33c817e4d62c172e985420e57f2b5d8fef70f4935b",
+  "gr00t_commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+  "lerobot_commit": "eb7a54c6ff4983fc86075442bf4fa61503e7b5d1",
+  "dataset_id": "ur10e_10",
+  "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+  "train_seeds": [
+    10
+  ],
+  "training_episode_indices": [
+    0
+  ],
+  "training_frames": 48,
+  "normalization_source": "full canonical training dataset; unchanged for subset sanity",
+  "held_out_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "training_seed": 20260929,
+  "steps": 5000,
+  "batch_size": 8,
+  "initialization": "from scratch",
+  "device": "NVIDIA GeForce RTX 4070 Ti",
+  "device_total_bytes": 12878086144,
+  "packages": {
+    "torch": "2.9.0+cu128",
+    "torchvision": "0.24.0+cu128",
+    "lerobot": "0.6.2",
+    "av": "15.1.0",
+    "numpy": "2.2.6"
+  },
+  "checkpoint": "checkpoints/act-overfit-001",
+  "resume": false
+}

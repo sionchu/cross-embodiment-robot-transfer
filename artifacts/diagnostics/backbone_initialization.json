@@ -1,0 +1,10 @@
+{
+  "source": "torchvision ResNet18_Weights.IMAGENET1K_V1",
+  "url": "https://download.pytorch.org/models/resnet18-f37072fd.pth",
+  "sha256": "f37072fd47e89c5e827621c5baffa7500819f7896bbacec160b1a16c560e07ec",
+  "bytes": 46830571,
+  "scope": "visual backbone initialization only; ACT transformer and action head freshly initialized",
+  "upstream_lerobot": "eb7a54c6ff4983fc86075442bf4fa61503e7b5d1",
+  "mechanism": "LeRobot ACT uses FrozenBatchNorm2d in its ResNet backbone; original experiment explicitly disabled pretrained weights",
+  "controlled_change": "act-overfit-001 vs act-overfit-002 changes only backbone initialization; both 5000 steps, episode 0, seed 20260929 and same learning rates"
+}

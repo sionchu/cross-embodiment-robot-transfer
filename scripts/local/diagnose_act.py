@@ -23,13 +23,16 @@ def audit(args):
     from insertion import expert,CONFIG
     from dataset import VIDEO
     torch.set_num_threads(4)
-    args.output.mkdir(parents=True,exist_ok=False)
+    if (args.output/'audit.json').exists(): raise FileExistsError('AUDIT_ALREADY_EXISTS')
+    args.output.mkdir(parents=True,exist_ok=True)
     data=CanonicalDataset(ROOT/'datasets/ur10e_10',16)
     policy=ACTPolicy(args.checkpoint)
     predictions=[]; truth=[]; states=[]; expert_labels=[]; tensor_evidence=None
-    rows=[]; offset=0
-    for ep in range(10):
+    rows=[]; sample_ids=[]; offset=0
+    for ep in (range(10) if args.episodes is None else args.episodes):
         folder=ROOT/'datasets/ur10e_10'
+        lengths=[json.loads(line)['length'] for line in (folder/'meta/episodes.jsonl').read_text().splitlines()]
+        offset=sum(lengths[:ep])
         df=pd.read_parquet(folder/f'data/chunk-000/episode_{ep:06d}.parquet')
         with av.open(str(folder/f'videos/chunk-000/{VIDEO}/episode_{ep:06d}.mp4')) as c:
             images=[f.to_ndarray(format='rgb24') for f in c.decode(video=0)]
@@ -48,7 +51,7 @@ def audit(args):
                     'max':float(v.max()),'mean':float(v.mean())} for k,v in captured.items()}
                 tensor_evidence['train_vs_adapter_input']='BIT_EXACT_ON_DECODED_DEMO'
                 tensor_evidence['state_values']=captured['observation.state'][0].tolist()
-            predictions.append(predicted);truth.append(a);states.append(s);expert_labels.append(expert(s)[0])
+            sample_ids.append(offset+i);predictions.append(predicted);truth.append(a);states.append(s);expert_labels.append(expert(s)[0])
             rows.append({'episode':ep,'frame':i,'time_s':i/15,
                 **{f'gt_{k}':float(v) for k,v in zip(DIMS,a)},
                 **{f'pred_{k}':float(v) for k,v in zip(DIMS,predicted)}})
@@ -56,7 +59,7 @@ def audit(args):
     pred=np.asarray(predictions);gt=np.asarray(truth);state=np.asarray(states)
     bounds=np.array([CONFIG['translation_limit_m']]*3+[CONFIG['rotation_limit_rad']]*3)
     stats=policy.stats['action'];denom=np.maximum(stats['std'],1e-6)
-    roundtrip=(data.actions.numpy()*denom+stats['mean'])
+    roundtrip=(data.actions[sample_ids].numpy()*denom+stats['mean'])
     np.testing.assert_allclose(roundtrip,gt,atol=1e-8,rtol=0)
     np.testing.assert_allclose(expert_labels,gt,atol=1e-8,rtol=0)
     with (args.output/'open_loop.csv').open('w',newline='') as f:
@@ -128,11 +131,54 @@ def plot(args):
                 ax.plot(x,[float(r[key]) for r in rr]);ax.set(title=f'Seed {seed}: {label}',xlabel='s')
         fig.savefig(args.output/'closed_loop.png',dpi=140);plt.close(fig)
 
+def features(args):
+    import torch
+    import av
+    import pandas as pd
+    from act import LeRobotACT, ACTConfig, image_tensor
+    from dataset import VIDEO
+    torch.set_num_threads(2)
+    cfg=ACTConfig.from_pretrained(args.checkpoint);cfg.device='cpu'
+    model=LeRobotACT.from_pretrained(args.checkpoint,config=cfg,strict=True,local_files_only=True)
+    stats=json.loads((args.checkpoint/'normalization.json').read_text())['statistics']
+    df=pd.read_parquet(ROOT/'datasets/ur10e_10/data/chunk-000/episode_000000.parquet')
+    with av.open(str(ROOT/f'datasets/ur10e_10/videos/chunk-000/{VIDEO}/episode_000000.mp4')) as c:
+        images=[f.to_ndarray(format='rgb24') for f in c.decode(video=0)]
+    observed={}
+    for name in ['encoder_robot_state_input_proj','encoder_img_feat_input_proj']:
+        def hook(module,inputs,out,key=name):
+            observed[key]={'rms':float(out.square().mean().sqrt()),'max_abs':float(out.abs().max())}
+        getattr(model.model,name).register_forward_hook(hook)
+    attention=model.model.encoder.layers[0].self_attn
+    def full_weights(module,inputs,kwargs):
+        return inputs,{**kwargs,'average_attn_weights':False}
+    attention.register_forward_pre_hook(full_weights,with_kwargs=True)
+    def attention_probe(module,inputs,out):
+        weights=out[1]
+        observed['first_attention']={'mean_entropy':float(-(weights*weights.clamp_min(1e-30).log()).sum(-1).mean()),
+            'fraction_queries_max_probability_above_099':float((weights.max(-1).values>.99).float().mean())}
+    attention.register_forward_hook(attention_probe)
+    records=[]
+    with torch.inference_mode():
+        for image_index,state_index in [(0,0),(1,1),(10,10),(30,30),(1,0),(1,30)]:
+            q=stats['observation.state'];state=torch.tensor(np.array(df['observation.state'].iloc[state_index]))
+            state=(state-torch.tensor(q['mean']))/torch.tensor(q['std']).clamp_min(1e-6)
+            chunk=model.predict_action_chunk({'observation.state':state[None],VIDEO:image_tensor(images[image_index])[None]})
+            records.append({'image_frame':image_index,'state_frame':state_index,'features':dict(observed),
+                'first_action_normalized':chunk[0,0].tolist()})
+    report={'checkpoint':args.checkpoint.relative_to(ROOT).as_posix(),'device':'CPU diagnostic only',
+        'checkpoint_sha256':hashlib.sha256((args.checkpoint/'model.safetensors').read_bytes()).hexdigest(),
+        'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'records':records}
+    (args.output/'feature_probe.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    print(json.dumps(report,indent=2))
+
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--checkpoint',type=Path,default=ROOT/'checkpoints/act-10-001')
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--baseline',action='store_true')
+    p.add_argument('--episodes',type=int,nargs='+')
     p.add_argument('--plot',action='store_true')
+    p.add_argument('--features',action='store_true')
     a=p.parse_args();a.output=a.output.resolve();a.checkpoint=a.checkpoint.resolve()
-    plot(a) if a.plot else audit(a)
+    plot(a) if a.plot else features(a) if a.features else audit(a)

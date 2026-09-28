@@ -1,0 +1,22 @@
+{
+  "raw_training_image_shape": [
+    480,
+    640,
+    3
+  ],
+  "raw_evaluation_image_shape": [
+    480,
+    640,
+    3
+  ],
+  "dtype": "uint8",
+  "channel_order": "RGB",
+  "raw_reset_pixels_equal": false,
+  "raw_reset_pixel_mae": 0.23157118055555556,
+  "compression_pixel_mae": 1.112509765625,
+  "raw_image_sha256": "f4d132b63522a95ac93081f2645917d8a401b3524dfad639426c61c28bcae0a1",
+  "preprocessing": "shared act.image_tensor: PIL bilinear 640x480 -> 320x240; RGB CHW /255; ImageNet mean/std; no crop",
+  "state_contract": "same env.state() during generation and evaluation; hole-frame xyz m and rotation vector rad",
+  "privileged_input": "hole-relative EEF pose is explicitly available in BOTH training and evaluation",
+  "replay_canonical_data": "float32 source trace is the canonical parquet state/action; checked by dataset validation and audit"
+}

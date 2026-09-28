@@ -123,7 +123,7 @@ def train(args):
         input_features={VIDEO:PolicyFeature(FeatureType.VISUAL,(3,240,320)),
                         'observation.state':PolicyFeature(FeatureType.STATE,(6,))},
         output_features={'action':PolicyFeature(FeatureType.ACTION,(6,))},
-        pretrained_backbone_weights=None,optimizer_lr=1e-4,optimizer_lr_backbone=1e-4)
+        pretrained_backbone_weights=None if args.backbone_weights=='none' else 'ResNet18_Weights.IMAGENET1K_V1',optimizer_lr=1e-4,optimizer_lr_backbone=1e-4)
     model=LeRobotACT(config).cuda()
     data=CanonicalDataset(args.dataset,config.chunk_size)
     selected=list(range(len(evidence['train_seeds']))) if args.episodes is None else args.episodes
@@ -148,7 +148,8 @@ def train(args):
         'training_episode_indices':selected,'training_frames':len(indices),
         'normalization_source':'full canonical training dataset; unchanged for subset sanity',
         'held_out_seeds':evidence['held_out_seeds'],
-        'training_seed':args.seed,'steps':args.steps,'batch_size':args.batch_size,'initialization':'from scratch',
+        'training_seed':args.seed,'steps':args.steps,'batch_size':args.batch_size,'initialization':'from scratch' if args.backbone_weights=='none' else 'ImageNet ResNet18; fresh ACT transformer/action head',
+        'backbone_initialization':args.backbone_weights,
         'device':torch.cuda.get_device_name(0),'device_total_bytes':torch.cuda.get_device_properties(0).total_memory,
         'packages':{k:importlib.metadata.version(k) for k in ('torch','torchvision','lerobot','av','numpy')},
         'checkpoint':checkpoint.relative_to(ROOT).as_posix(),'resume':False}
@@ -199,6 +200,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--backbone-weights',choices=['none','imagenet'],default='none')
     parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
     parser.add_argument('--steps',type=int,default=1000)
     parser.add_argument('--batch-size',type=int,default=8)

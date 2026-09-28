@@ -81,6 +81,7 @@ def main():
     parser.add_argument('--seed-offset',type=int,default=0,help=argparse.SUPPRESS)
     parser.add_argument('--seed-count',type=int,help=argparse.SUPPRESS)
     args=parser.parse_args()
+    args.checkpoint=args.checkpoint.resolve()
     if args.policy=='replay' and args.split!='train': parser.error('replay requires train split')
     seeds=json.loads((ROOT/'configs/seeds.json').read_text())[args.split]
     frozen=json.loads(subprocess.check_output(['git','show','HEAD:configs/seeds.json'],cwd=ROOT))
@@ -184,6 +185,7 @@ def main():
                     trace.append({'state':state.tolist(),'raw_chunk':chunk.tolist(),'action':action.tolist(),
                                   'timestamp':env.steps*dt,'request_ms':wall_ms,'inference_ms':latency[-1]})
                     state,outcome=env.step(action); positions.append(state[:3].copy())
+                    trace[-1].update({'next_state':state.tolist(),'max_contact_n':env.max_contact,'terminal':outcome})
                 Image.fromarray(env.image()).save(raw/f'{seed}_end.png')
                 write_json(raw/f'{seed}_trace.json',trace)
                 if frames:

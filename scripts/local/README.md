@@ -183,3 +183,32 @@ The last command regenerates the comparison/README table from those named runs.
 The original run folders and checkpoint metadata remain intact. Inspect the generated
 `summary.json` execution status; a shell exit code alone is insufficient when the
 Isaac Sim Windows launcher is terminated externally.
+
+## ACT success recovery diagnostics
+
+The original 0/20 checkpoint remains `act-10-001`. Do not overwrite it.
+`diagnose_act.py` checks actual model input tensors, action distributions and
+open-loop predictions; `--features` records projected features and attention.
+Open-loop error and training PASS do not establish task success.
+
+```powershell
+.venv/Scripts/python.exe scripts/local/diagnose_act.py --baseline --output artifacts/diagnostics/audit-new
+python scripts/local/diagnose_act.py --plot --output artifacts/diagnostics/audit-new
+.venv/Scripts/python.exe scripts/local/diagnose_act.py --features --output artifacts/diagnostics/audit-new
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy replay --split train --seed-count 1 --output artifacts/eval/replay-new
+.venv/Scripts/python.exe scripts/local/act.py --episodes 0 --steps 5000 --output artifacts/training/overfit-new
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split train --seed-count 1 --checkpoint checkpoints/overfit-new --output artifacts/eval/overfit-new
+```
+
+Replay uses the original recorded trace cast to canonical float32; every recorded
+state/action was verified bit-exact against the exported Parquet. It uses the same
+clipping, controller, 15 Hz execution and success detector as ACT. The reference
+trace is in the ignored `artifacts/runtime/demos-01` run generated above.
+
+`--episodes 0` trains only the first episode without copying a second dataset.
+Normalization remains the full canonical training statistics to isolate the factor.
+The first 5000-step one-episode checkpoint also failed. Its visual feature magnitude
+and nearly saturated attention motivate a controlled `--backbone-weights imagenet`
+experiment: official ResNet18 visual initialization only; robot-action learning still
+uses target demonstrations. All other hyperparameters and task thresholds stay fixed.
+The exact image weights are pinned in `artifacts/diagnostics/backbone_initialization.json`.
