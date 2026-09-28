@@ -102,3 +102,26 @@ The run writes model `config.json`, provenance `run.json`, every-step `loss.csv`
 and requires a strict reload to reproduce a finite action chunk. Training PASS does
 not imply closed-loop task success. `ACTPolicy.predict` returns physical task-frame
 deltas; the simulator applies its declared action limits and must record clipping.
+
+
+## Checkpoint closed-loop evaluation
+
+```powershell
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split development --output artifacts/runtime/act-development-new
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --output artifacts/eval/act-10-001
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy expert --split held_out --output artifacts/eval/expert-001
+```
+
+Each output/run name must be new. The worker runs `.venv` ACT inference over a local
+stdio pipe; Isaac Sim stays in its own Python process. Every control step sends a
+fresh front RGB frame and measured target-relative pose, predicts a 16-step chunk,
+and executes its first action. Both policies use the same scene and declared bounds.
+Raw predictions and clipped commands are retained separately. `clipped_steps` counts
+any floating-point clipping, including tiny rounding excess at a bound.
+
+Episode JSONL records all successes/failures; summary JSON reports outcome counts,
+Wilson confidence intervals and measured error/time/path/latency statistics. Runner
+`execution_status=PASS` means evaluation finished, not that insertion succeeded.
+The first episode video, all final/start images and action traces remain in ignored
+`artifacts/runtime/eval-<run-name>/`. Development seeds 0 and 1 are never counted as
+held-out results. No tuning is performed on held-out outcomes.
