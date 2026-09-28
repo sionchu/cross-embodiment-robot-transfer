@@ -13,7 +13,10 @@ requires FFmpeg 4-7 for this torchcodec version. Use the upstream lock unchanged
 This supersedes AGENTS.md's older minimum-version notes for this pinned E0 run.
 The official hardware guide separates inference and fine-tuning: E0 inference needs
 16 GB+ VRAM, while later fine-tuning needs 40 GB+ VRAM. Driver compatibility and
-actual device memory must be measured at runtime.
+actual device memory must be measured at runtime. The E0 wrapper uses a 15,000,000,000-byte
+**torch-visible operational floor** only to avoid rejecting a nominal 16 GB-class GPU
+because framework-visible memory is below marketed capacity; this does not change the
+official 16 GB+ requirement, and only a successful real inference run can pass E0.
 
 The pinned project also declares an aarch64-only local `torchcodec` wheel under
 `[tool.uv.sources]`. Even on x86_64, `uv sync --locked` inspects source metadata, so a

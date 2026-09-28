@@ -32,7 +32,8 @@
     "cuda_wheel_index": "cu128",
     "torchcodec": "0.8.0",
     "ffmpeg_major": [4, 5, 6, 7],
-    "inference_min_vram_bytes": 16000000000,
+    "inference_min_vram_bytes": 15000000000,
+    "inference_vram_gate_note": "Operational torch-visible floor for nominal 16 GB-class GPUs; NVIDIA's official minimum remains 16 GB+ VRAM and real inference is the final viability check.",
     "finetune_min_vram_bytes": 40000000000
   },
   "official_files_reviewed": [

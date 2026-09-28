@@ -1,10 +1,10 @@
 # Colab / Cloud GPU adapter: official N1.7 E0
 
-Status: workflow prepared; official inference has not yet completed. E0 requires
-Linux x86_64 with a measured NVIDIA CUDA GPU of at least 16 GB-class VRAM; a free
-T4 is acceptable if it passes the runner's VRAM gate. Fine-tuning later requires
-40 GB+ VRAM. Actual hardware is recorded, never assumed. The owner must approve
-Cosmos model access beforehand.
+Status: pinned install and Cosmos gated access are verified on a free-tier Tesla T4,
+but official inference has not passed yet. NVIDIA's official E0 inference minimum is
+16 GB+ VRAM; the runner uses a 15,000,000,000-byte torch-visible operational floor for
+nominal 16 GB-class devices, then lets real inference determine viability. Fine-tuning
+later requires 40 GB+ VRAM. Actual hardware is recorded, never assumed.
 This workflow downloads upstream dependencies and three model snapshots; inspect
 available disk/RAM first. It does not start training or publish anything.
 
@@ -54,9 +54,10 @@ preflight.mkdir(exist_ok=False)
 (preflight / 'ram.txt').write_text(subprocess.check_output(['free', '-h'], text=True))
 ```
 
-Confirm that the GPU has at least 16 GB-class VRAM in the output. If a prior
-attempt created these directories, use a fresh runtime; this procedure intentionally
-refuses to reuse stale results.
+Confirm that the GPU is nominally 16 GB-class or larger. The runner separately records
+torch-visible VRAM and applies the operational floor documented above. If a prior attempt
+created these directories, use a fresh runtime; this procedure intentionally refuses to
+reuse stale results.
 
 ## 2. Upload and check out the committed project
 

@@ -18,6 +18,22 @@ class EvidenceChecks(unittest.TestCase):
     good = ('INFO:root:MSE for trajectory 1: 0.1, MAE: 0.2\n'
             'INFO:root:MSE for trajectory 2: 1e-3, MAE: 0.04\n')
 
+    def test_log_redaction_preserves_failure_diagnostics(self):
+        raw = ('Traceback (most recent call last):\n'
+               'huggingface_hub.errors.OfflineModeIsEnabled: model_info failed\n'
+               'HF_TOKEN=opaque-test-secret legacy=legacy-test-secret hf_short\n'
+               'Authorization: Bearer opaque-bearer-value\n'
+               'Authorization: Basic dXNlcjpwYXNz\n'
+               'https://cdn.example/model?X-Amz-Credential=private&Signature=private\n'
+               'RuntimeError: CUDA out of memory\n')
+        safe = e0.redact_log(raw, ('opaque-test-secret', 'legacy-test-secret', ''))
+        for secret in ('opaque-test-secret', 'legacy-test-secret', 'hf_short',
+                       'opaque-bearer-value', 'dXNlcjpwYXNz', 'private'):
+            self.assertNotIn(secret, safe)
+        for diagnostic in ('Traceback', 'OfflineModeIsEnabled: model_info failed',
+                           'RuntimeError: CUDA out of memory', 'https://cdn.example/model'):
+            self.assertIn(diagnostic, safe)
+
     def test_preflight_failure_preserves_failed_manifest_without_command_output(self):
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / 'run'
@@ -75,10 +91,11 @@ class EvidenceChecks(unittest.TestCase):
             pass
 
         for case, expected in (
-                ('success', None), ('gated', 'HF_GATED_ACCESS'),
+                ('success', None), ('t4', None), ('gated', 'HF_GATED_ACCESS'),
                 ('cuda', 'CUDA_UNAVAILABLE'), ('vram', 'GPU_MEMORY_INSUFFICIENT'),
                 ('smoke', 'CUDA_SMOKE_FAILED'),
                 ('exit', 'OFFICIAL_INFERENCE_FAILED'),
+                ('second_exit', 'OFFICIAL_INFERENCE_FAILED'),
                 ('metric', 'INFERENCE_METRIC_INVALID')):
             with self.subTest(case=case), tempfile.TemporaryDirectory() as tmp, \
                     ExitStack() as stack:
@@ -93,7 +110,9 @@ class EvidenceChecks(unittest.TestCase):
                 torch.cuda.is_available.return_value = case != 'cuda'
                 torch.cuda.get_device_name.return_value = 'mock NVIDIA CUDA GPU'
                 torch.cuda.get_device_properties.return_value = SimpleNamespace(
-                    total_memory=12_000_000_000 if case == 'vram' else 24_000_000_000
+                    total_memory=(12_000_000_000 if case == 'vram'
+                                  else 15_637_086_208 if case == 't4'
+                                  else 24_000_000_000)
                 )
                 torch.ones.return_value.sum.return_value.item.return_value = 1
                 if case == 'smoke':
@@ -115,8 +134,23 @@ class EvidenceChecks(unittest.TestCase):
                         stdout = 'ffmpeg version 7.0'
                     elif args[0] == e0.sys.executable:
                         self.assertNotIn('HF_TOKEN', kwargs['env'])
-                        stdout = self.good if case != 'metric' else 'invalid metrics: hf_FAKE_TEST_SECRET'
-                        code = 1 if case == 'exit' else 0
+                        self.assertNotIn('HUGGING_FACE_HUB_TOKEN', kwargs['env'])
+                        self.assertEqual(kwargs['env'].get('HF_HUB_OFFLINE'), '1')
+                        self.assertEqual(kwargs['env'].get('TRANSFORMERS_OFFLINE'), '1')
+                        self.assertEqual(kwargs['env'].get('GROOT_HF_LOCAL_FIRST'), '1')
+                        self.assertEqual(kwargs['env'].get('GROOT_PATCH_MISTRAL'), '1')
+                        self.assertEqual(kwargs['env'].get('GROOT_SKIP_HF_MODEL_WEIGHTS'), '0')
+                        self.assertEqual(kwargs['env'].get('HF_HUB_DISABLE_IMPLICIT_TOKEN'), '1')
+                        stdout = (self.good + '\nsecret=hf_FAKE_TEST_SECRET '
+                                  'other=hf_OTHER_FAKE_TOKEN_123456 '
+                                  'opaque-test-secret legacy-test-secret'
+                                  if case != 'metric'
+                                  else 'invalid metrics: hf_FAKE_TEST_SECRET')
+                        code = int(case == 'exit' or (
+                            case == 'second_exit' and pins['models'][1]['revision'] in args[3]))
+                        if code:
+                            stdout += ('\nTraceback (most recent call last):\n'
+                                       'OfflineModeIsEnabled: model_info failed\n')
                     return subprocess.CompletedProcess(args, code, stdout)
 
                 real_digest = e0.digest
@@ -134,7 +168,11 @@ class EvidenceChecks(unittest.TestCase):
                     'torch': torch, 'torchcodec': Mock(), 'huggingface_hub': hub,
                     'huggingface_hub.errors': SimpleNamespace(GatedRepoError=GatedRepoError),
                 }))
-                stack.enter_context(patch.dict(e0.os.environ, {'HF_TOKEN': 'hf_FAKE_TEST_SECRET'}))
+                stack.enter_context(patch.dict(e0.os.environ, {
+                    'HF_TOKEN': 'opaque-test-secret',
+                    'HUGGING_FACE_HUB_TOKEN': 'legacy-test-secret',
+                    'GROOT_SKIP_HF_MODEL_WEIGHTS': '1',
+                }))
                 output = Path(tmp) / 'run'
                 if expected:
                     with self.assertRaises(RuntimeError):
@@ -146,12 +184,30 @@ class EvidenceChecks(unittest.TestCase):
                 self.assertNotIn('hf_FAKE_TEST_SECRET', text)
                 self.assertNotIn('/private/path', text)
                 self.assertNotIn('sensitive CUDA detail', text)
+                for log_path in output.glob('*.log'):
+                    log_text = log_path.read_text()
+                    self.assertNotIn('hf_FAKE_TEST_SECRET', log_text)
+                    self.assertNotIn('hf_OTHER_FAKE_TOKEN_123456', log_text)
+                    self.assertNotIn('opaque-test-secret', log_text)
+                    self.assertNotIn('legacy-test-secret', log_text)
+                for run in report['runs']:
+                    log_path = output / run['log_file']
+                    self.assertEqual(run['log_sha256'], real_digest(log_path))
                 if expected:
                     self.assertEqual(report['status'], 'FAILED')
                     self.assertEqual(report['failure_code'], expected)
                     if case == 'gated':
                         self.assertEqual(report['error_type'], 'GatedRepoError')
                         self.assertEqual(report['stage'], 'gated_access_and_snapshots')
+                    if case in ('exit', 'second_exit'):
+                        failed_run = report['runs'][-1]
+                        self.assertEqual(failed_run['status'], 'FAILED')
+                        self.assertEqual(failed_run['exit_code'], 1)
+                        self.assertNotIn('episodes', failed_run)
+                        self.assertIn('OfflineModeIsEnabled: model_info failed',
+                                      (output / failed_run['log_file']).read_text())
+                        self.assertEqual(report['evaluation_episode_count'],
+                                         2 if case == 'second_exit' else 0)
                 else:
                     self.assertEqual(report['status'], 'PASS')
                     self.assertEqual(report['evaluation_episode_count'], 4)

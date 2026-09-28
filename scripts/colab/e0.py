@@ -41,6 +41,18 @@ def digest(path):
     return h.hexdigest()
 
 
+def redact_log(log, secrets=()):
+    text = log
+    for secret in secrets:
+        if secret:
+            text = text.replace(secret, '[REDACTED_HF_TOKEN]')
+    text = re.sub(r'hf_[A-Za-z0-9_-]+', '[REDACTED_HF_TOKEN]', text)
+    # Hub errors can include authorization headers and signed download URLs.
+    text = re.sub(r'(?i)(\b(?:bearer|basic)\s+)[A-Za-z0-9._~+/=-]+',
+                  r'\1[REDACTED]', text)
+    return re.sub(r'(https?://[^\s?]+)\?[^\s\'"<>]+', r'\1?[REDACTED_QUERY]', text)
+
+
 def parse_metrics(log, returncode):
     if returncode != 0:
         raise ValueError('Official inference returned a nonzero exit code')
@@ -166,8 +178,8 @@ def run(upstream, output):
         # Downloads a gated file, not just public model metadata.
         hf_hub_download(backbone['id'], 'config.json', revision=backbone['revision'])
         report['gated_config_access'] = 'PASS'
-        # Official nested backbone loads use main. Resolve main in an isolated cache,
-        # verify it is the pin, then force all inference into offline mode.
+        # Official nested backbone loads use main. Resolve main in an isolated cache
+        # and verify it is the pin before inference.
         if HfApi().model_info(backbone['id']).sha != backbone['revision']:
             raise E0Failure('BACKBONE_REVISION_MOVED', 'Backbone main moved; review and update pins before running')
         backbone_path = Path(snapshot_download(backbone['id'], revision='main'))
@@ -183,10 +195,25 @@ def run(upstream, output):
 
         report['stage'] = 'official_inference'
         env = os.environ.copy()
-        env.update(HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
-                   MPLBACKEND='Agg', WANDB_MODE='disabled')
-        # No authentication is necessary in the offline inference subprocess.
-        env.pop('HF_TOKEN', None)
+        # At the pinned commit, gr00t/__init__.py consumes these two GROOT flags
+        # on import. Local-first may retry after ANY loader error; it is the HF
+        # offline flags that prevent downloads. The Mistral patch skips the
+        # Transformers 4.57.3 model_info probe for the non-Mistral Cosmos tokenizer.
+        env.update(
+            HF_HUB_OFFLINE='1',
+            TRANSFORMERS_OFFLINE='1',
+            GROOT_HF_LOCAL_FIRST='1',
+            GROOT_PATCH_MISTRAL='1',
+            # Local-first also enables an upstream test-only no-weight path.
+            # Never let a parent test environment turn random weights into E0 evidence.
+            GROOT_SKIP_HF_MODEL_WEIGHTS='0',
+            HF_HUB_DISABLE_IMPLICIT_TOKEN='1',
+            MPLBACKEND='Agg',
+            WANDB_MODE='disabled',
+        )
+        # Gated files were already fetched and verified above; child inference must not
+        # inherit a reusable credential.
+        secrets = tuple(env.pop(key, '') for key in ('HF_TOKEN', 'HUGGING_FACE_HUB_TOKEN'))
         for model, path in snapshots:
             name = model['id'].split('/')[-1]
             args = [sys.executable, 'scripts/deployment/standalone_inference_script.py',
@@ -195,19 +222,22 @@ def run(upstream, output):
                     '--traj-ids', '1', '2', '--inference-mode', 'pytorch',
                     '--execution-horizon', '8', '--steps', '200', '--seed', '42']
             result = command(args, env=env)
-            (output / f'{name}.log').write_text(result.stdout)
+            safe_log = redact_log(result.stdout, secrets)
+            log_name = f'{name}.log'
+            (output / log_name).write_text(safe_log, encoding='utf-8')
             entry = {'model_id': model['id'], 'revision': model['revision'],
-                     'exit_code': result.returncode, 'status': 'FAILED'}
+                     'exit_code': result.returncode, 'status': 'FAILED',
+                     'log_file': log_name, 'log_sha256': digest(output / log_name)}
             report['runs'].append(entry)
             if result.returncode != 0:
-                raise E0Failure('OFFICIAL_INFERENCE_FAILED', 'Official inference failed')
+                raise E0Failure('OFFICIAL_INFERENCE_FAILED',
+                                f'Official inference exited {result.returncode}; see {log_name}')
             try:
                 entry['episodes'] = parse_metrics(result.stdout, result.returncode)
             except ValueError as exc:
                 raise E0Failure('INFERENCE_METRIC_INVALID', 'Invalid inference metrics') from exc
             entry['status'] = 'PASS'
             report['evaluation_episode_count'] += len(entry['episodes'])
-            entry['log_sha256'] = digest(output / f'{name}.log')
         report['status'] = 'PASS'
         report['stage'] = 'complete'
     except Exception as exc:
