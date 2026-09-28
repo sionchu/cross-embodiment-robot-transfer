@@ -29,14 +29,16 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
   COLLISION to SUCCESS (48 steps, 0 N contact, 0.309 mm lateral error). Training condition
   only; not held-out success. Actual end image inspected.
 - Real GR00TPolicy official observation/action contract validated, model execution NOT_RUN.
-- FIRe pinned metadata and candidate episodes 0/14/29, all three views, cached locally.
+- FIRe pinned metadata and candidate episodes 0/14/29, all three views, cached and hash-verified.
+  Selected actual wrist clip and generated pose trajectories with reconstruction checks;
+  task audit remains ANALOGOUS_TASK, with related-code dimensions explicitly unconfirmed.
 
 ## Current checkpoint
 Latest 10-demo ImageNet H16 model failed both development seeds 0/1. H1 diagnostic also
 failed both, so shorter training horizon has not solved the issue. No new held-out result.
-No training/simulator job remains active. Source videos are downloaded but not yet visually
-inspected. Source-informed learning, task matching and paired data-efficiency study remain
-unexecuted. Follow new source/task audit priority before another training change.
+No training/simulator job remains active. Source candidate frames have been visually inspected; episode 29 wrist_view selected.
+Pinned hashes, observed pose-derived trajectories and ANALOGOUS_TASK audit are saved.
+Physical source geometry/frame provenance remains unresolved; paired study is unexecuted.
 
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
@@ -66,7 +68,7 @@ unexecuted. Follow new source/task audit priority before another training change
 - artifacts/environment/gr00t_local_contract.json: integration PASS, model/target checkpoint NOT_RUN.
 
 ## Not executed
-Actual FIRe visual selection/verified bridge, matched-task changes, source-informed training,
+Verified source-to-target learning bridge, matched-task changes, source-informed training,
 25/50 datasets, learned held-out success, data-efficiency curves, final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
@@ -80,6 +82,9 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Inspect cached FIRe candidate media at artifacts/runtime/fire-inspection, select episode/view,
-record provenance, and audit source task/pose/action semantics against UR10e. Then continue
-ACT diagnosis without interpreting the failed H1 hypothesis as established cause.
+Continue ACT diagnosis: H1 actual feature probe shows image RMS 421.55 and attention
+saturation .9954, with nearly state-independent output. Test a single justified optimizer
+correction against this checkpoint, retaining all data/task/evaluation conditions.
+Source acquisition/transform: python scripts/local/fire.py --download; offline rebuild
+passed and reproduced clip SHA. Two independent transform tests passed. Native desktop
+source inspection remains NOT_COMPLETED because Computer Use app approval timed out.

@@ -217,3 +217,20 @@ The controlled initialization test now succeeded on its training condition; see
 `artifacts/diagnostics/recovery.json`. Regenerate this receipt with:
 `python scripts/local/diagnose_act.py --recovery --output artifacts/diagnostics`.
 This does not establish held-out success. Keep all-10-demo evaluation separate.
+
+## FIRe real-source inspection
+
+Run `python scripts/local/fire.py --download` once, then `python scripts/local/fire.py`
+for an offline rebuild from the hash-verified cache. This uses NumPy, pandas/pyarrow,
+SciPy, Pillow, Matplotlib and FFmpeg. Exact run versions are recorded in the generated
+`artifacts/datasets/fire_source.json`. Only episodes 0/14/29 and their three verified
+Hub video paths are acquired. Git/LFS hashes are checked against the pinned Hub revision.
+Raw payloads and trimmed clips remain ignored. Derived CSVs preserve recorded position
+units and radian rotations; missing final next-state actions are blank, not zero labels.
+
+The selected clip is episode 29 wrist_view, frames [0,112); the external right_view is
+retained for robot context. Frame inspection selected the clearest insertion interaction.
+See `artifacts/datasets/fire_task_audit.json` for the current ANALOGOUS_TASK classification.
+The terminal-EEF frame is derived, not a measured hole frame; no source command or metric
+unit assumption enters ACT training. Native desktop inspection remains incomplete after
+an app-approval timeout. Attribution is in `references/FIRe-source-credit.md`.

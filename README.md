@@ -11,8 +11,9 @@ versus source-informed ACT at **10, 25 and 50 target demonstrations**, with iden
 closed-loop evaluation and a GR00T N1.7 NEW_EMBODIMENT integration path.
 
 The canonical real source is [FIRe Franka peg insertion](https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real),
-third-party public research data declaring Apache-2.0. Source inspection, task matching and
-the source-informed comparison are in progress; no data-efficiency result is claimed yet.
+third-party public research data declaring Apache-2.0. [Actual source inspection](artifacts/datasets/fire_source.json) selected episode 29 wrist_view;
+[the task audit](artifacts/datasets/fire_task_audit.json) currently classifies the tasks as
+ANALOGOUS_TASK. Source-informed learning remains unexecuted; no data-efficiency result is claimed.
 
 ```mermaid
 flowchart LR

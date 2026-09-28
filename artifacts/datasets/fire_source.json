@@ -1,0 +1,457 @@
+{
+  "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+  "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+  "source_type": "PUBLIC_REAL_DATA",
+  "license": "apache-2.0",
+  "license_evidence": "pinned dataset card; no standalone LICENSE or NOTICE in Hub inventory",
+  "credit": "FIRe real robot source dataset, bhe1004/FIRe-VLA-GR00T-PegInsert-Real (third-party research data)",
+  "robot_card_label": "franka_emika_panda",
+  "robot_hardware_verification": "UNRESOLVED: related deployment describes FR3, Hub says Panda",
+  "files": [
+    {
+      "source_file": "README.md",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/README.md",
+      "sha256": "021f43c31cdf8ac4aecebf40112ca499320b8ace12ca62accf7fb0b48f412a96",
+      "bytes": 730,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "meta/info.json",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/meta/info.json",
+      "sha256": "11e30d58546b58f75fa8cf3c6aa57ef3cdc6d7cf2bfc6a3c6a00f32dff869e64",
+      "bytes": 3811,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "meta/modality.json",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/meta/modality.json",
+      "sha256": "07108a29426d0381bd646f8bb153df7c29bc399c1cd8bc8ceeda704538d8d10e",
+      "bytes": 1043,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "meta/episodes.jsonl",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/meta/episodes.jsonl",
+      "sha256": "300774cb2ac6443603e0093be2042b5bd3bc5b83161820c19f306bd0d73c361d",
+      "bytes": 2600,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "meta/tasks.jsonl",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/meta/tasks.jsonl",
+      "sha256": "2449fa628a011f72254c189bac9a45b632be7095791dd5a222554d8e84103095",
+      "bytes": 91,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "data/chunk-000/episode_000000.parquet",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/data/chunk-000/episode_000000.parquet",
+      "sha256": "938a1992c233508df32f6ae226bd17f32af20304cc58e188073844647c9b0982",
+      "bytes": 20246,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.left_view/episode_000000.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.left_view/episode_000000.mp4",
+      "sha256": "c05bbd1947103191db4a50ef509cf5835cfa31f2cdb7a0c92fe3348bdaee9070",
+      "bytes": 103823,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.right_view/episode_000000.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.right_view/episode_000000.mp4",
+      "sha256": "0dcca94d8c71da312fb885c904c6a0f43b0a815f5cd35802a4759faa7174858a",
+      "bytes": 117503,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000000.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.wrist_view/episode_000000.mp4",
+      "sha256": "43249ebf36501067cb5ad567f9bc2ae775c4dac22f0e5872c7ba59ff5a30d47f",
+      "bytes": 160272,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "data/chunk-000/episode_000014.parquet",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/data/chunk-000/episode_000014.parquet",
+      "sha256": "842b6ffa1b034e6b600bc0df20b00a3d921be5561756222005102101496ad245",
+      "bytes": 20316,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.left_view/episode_000014.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.left_view/episode_000014.mp4",
+      "sha256": "87734b4ff19e07f23db26e73ff0d48b149629c72bcd67a1b07f0d90f776bbf7a",
+      "bytes": 104598,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.right_view/episode_000014.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.right_view/episode_000014.mp4",
+      "sha256": "793b5ef5c4abc0aff2458f82f1692d21ae4390e3cacfa5d6e76604ad06086393",
+      "bytes": 113277,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000014.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.wrist_view/episode_000014.mp4",
+      "sha256": "4c1926ab52f3ea152c919425141ab5fa31fc2c0765d74aa948ed80b2efadc6da",
+      "bytes": 157267,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "data/chunk-000/episode_000029.parquet",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/data/chunk-000/episode_000029.parquet",
+      "sha256": "2d72ecfcc5880d37354f5714e57c6368166128910f496462369cf6fc86c292b8",
+      "bytes": 20193,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.left_view/episode_000029.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.left_view/episode_000029.mp4",
+      "sha256": "dd1e06ba5f2c4123774e5edb586afce60c3d58167498aa4bc1de63e0055400cc",
+      "bytes": 104250,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.right_view/episode_000029.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.right_view/episode_000029.mp4",
+      "sha256": "41911597336b87ca90f8094a1048e233b6b94925fa2fd054d8e29eef57840e42",
+      "bytes": 114121,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
+      "bytes": 155664,
+      "pinned_upstream_hash_verified": true
+    }
+  ],
+  "candidates": [
+    {
+      "episode": 0,
+      "frames": 128,
+      "views": [
+        {
+          "camera": "left_view",
+          "source_file": "videos/chunk-000/observation.images.left_view/episode_000000.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        },
+        {
+          "camera": "right_view",
+          "source_file": "videos/chunk-000/observation.images.right_view/episode_000000.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        },
+        {
+          "camera": "wrist_view",
+          "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000000.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        }
+      ],
+      "source_label": {
+        "final_reward": 1.0,
+        "final_done": true,
+        "final_validity": true,
+        "meaning": "publisher label, not independent geometric success verification"
+      },
+      "sample_first_state": [
+        0.5901455879211426,
+        -0.0099718002602458,
+        0.12458262592554092,
+        0.0021286094561219215,
+        0.9999767541885376,
+        0.006325081922113895,
+        -0.001402929425239563,
+        0.003032158361747861,
+        0.003032158361747861
+      ],
+      "sample_first_action": [
+        1.0,
+        0.9830669164657593,
+        0.19723406434059143,
+        -0.6949770450592041,
+        0.6134311556816101,
+        0.7579464316368103,
+        -1.0
+      ],
+      "state_shape": [
+        128,
+        9
+      ],
+      "recorded_action_shape": [
+        128,
+        7
+      ],
+      "recorded_action_min": [
+        -1.0,
+        -0.6325763463973999,
+        -1.0,
+        -0.6949770450592041,
+        -0.6516646146774292,
+        -0.11005058884620667,
+        -1.0
+      ],
+      "recorded_action_max": [
+        1.0,
+        0.9830669164657593,
+        0.521608293056488,
+        0.48100534081459045,
+        0.6134311556816101,
+        0.9562942385673523,
+        -1.0
+      ],
+      "trajectory": "artifacts/datasets/fire_trajectory/episode_000000.csv",
+      "trajectory_sha256": "a05d6d7e60c7d08316dac91d927e3c77f5a105f26e9e243167fc41e42322185b",
+      "reconstruction": {
+        "position_max_error_recorded_units": 1.0408340855860843e-17,
+        "rotation_max_error_rad": 7.771760280480299e-16
+      }
+    },
+    {
+      "episode": 14,
+      "frames": 128,
+      "views": [
+        {
+          "camera": "left_view",
+          "source_file": "videos/chunk-000/observation.images.left_view/episode_000014.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        },
+        {
+          "camera": "right_view",
+          "source_file": "videos/chunk-000/observation.images.right_view/episode_000014.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        },
+        {
+          "camera": "wrist_view",
+          "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000014.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        }
+      ],
+      "source_label": {
+        "final_reward": 1.0,
+        "final_done": true,
+        "final_validity": true,
+        "meaning": "publisher label, not independent geometric success verification"
+      },
+      "sample_first_state": [
+        0.5911759734153748,
+        -0.010121188126504421,
+        0.12267076224088669,
+        0.0019091246649622917,
+        0.9999657273292542,
+        0.007945348508656025,
+        -0.0013407320948317647,
+        0.0030173833947628736,
+        0.0030173833947628736
+      ],
+      "sample_first_action": [
+        1.0,
+        1.0,
+        0.2119256854057312,
+        -0.6535041332244873,
+        0.5848410725593567,
+        0.7119848132133484,
+        -1.0
+      ],
+      "state_shape": [
+        128,
+        9
+      ],
+      "recorded_action_shape": [
+        128,
+        7
+      ],
+      "recorded_action_min": [
+        -1.0,
+        -0.9054951667785645,
+        -1.0,
+        -0.6535041332244873,
+        -0.6603196859359741,
+        -0.179666668176651,
+        -1.0
+      ],
+      "recorded_action_max": [
+        1.0,
+        1.0,
+        0.8909416794776917,
+        0.5668998956680298,
+        0.5848410725593567,
+        1.0,
+        -1.0
+      ],
+      "trajectory": "artifacts/datasets/fire_trajectory/episode_000014.csv",
+      "trajectory_sha256": "ca4f460cfad497c108287cdaf76955ebd03070f970a70ee85a8f9689dc1c0f57",
+      "reconstruction": {
+        "position_max_error_recorded_units": 1.4913709102306466e-17,
+        "rotation_max_error_rad": 2.776005314712493e-16
+      }
+    },
+    {
+      "episode": 29,
+      "frames": 128,
+      "views": [
+        {
+          "camera": "left_view",
+          "source_file": "videos/chunk-000/observation.images.left_view/episode_000029.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        },
+        {
+          "camera": "right_view",
+          "source_file": "videos/chunk-000/observation.images.right_view/episode_000029.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        },
+        {
+          "camera": "wrist_view",
+          "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+          "frames": 128,
+          "fps": "15/1",
+          "resolution": [
+            256,
+            256
+          ]
+        }
+      ],
+      "source_label": {
+        "final_reward": 1.0,
+        "final_done": true,
+        "final_validity": true,
+        "meaning": "publisher label, not independent geometric success verification"
+      },
+      "sample_first_state": [
+        0.5928426384925842,
+        -0.010199327953159809,
+        0.12291035056114197,
+        0.002274429891258478,
+        0.9999682903289795,
+        0.007482216693460941,
+        -0.001497861696407199,
+        0.0030246067326515913,
+        0.0030246067326515913
+      ],
+      "sample_first_action": [
+        1.0,
+        1.0,
+        0.1107037365436554,
+        -0.592792272567749,
+        0.5129128694534302,
+        0.6755831241607666,
+        -1.0
+      ],
+      "state_shape": [
+        128,
+        9
+      ],
+      "recorded_action_shape": [
+        128,
+        7
+      ],
+      "recorded_action_min": [
+        -1.0,
+        -0.7661323547363281,
+        -1.0,
+        -0.5941030979156494,
+        -0.8106353282928467,
+        -0.17158213257789612,
+        -1.0
+      ],
+      "recorded_action_max": [
+        1.0,
+        1.0,
+        0.40854352712631226,
+        0.63985675573349,
+        0.5129128694534302,
+        0.929222583770752,
+        -1.0
+      ],
+      "trajectory": "artifacts/datasets/fire_trajectory/episode_000029.csv",
+      "trajectory_sha256": "48c75258f026dce270e54d9632b3f4cf29b5d6c1d6ba687e53abea691607ba95",
+      "reconstruction": {
+        "position_max_error_recorded_units": 1.4607506691874036e-17,
+        "rotation_max_error_rad": 5.55116038998743e-16
+      }
+    }
+  ],
+  "selection": {
+    "episode": 29,
+    "camera": "wrist_view",
+    "frame_range_half_open": [
+      0,
+      112
+    ],
+    "time_range_s": [
+      0,
+      7.466666666666667
+    ],
+    "reason": "clearest peg/hole interaction; little terminal yaw relative to other inspected candidates; external right view retained for robot context",
+    "local_clip": "media/output/source/real_franka_e29_wrist_f000-111.mp4",
+    "local_media_sha256": "449a06240757a05886819c78b7eb3a68f0b8060ab09791d1f7457efeba970b32",
+    "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+    "source_sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1"
+  },
+  "transform": {
+    "state": "xyz + quaternion wxyz + two finger positions",
+    "frame": "terminal EEF coordinates derived from final recorded pose; hole pose is unavailable",
+    "position": "R_final^-1 (p_t - p_final)",
+    "rotation": "R_final^-1 R_t",
+    "relative_action": "[p_local[t+1]-p_local[t], Log(R_local[t+1] R_local[t]^-1)]",
+    "rotation_composition": "left, fixed terminal-EEF frame",
+    "position_units": "recorded units; SI metres suggested by related ROS pose code, not established in dataset metadata",
+    "action_status": "observed pose increments, NOT recorded commands, controller targets or verified UR10e labels",
+    "last_action": "absent because no next observation; blank CSV entries, not fabricated zero action",
+    "camera_projection": "NOT_AVAILABLE; no calibrated trajectory-on-video overlay"
+  },
+  "metadata_issue": "info splits train 0:1 conflicts with 30 episode entries; no split semantics inferred",
+  "visual_verification": {
+    "candidate_frame_sheet": "inspected 0/42/84/127 for all nine videos",
+    "native_desktop": "NOT_COMPLETED: Computer Use app approval timed out"
+  },
+  "transfer_training": "NOT_RUN",
+  "task_equivalence": "ANALOGOUS_TASK",
+  "generator": {
+    "script_sha256": "cbd06e289399c1e377a33684162c21bac4882f3b455c43be996fe615d50d94d8",
+    "numpy": "2.2.6",
+    "pandas": "3.0.5",
+    "ffmpeg": "ffmpeg version 8.0-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers"
+  }
+}

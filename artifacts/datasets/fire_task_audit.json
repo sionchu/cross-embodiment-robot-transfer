@@ -1,0 +1,144 @@
+{
+  "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+  "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+  "classification": "ANALOGOUS_TASK",
+  "classification_basis": "Same observed peg-in-hole objective; source cylindrical geometry versus target square geometry, unverified source dimensional provenance and different success definitions prevent MATCHED_TASK.",
+  "target_environment_config_hash": "cbd594861705dbe2ff46329b0098c892b69e618e338fa9437fb20dcaafc2d947",
+  "target_environment_config": {
+    "physics_dt": 0.016666666666666666,
+    "control_substeps": 4,
+    "max_steps": 180,
+    "initial_joints_deg": [
+      -90,
+      -60,
+      -100,
+      -110,
+      90,
+      0
+    ],
+    "hole_origin_m": [
+      0.194,
+      0.371,
+      0.57
+    ],
+    "peg_tip_offset_m": 0.12,
+    "peg_length_m": 0.08,
+    "peg_half_width_m": 0.004,
+    "hole_half_width_m": 0.005,
+    "hole_length_m": 0.05,
+    "position_randomization_m": [
+      0.008,
+      0.008,
+      0.004
+    ],
+    "rotation_randomization_rad": [
+      0.015,
+      0.015,
+      0.04
+    ],
+    "translation_limit_m": 0.003,
+    "rotation_limit_rad": 0.025,
+    "min_depth_m": 0.025,
+    "max_depth_m": 0.035,
+    "lateral_tolerance_m": 0.0007,
+    "angular_tolerance_rad": 0.01,
+    "contact_force_limit_n": 1.0
+  },
+  "source_evidence": "artifacts/datasets/fire_source.json",
+  "related_code": {
+    "repository": "chohh7391/FIRe_project",
+    "commit": "8cb314bdc29bd801fd6eb1f116139fcaacdebf85",
+    "relationship": "related implementation, not verified collection revision; card has no code link",
+    "files": [
+      {
+        "path": "fire_deploy/README.md",
+        "url": "https://raw.githubusercontent.com/chohh7391/FIRe_project/8cb314bdc29bd801fd6eb1f116139fcaacdebf85/fire_deploy/README.md",
+        "sha256": "dcf57dbebfacd48ec83255c72053b91955080fcd3af01f7f443268f802f63515"
+      },
+      {
+        "path": "fire_deploy/src/FIRe/lerobot_robot_fr3/src/lerobot_robot_fr3/tasks/factory/factory_cfg.py",
+        "url": "https://raw.githubusercontent.com/chohh7391/FIRe_project/8cb314bdc29bd801fd6eb1f116139fcaacdebf85/fire_deploy/src/FIRe/lerobot_robot_fr3/src/lerobot_robot_fr3/tasks/factory/factory_cfg.py",
+        "sha256": "4f53d921024255c6f4968095a050125b4938528a92c7bdf9fbf3bf6e535079a0"
+      },
+      {
+        "path": "fire_deploy/src/FIRe/lerobot_robot_fr3/src/lerobot_robot_fr3/tasks/factory/factory.py",
+        "url": "https://raw.githubusercontent.com/chohh7391/FIRe_project/8cb314bdc29bd801fd6eb1f116139fcaacdebf85/fire_deploy/src/FIRe/lerobot_robot_fr3/src/lerobot_robot_fr3/tasks/factory/factory.py",
+        "sha256": "2b534690cbd3b5fbb88bab5baf7df1c62fb48fee38f040e906af0bb050528ec1"
+      },
+      {
+        "path": "fire_deploy/src/FIRe/lerobot_robot_fr3/src/lerobot_robot_fr3/tasks/forge/forge.py",
+        "url": "https://raw.githubusercontent.com/chohh7391/FIRe_project/8cb314bdc29bd801fd6eb1f116139fcaacdebf85/fire_deploy/src/FIRe/lerobot_robot_fr3/src/lerobot_robot_fr3/tasks/forge/forge.py",
+        "sha256": "7cc4704f9c15e89408faa2098c805896cd22d81d1544ca9c1483f23560b533b4"
+      }
+    ]
+  },
+  "comparison": [
+    {
+      "property": "peg dimensions",
+      "source_observed": "blue cylindrical shaft; exact size not established by calibrated media",
+      "related_code_nominal_m": {
+        "diameter": 0.007986,
+        "height": 0.05
+      },
+      "target_m": {
+        "square_width": 0.008,
+        "length": 0.08
+      }
+    },
+    {
+      "property": "hole dimensions / clearance",
+      "source_observed": "round hole in green fixture; physical dimensions unknown",
+      "related_code_nominal_m": {
+        "diameter": 0.0081,
+        "height": 0.025,
+        "radial_clearance": 5.699999999999976e-05
+      },
+      "target_m": {
+        "square_width": 0.01,
+        "depth": 0.05,
+        "side_clearance": 0.001
+      }
+    },
+    {
+      "property": "insertion depth",
+      "source_observed": "terminal success label, measured depth not provided",
+      "target_m": [
+        0.025,
+        0.035
+      ]
+    },
+    {
+      "property": "insertion axis / approach",
+      "source_observed": "visually downward along fixture bore; recorded z decreases during approach",
+      "source_calibrated_hole_frame": null,
+      "target": "hole +Z inward; nominal world -Z"
+    },
+    {
+      "property": "initial relative pose",
+      "source": "absolute EEF pose available; hole pose/calibration absent. Terminal-EEF-relative pose is a derived proxy, not hole-relative measurement.",
+      "target": "measured peg-tip position and wrist orientation in known hole frame, fixed reset joints and versioned hole randomization"
+    },
+    {
+      "property": "EEF/tool orientation",
+      "source": "recorded wxyz quaternion; visual cylindrical peg tolerates visible terminal yaw; TCP-to-tip offset unavailable",
+      "target": "square peg rigidly fixed, tip offset .12 m, full rotation norm <=.01 rad required"
+    },
+    {
+      "property": "workspace scale",
+      "source": "position SI interpretation supported by related ROS Pose code but not explicitly established for this dataset revision",
+      "target": "SI metres and radians"
+    },
+    {
+      "property": "success condition",
+      "source": "final reward=1, done=True, validity=True; related exporter sets these from manual success flag",
+      "target": "geometric depth/lateral/orientation AND no forbidden force >1 N AND timeout180"
+    },
+    {
+      "property": "action semantics",
+      "source": "7D values bounded [-1,1]; related Factory applies smoothing/scaling/left rotation and upright constraint; Forge instead maps normalized target position/yaw. Collection mode unknown.",
+      "target": "6D physical hole-frame deltas, left rotvec composition, 15 Hz with K=1"
+    }
+  ],
+  "decision": "Retain immutable original UR10e task for ACT pipeline diagnosis. Do not claim matched geometry or alter thresholds to fit media. A future matched task requires verified source geometry/TCP/success provenance and a new protocol; the explicitly analogous source-informed comparison remains possible with documented terminal-pose alignment assumptions.",
+  "source_informed_design_status": "NOT_IMPLEMENTED: use measured source pose increments; any target scaling/terminal-anchor mapping must be explicit and validated before affecting learning. No raw source command replay."
+}
