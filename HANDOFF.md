@@ -34,12 +34,14 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
   task audit remains ANALOGOUS_TASK, with related-code dimensions explicitly unconfirmed.
 
 ## Current checkpoint
-Latest 10-demo ImageNet H16 model failed both development seeds 0/1. H1 diagnostic also
-failed both, so shorter training horizon has not solved the issue. No new held-out result.
-Controlled training act-10-h1-backbonelr-001 is active: only backbone LR 1e-4 → 1e-5,
-5000 steps, same ten demos/seed/ImageNet initialization/H1/K1. Await real outcome. Source candidate frames have been visually inspected; episode 29 wrist_view selected.
-Pinned hashes, observed pose-derived trajectories and ANALOGOUS_TASK audit are saved.
-Physical source geometry/frame provenance remains unresolved; paired study is unexecuted.
+Latest controlled run act-10-h1-backbonelr-001 (backbone LR1e-5, other settings unchanged)
+completed 5000 steps and reload PASS. Image projection RMS fell 421.55 → .03637 and
+translation response returned, but development remained 0/2 COLLISION; initial rotation
+outputs remain near constant. Next increase optimization steps only, retaining the same
+ten demos and corrected feature initialization/rate. No new held-out result yet.
+FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
+trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
+provenance is unresolved. No source-informed training or data-efficiency claim exists.
 
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
@@ -83,9 +85,9 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Continue ACT diagnosis: H1 actual feature probe shows image RMS 421.55 and attention
-saturation .9954, with nearly state-independent output. Test a single justified optimizer
-correction against this checkpoint, retaining all data/task/evaluation conditions.
-Source acquisition/transform: python scripts/local/fire.py --download; offline rebuild
-passed and reproduced clip SHA. Two independent transform tests passed. Native desktop
-source inspection remains NOT_COMPLETED because Computer Use app approval timed out.
+Run act-10-h1-long-001: increase only training steps5000 →10000, same data/seed/LRs/H1.
+Inspect predicted initial rotation and development closed-loop behavior after completion.
+Do not increase dataset size blindly or tune on held-out seeds.
+Source regeneration: python scripts/local/fire.py --download, then offline command without
+--download. Offline clip SHA reproduced; two transform tests and full35-test suite passed.
+Native desktop source inspection is NOT_COMPLETED: Computer Use app approval timed out.

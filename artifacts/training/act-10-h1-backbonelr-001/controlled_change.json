@@ -1,0 +1,32 @@
+{
+  "baseline": "artifacts/training/act-10-h1-001",
+  "candidate": "artifacts/training/act-10-h1-backbonelr-001",
+  "config_difference": {
+    "optimizer_lr_backbone": [
+      0.0001,
+      1e-05
+    ]
+  },
+  "unchanged_training_fields": {
+    "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+    "training_episode_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "training_seed": 20260929,
+    "steps": 5000,
+    "batch_size": 8,
+    "normalization_source": "full canonical training dataset; unchanged for subset sanity"
+  },
+  "motivation": "H1 image projection RMS421.55 versus state2.63; attention max>.99 for .9954 queries; state counterfactual output nearly unchanged. Official pinned LeRobot backbone default is1e-5.",
+  "causal_result": "Image-feature scale corrected and translation response restored; development still 0/2 COLLISION, initial rotation prediction remains near constant. Not a complete policy fix.",
+  "evaluation": "artifacts/eval/act-10-h1-backbonelr-dev-001/summary.json"
+}

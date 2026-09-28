@@ -1,0 +1,12 @@
+{
+  "captured_utc": "2026-09-28T22:54:20.406392+00:00",
+  "source": "live nvidia-smi and flushed actual training log",
+  "gpu": "NVIDIA GeForce RTX 4070 Ti, 4291 MiB, 12282 MiB, 35 %",
+  "last_training_progress": {
+    "step": 1250,
+    "loss": 0.27467232942581177,
+    "elapsed_s": 93.49418310006149
+  },
+  "training_log": "artifacts/runtime/act-10-h1-backbonelr-001.log",
+  "native_desktop_verification": "NOT_RUN"
+}
