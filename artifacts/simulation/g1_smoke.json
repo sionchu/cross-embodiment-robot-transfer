@@ -1,0 +1,216 @@
+{
+  "status": "PASS",
+  "scope": "G1 expert smoke and deliberate collision rejection; not learned-policy evaluation",
+  "source_raw_sha256": "5241262162575a71f4dbf7539bc53aa8e8ea150750724466d767d8209d177d1f",
+  "source_lf_sha256": "fa72f9655928b2f442b060b22ccc6bea74b8236ea540743a632040010abb2e9a",
+  "runs": [
+    {
+      "status": "PASS",
+      "config": {
+        "physics_dt": 0.016666666666666666,
+        "control_substeps": 4,
+        "max_steps": 180,
+        "initial_joints_deg": [
+          -90,
+          -60,
+          -100,
+          -110,
+          90,
+          0
+        ],
+        "hole_origin_m": [
+          0.194,
+          0.371,
+          0.57
+        ],
+        "peg_tip_offset_m": 0.12,
+        "peg_length_m": 0.08,
+        "peg_half_width_m": 0.004,
+        "hole_half_width_m": 0.005,
+        "hole_length_m": 0.05,
+        "position_randomization_m": [
+          0.008,
+          0.008,
+          0.004
+        ],
+        "rotation_randomization_rad": [
+          0.015,
+          0.015,
+          0.04
+        ],
+        "translation_limit_m": 0.003,
+        "rotation_limit_rad": 0.025,
+        "min_depth_m": 0.025,
+        "max_depth_m": 0.035,
+        "lateral_tolerance_m": 0.0007,
+        "angular_tolerance_rad": 0.01,
+        "contact_force_limit_n": 1.0
+      },
+      "episodes": [
+        {
+          "seed": 0,
+          "outcome": "SUCCESS",
+          "steps": 50,
+          "initial_state": [
+            -0.023538682258513022,
+            0.017517011077025527,
+            -0.10298168133768008,
+            0.013735946184943563,
+            0.009384433534026113,
+            0.033134952355789324
+          ],
+          "final_state": [
+            3.482818715989477e-05,
+            0.00011421565297037223,
+            0.026671806179701996,
+            -0.0008216922854008899,
+            -7.821511504619593e-05,
+            0.0001140462901335915
+          ],
+          "max_contact_n": 0.0
+        },
+        {
+          "seed": 0,
+          "outcome": "SUCCESS",
+          "steps": 50,
+          "initial_state": [
+            -0.023538682258513022,
+            0.017517011077025527,
+            -0.10298168133768008,
+            0.013735946184943563,
+            0.009384433534026113,
+            0.033134952355789324
+          ],
+          "final_state": [
+            3.482818715989477e-05,
+            0.00011421565297037223,
+            0.026671806179701996,
+            -0.0008216922854008899,
+            -7.821511504619593e-05,
+            0.0001140462901335915
+          ],
+          "max_contact_n": 0.0
+        },
+        {
+          "seed": 1,
+          "outcome": "SUCCESS",
+          "steps": 50,
+          "initial_state": [
+            -0.019253692869051205,
+            0.026398601269609245,
+            -0.10309353455361084,
+            -0.014228620268491166,
+            -0.005642125545634309,
+            -0.0060251300276170285
+          ],
+          "final_state": [
+            3.3599946381956256e-05,
+            0.00012576888949823912,
+            0.02674635044407736,
+            -0.0008328286741692515,
+            -3.2396763047440384e-05,
+            0.0001023565749766725
+          ],
+          "max_contact_n": 0.0
+        }
+      ],
+      "test": "expert_smoke",
+      "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.0/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd",
+      "project_commit": "de145e24f0e5723183530dca479abd6543f5307f",
+      "project_dirty": true,
+      "environment": {
+        "numpy": "2.3.1",
+        "scipy": "1.17.0",
+        "Pillow": "11.3.0"
+      },
+      "isaac_sim_version": "6.0.1-rc.7+release.42383.32955d8d.gl",
+      "script_sha256": "5241262162575a71f4dbf7539bc53aa8e8ea150750724466d767d8209d177d1f",
+      "gpu": "NVIDIA GeForce RTX 4070 Ti, 12282 MiB"
+    },
+    {
+      "status": "PASS",
+      "config": {
+        "physics_dt": 0.016666666666666666,
+        "control_substeps": 4,
+        "max_steps": 180,
+        "initial_joints_deg": [
+          -90,
+          -60,
+          -100,
+          -110,
+          90,
+          0
+        ],
+        "hole_origin_m": [
+          0.194,
+          0.371,
+          0.57
+        ],
+        "peg_tip_offset_m": 0.12,
+        "peg_length_m": 0.08,
+        "peg_half_width_m": 0.004,
+        "hole_half_width_m": 0.005,
+        "hole_length_m": 0.05,
+        "position_randomization_m": [
+          0.008,
+          0.008,
+          0.004
+        ],
+        "rotation_randomization_rad": [
+          0.015,
+          0.015,
+          0.04
+        ],
+        "translation_limit_m": 0.003,
+        "rotation_limit_rad": 0.025,
+        "min_depth_m": 0.025,
+        "max_depth_m": 0.035,
+        "lateral_tolerance_m": 0.0007,
+        "angular_tolerance_rad": 0.01,
+        "contact_force_limit_n": 1.0
+      },
+      "episodes": [
+        {
+          "seed": 0,
+          "outcome": "COLLISION",
+          "steps": 40,
+          "initial_state": [
+            -0.023538682258513022,
+            0.017517011077025527,
+            -0.10298168133768008,
+            0.013735946184943563,
+            0.009384433534026113,
+            0.033134952355789324
+          ],
+          "final_state": [
+            0.01503780534625909,
+            6.19152400615675e-05,
+            2.1915344977959215e-06,
+            0.001035035493201287,
+            5.533398295952457e-05,
+            -6.175068892244989e-05
+          ],
+          "max_contact_n": 98.33856964111328
+        }
+      ],
+      "test": "collision_rejection",
+      "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.0/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd",
+      "project_commit": "de145e24f0e5723183530dca479abd6543f5307f",
+      "project_dirty": true,
+      "environment": {
+        "numpy": "2.3.1",
+        "scipy": "1.17.0",
+        "Pillow": "11.3.0"
+      },
+      "isaac_sim_version": "6.0.1-rc.7+release.42383.32955d8d.gl",
+      "script_sha256": "5241262162575a71f4dbf7539bc53aa8e8ea150750724466d767d8209d177d1f",
+      "gpu": "NVIDIA GeForce RTX 4070 Ti, 12282 MiB"
+    }
+  ],
+  "images": {
+    "start.png": "4d21d64986ab3c9445d4cbf1a9aaaf38314f7500c2deb7e82dd346b30d5f8fd8",
+    "success.png": "27441ba65686a4416fbe2d3f85bcba0339b773219f3a4e22bda8163463ce8175",
+    "collision.png": "191a836a08f1f2c8e237e48422e695a605ff210570e5041bfdee2c45361bff49"
+  },
+  "visual_review": "Start, success and collision frames opened and inspected; fixed holder, bore and fixture visible."
+}
