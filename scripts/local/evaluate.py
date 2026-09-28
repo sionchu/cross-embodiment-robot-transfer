@@ -127,7 +127,8 @@ def main():
         'gr00t_commit':pins['upstream']['commit'],'lerobot_commit':pins['local']['lerobot']['commit'],
         'dataset_id':'ur10e_10','dataset_sha256':data['dataset_sha256'],
         'model_checkpoint_id':None,'checkpoint_files_sha256':None,
-        'action_execution':'first action of fresh 16-step ACT chunk each control step; per-axis clipping recorded',
+        'action_execution':'first action of a fresh configured ACT chunk each control step; per-axis clipping recorded',
+        'action_chunk_size':1,
         'gpu':subprocess.check_output(['nvidia-smi','--query-gpu=name,memory.total,driver_version','--format=csv,noheader'],text=True).strip(),
         'execution_status':'FAILED'}
     worker=None; app=None; rows=[]; log=(raw/'policy.log').open('w',encoding='utf-8')
@@ -140,6 +141,7 @@ def main():
             for name,digest in training['checkpoint_files_sha256'].items():
                 if sha(args.checkpoint/name)!=digest: raise ValueError('CHECKPOINT_HASH_MISMATCH')
             context['model_checkpoint_id']=args.checkpoint.relative_to(ROOT).as_posix()
+            context['action_chunk_size']=json.loads((args.checkpoint/'config.json').read_text())['chunk_size']
             context['checkpoint_files_sha256']=training['checkpoint_files_sha256']
             worker=PolicyProcess(args.checkpoint,log)
         from isaacsim import SimulationApp
@@ -171,7 +173,7 @@ def main():
                         start=time.perf_counter()
                         response=worker.request({'op':'predict','state':state.tolist(),'front':base64.b64encode(rgb.tobytes()).decode('ascii')})
                         chunk=np.asarray(response['chunk'],dtype=float)
-                        if chunk.shape!=(16,6) or not np.isfinite(chunk).all(): raise ValueError('INVALID_ACTION_CHUNK')
+                        if chunk.shape!=(context['action_chunk_size'],6) or not np.isfinite(chunk).all(): raise ValueError('INVALID_ACTION_CHUNK')
                         latency.append(response['inference_ms']); wall_ms=(time.perf_counter()-start)*1000
                     elif args.policy=='replay':
                         if env.steps>=len(replay_actions): raise RuntimeError('REPLAY_EXHAUSTED_WITHOUT_SUCCESS')

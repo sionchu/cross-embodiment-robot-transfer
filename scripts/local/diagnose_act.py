@@ -69,7 +69,7 @@ def audit(args):
         'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'dimensions':DIMS,'units':['m']*3+['rad']*3,'tensor_audit':tensor_evidence,
         'normalization_roundtrip':'PASS','dataset_vs_recomputed_expert':'PASS',
-        'temporal':{'observation_history':1,'chunk_length':16,'executed_per_query':1,'control_hz':15,'interpolation':False},
+        'temporal':{'observation_history':1,'chunk_length':policy.model.config.chunk_size,'executed_per_query':1,'control_hz':15,'interpolation':False},
         'open_loop_mae':np.abs(pred-gt).mean(0).tolist(),
         'open_loop_rmse':np.sqrt(((pred-gt)**2).mean(0)).tolist(),
         'dataset_actions':distribution(gt),'expert_at_dataset_states':distribution(np.asarray(expert_labels)),

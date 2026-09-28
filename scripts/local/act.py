@@ -69,7 +69,7 @@ class CanonicalDataset(torch.utils.data.Dataset):
 
 
 class ACTPolicy:
-    """Observation {state: (6,), front: uint8 HWC} -> physical (16,6) deltas."""
+    """Observation {state: (6,), front: uint8 HWC} -> physical (configured horizon,6) deltas."""
     def __init__(self, checkpoint):
         self.model=LeRobotACT.from_pretrained(checkpoint,local_files_only=True,strict=True)
         self.device=next(self.model.parameters()).device
@@ -119,7 +119,7 @@ def train(args):
     torch.set_num_threads(4)
     torch.backends.cudnn.benchmark=False
     torch.backends.cudnn.deterministic=True
-    config=ACTConfig(device='cuda',chunk_size=16,n_action_steps=1,
+    config=ACTConfig(device='cuda',chunk_size=args.chunk_size,n_action_steps=1,
         input_features={VIDEO:PolicyFeature(FeatureType.VISUAL,(3,240,320)),
                         'observation.state':PolicyFeature(FeatureType.STATE,(6,))},
         output_features={'action':PolicyFeature(FeatureType.ACTION,(6,))},
@@ -200,11 +200,12 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--chunk-size',type=int,default=16)
     parser.add_argument('--backbone-weights',choices=['none','imagenet'],default='none')
     parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
     parser.add_argument('--steps',type=int,default=1000)
     parser.add_argument('--batch-size',type=int,default=8)
     parser.add_argument('--seed',type=int,default=20260929)
     args=parser.parse_args()
-    if args.steps<1 or args.batch_size<1: parser.error('steps and batch-size must be positive')
+    if min(args.steps,args.batch_size,args.chunk_size)<1: parser.error('steps, batch-size and chunk-size must be positive')
     train(args)

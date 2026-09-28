@@ -1,0 +1,9 @@
+{
+  "definition": "rotation correction norm >0.003 rad",
+  "frames": 487,
+  "valid_chunk_targets": 6592,
+  "per_frame_fraction": 0.04722792607802875,
+  "chunk16_target_fraction": 0.00591626213592233,
+  "control_execution_K": 1,
+  "candidate": "ACT chunk_size=1; keep K=1, 15Hz, model family, data, optimizer, 5000 steps and task unchanged. Tests a supervision horizon aligned to actual delta-command execution; not a new architecture or data expansion."
+}

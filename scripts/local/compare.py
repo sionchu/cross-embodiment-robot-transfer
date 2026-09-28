@@ -38,7 +38,7 @@ def main():
             if len(trace)!=row['steps']: raise ValueError('TRACE_LENGTH_MISMATCH')
             np.testing.assert_array_equal(trace[0]['state'],row['initial_state'])
             raw=np.asarray([t['raw_chunk'] for t in trace])
-            expected_horizon=16 if summary['policy']=='act' else 1
+            expected_horizon=summary.get('action_chunk_size',16 if summary['policy']=='act' else 1)
             if raw.shape!=(row['steps'],expected_horizon,6) or not np.isfinite(raw).all():
                 raise ValueError('INVALID_RECORDED_ACTION_CHUNKS')
             applied=np.asarray([t['action'] for t in trace])

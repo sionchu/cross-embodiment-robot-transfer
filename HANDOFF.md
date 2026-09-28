@@ -128,3 +128,16 @@ no source bridge or final media claim exists yet.
   1000-1019, then independently repeat the first successful held-out episode.
   No data expansion, altered seeds, success thresholds or controller changes.
 - Regression suite: 33 tests passed. E0 PASS strings are mocked fixtures only.
+
+### Ten-demo temporal diagnosis
+- `act-10-imagenet-001` trained 5000 steps but failed both fixed development seeds
+  0/1. No new held-out evaluation was run. Image features are stable (RMS .214),
+  but initial rotational actions are almost absent even on all ten training episodes.
+- `temporal_supervision.json`: corrections >.003 rad are 4.72% of per-frame labels
+  but only .592% of valid 16-step training targets. K=1 remains the executed horizon.
+- Running `act-10-h1-001`: ONLY training chunk_size 16 -> 1 changes relative to the
+  preceding ten-demo run. Same 5000 steps, ImageNet init, LR, data, seeds and task.
+  Evaluator validates the checkpoint's configured chunk length and still executes
+  one freshly predicted action at 15 Hz. GR00T horizon remains unchanged.
+- Next: inspect its training-frame predictions; evaluate development 0/1; proceed
+  to the fixed full 20 held-out seeds only after the development gate is credible.
