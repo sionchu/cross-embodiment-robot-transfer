@@ -1,0 +1,52 @@
+{
+  "checkpoint": "checkpoints/act-10-h1-backbonelr-001",
+  "checkpoint_sha256": "5d47f4bc2eb21bc94edbf70d5dd931c211f8ff22e4160efe3618e4c0e81d27aa",
+  "diagnostic_only": "training labels used solely to inspect posterior/inference gap; never used in evaluation",
+  "source_sha256": "48ce7d5b941f84af17c081953797d46e51084e342f715e6df7a32ca48c7e235f",
+  "initial_frames": [
+    0,
+    48,
+    96,
+    145,
+    193,
+    241,
+    290,
+    340,
+    389,
+    438
+  ],
+  "zero_latent_mae_physical": [
+    0.00016388588300834673,
+    1.4746586229227865e-05,
+    1.7279808409512042e-09,
+    0.010026966489046241,
+    0.006655106254549313,
+    0.01822496850024269
+  ],
+  "posterior_mean_mae_physical": [
+    0.0001638857992971171,
+    1.474665618875215e-05,
+    1.7279798164963722e-09,
+    0.010026966489046241,
+    0.006655106254549313,
+    0.01822496850024269
+  ],
+  "sampled_posterior_mae_physical": [
+    0.0001638858202249245,
+    1.4746448059167402e-05,
+    1.7279859108384699e-09,
+    0.01002696656632492,
+    0.006655106244435914,
+    0.018224968559802046
+  ],
+  "posterior_mu_max_abs": 0.011905312538146973,
+  "mean_kld": 0.00037933289422653615,
+  "zero_vs_posterior_max_action_difference_physical": [
+    5.580748640987565e-10,
+    2.798380971391623e-10,
+    4.470348358154297e-14,
+    3.512667240412881e-11,
+    6.815551855526847e-11,
+    2.481639893581189e-10
+  ]
+}

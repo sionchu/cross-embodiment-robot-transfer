@@ -126,8 +126,10 @@ def plot(args):
     p=args.output/'closed_loop.csv'
     if p.exists():
         with p.open() as f: rows=list(csv.DictReader(f))
-        fig,axes=plt.subplots(3,3,figsize=(12,8),layout='constrained')
-        for col,seed in enumerate([1000,1001,1019]):
+        seeds=sorted({int(r['seed']) for r in rows})
+        seeds=([1000,1001,1019] if {1000,1001,1019}<=set(seeds) else seeds[:3])
+        fig,axes=plt.subplots(3,len(seeds),figsize=(4*len(seeds),8),layout='constrained',squeeze=False)
+        for col,seed in enumerate(seeds):
             rr=[r for r in rows if int(r['seed'])==seed];x=[float(r['time_s']) for r in rr]
             for ax,key,label in zip(axes[:,col],['lateral_m','orientation_rad','state_dz'],['Lateral (m)','Angle (rad)','Depth (m)']):
                 ax.plot(x,[float(r[key]) for r in rr]);ax.set(title=f'Seed {seed}: {label}',xlabel='s')
@@ -174,6 +176,123 @@ def features(args):
     (args.output/'feature_probe.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(report,indent=2))
 
+def sensitivity(args):
+    import torch
+    from act import LeRobotACT, ACTConfig, CanonicalDataset
+    from insertion import expert
+    cfg=ACTConfig.from_pretrained(args.checkpoint);cfg.device='cpu'
+    torch.set_num_threads(4)
+    model=LeRobotACT.from_pretrained(args.checkpoint,config=cfg,strict=True,local_files_only=True).eval()
+    for parameter in model.parameters(): parameter.requires_grad_(False)
+    data=CanonicalDataset(ROOT/'datasets/ur10e_10',1)
+    ss=np.maximum(data.statistics['observation.state']['std'],1e-6)
+    aa=np.maximum(data.statistics['action']['std'],1e-6)
+    rows=[]
+    for i in [0,1,10,30]:
+        state=data.states[i].detach().clone().requires_grad_(True)
+        def forward(value):
+            return model.model({'observation.state':value[None],'observation.images':[data.images[i][None]]})[0][0,0]
+        jac=torch.autograd.functional.jacobian(forward,state).detach().numpy()*aa[:,None]/ss[None,:]
+        physical=data.states[i].numpy()*ss+data.statistics['observation.state']['mean']
+        numerical=[]
+        for k in range(6):
+            delta=np.eye(6)[k]*1e-5
+            numerical.append((expert(physical+delta)[0]-expert(physical-delta)[0])/2e-5)
+        rows.append({'frame':i,'physical_state':physical.tolist(),'physical_action_jacobian':jac.tolist(),
+                     'expert_local_jacobian':np.stack(numerical,axis=1).tolist()})
+    report={'checkpoint':args.checkpoint.relative_to(ROOT).as_posix(),
+        'checkpoint_sha256':hashlib.sha256((args.checkpoint/'model.safetensors').read_bytes()).hexdigest(),
+        'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        'rows':'action dimension','columns':'state dimension',
+        'method':'autograd in evaluation mode, fixed real training image; physical units; no model update','records':rows}
+    args.output.mkdir(parents=True,exist_ok=True)
+    (args.output/'state_sensitivity.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    print(json.dumps({'rotation_diagonals':[np.diag(r['physical_action_jacobian'])[3:].tolist() for r in rows]}))
+
+
+def rollouts(args):
+    from scipy.spatial.transform import Rotation
+    from insertion import CONFIG, expert
+    summary=json.loads((args.rollout/'summary.json').read_text())
+    if summary['execution_status']!='PASS': raise ValueError('ROLLOUT_EXECUTION_INCOMPLETE')
+    rows=[]; episodes=[]
+    for line in (args.rollout/'episodes.jsonl').read_text().splitlines():
+        episode=json.loads(line); path=ROOT/episode['raw_artifact_dir']/f"{episode['seed']}_trace.json"
+        if hashlib.sha256(path.read_bytes()).hexdigest()!=episode['trace_sha256']: raise ValueError('TRACE_HASH_MISMATCH')
+        trace=json.loads(path.read_text())
+        if any('next_state' not in x for x in trace): raise ValueError('POST_STATE_NOT_RECORDED')
+        states=np.asarray([x['state'] for x in trace]+[trace[-1]['next_state']])
+        raw=np.asarray([x['raw_chunk'][0] for x in trace]); applied=np.asarray([x['action'] for x in trace])
+        expected=np.asarray([expert(x)[0] for x in states[:-1]])
+        translation_error=np.diff(states[:,:3],axis=0)-applied[:,:3]
+        rotations=Rotation.from_rotvec(states[:,3:])
+        actual_delta=rotations[1:]*rotations[:-1].inv()
+        rotation_error=(Rotation.from_rotvec(applied[:,3:]).inv()*actual_delta).magnitude()
+        lateral=np.linalg.norm(states[:,:2],axis=1); angle=np.linalg.norm(states[:,3:],axis=1)
+        aligned=(lateral<=CONFIG['lateral_tolerance_m'])&(angle<=CONFIG['angular_tolerance_rad'])
+        disagreement=np.linalg.norm(applied[:,3:]-expected[:,3:],axis=1)
+        divergent=np.flatnonzero(disagreement>.003)
+        episodes.append({'seed':episode['seed'],'outcome':episode['outcome'],'trace_sha256':episode['trace_sha256'],
+            'min_lateral_m':float(lateral.min()),'min_orientation_rad':float(angle.min()),
+            'ever_aligned':bool(aligned.any()),'first_rotation_disagreement_above_003_step':int(divergent[0]) if len(divergent) else None,
+            'translation_tracking_mae_m':np.abs(translation_error).mean(0).tolist(),
+            'rotation_tracking_mean_error_rad':float(rotation_error.mean()),'max_depth_m':float(states[:,2].max()),
+            'max_contact_n':episode['max_contact_n'],'final_state':episode['final_state']})
+        for i,t in enumerate(trace):
+            rows.append({'seed':episode['seed'],'step':i,'time_s':t['timestamp'],
+                'lateral_m':float(lateral[i]),'orientation_rad':float(angle[i]),
+                'distance_to_goal_m':float(np.linalg.norm(states[i,:3]-[0,0,.03])),
+                'rotation_tracking_error_rad':float(rotation_error[i]),'max_contact_n':t['max_contact_n'],
+                'terminal':t['terminal'] or '', 'geometrically_aligned':bool(aligned[i]),
+                **{f'state_{k}':float(v) for k,v in zip(DIMS,states[i])},
+                **{f'raw_{k}':float(v) for k,v in zip(DIMS,raw[i])},
+                **{f'executed_{k}':float(v) for k,v in zip(DIMS,applied[i])}})
+    args.output.mkdir(parents=True,exist_ok=True)
+    with (args.output/'closed_loop.csv').open('w',newline='') as f:
+        writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+    report={'evaluation':args.rollout.relative_to(ROOT).as_posix(),'checkpoint_sha256':summary['checkpoint_files_sha256'],
+        'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'episodes':episodes}
+    (args.output/'rollout_audit.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    print(json.dumps(report,indent=2))
+
+
+def vae_probe(args):
+    import torch
+    from act import ACTConfig,LeRobotACT,CanonicalDataset
+    from dataset import VIDEO
+    cp=args.checkpoint
+    cfg=ACTConfig.from_pretrained(cp);cfg.device='cpu'
+    torch.set_num_threads(4);torch.manual_seed(0)
+    m=LeRobotACT.from_pretrained(cp,config=cfg,strict=True,local_files_only=True).eval()
+    data=CanonicalDataset(ROOT/'datasets/ur10e_10',1)
+    ids=[0]+[i for i in range(1,len(data)) if data.ends[i]!=data.ends[i-1]]
+    b={k:torch.stack([data[i][k] for i in ids]) for k in data[0]};b['observation.images']=[b[VIDEO]]
+    with torch.inference_mode():
+     zero=m.model(b)[0]
+     # Enable only CVAE branch, keeping all attention/dropout children in eval mode.
+     m.model.training=True
+     seen={}
+     def save_mu(module,inputs,out):seen['mu']=out[:,:cfg.latent_dim]
+     h1=m.model.vae_encoder_latent_output_proj.register_forward_hook(save_mu)
+     def use_mu(module,inputs):return (seen['mu'],)
+     h2=m.model.encoder_latent_input_proj.register_forward_pre_hook(use_mu)
+     posterior,(mu,logvar)=m.model(b)
+     h2.remove();h1.remove()
+     samples=torch.stack([m.model(b)[0] for _ in range(16)])
+     kld=(-.5*(1+logvar-mu.square()-logvar.exp())).sum(-1)
+     gt=b['action'];scale=torch.tensor(np.maximum(data.statistics['action']['std'],1e-6))
+     r={'checkpoint':cp.relative_to(ROOT).as_posix(),'checkpoint_sha256':hashlib.sha256((cp/'model.safetensors').read_bytes()).hexdigest(),
+     'diagnostic_only':'training labels used solely to inspect posterior/inference gap; never used in evaluation',
+     'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'initial_frames':ids,
+     'zero_latent_mae_physical':((zero-gt).abs()*scale).mean((0,1)).tolist(),
+     'posterior_mean_mae_physical':((posterior-gt).abs()*scale).mean((0,1)).tolist(),
+     'sampled_posterior_mae_physical':((samples-gt).abs()*scale).mean((0,1,2)).tolist(),
+     'posterior_mu_max_abs':float(mu.abs().max()),'mean_kld':float(kld.mean()),
+     'zero_vs_posterior_max_action_difference_physical':((zero-posterior).abs()*scale).amax((0,1)).tolist()}
+    (args.output/'vae_probe.json').write_text(json.dumps(r,indent=2)+'\n',encoding='utf-8')
+    print(json.dumps(r,indent=2))
+
+
 def recovery(args):
     paths=['artifacts/training/act-overfit-001','artifacts/training/act-overfit-002']
     training=[json.loads((ROOT/p/'summary.json').read_text()) for p in paths]
@@ -211,6 +330,10 @@ if __name__=='__main__':
     p.add_argument('--episodes',type=int,nargs='+')
     p.add_argument('--plot',action='store_true')
     p.add_argument('--features',action='store_true')
+    p.add_argument('--sensitivity',action='store_true')
+    p.add_argument('--vae-probe',action='store_true')
+    p.add_argument('--rollout',type=Path)
     p.add_argument('--recovery',action='store_true')
     a=p.parse_args();a.output=a.output.resolve();a.checkpoint=a.checkpoint.resolve()
-    plot(a) if a.plot else features(a) if a.features else recovery(a) if a.recovery else audit(a)
+    if a.rollout: a.rollout=a.rollout.resolve()
+    vae_probe(a) if a.vae_probe else rollouts(a) if a.rollout else sensitivity(a) if a.sensitivity else plot(a) if a.plot else features(a) if a.features else recovery(a) if a.recovery else audit(a)

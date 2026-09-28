@@ -37,8 +37,8 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
 Latest controlled run act-10-h1-backbonelr-001 (backbone LR1e-5, other settings unchanged)
 completed 5000 steps and reload PASS. Image projection RMS fell 421.55 → .03637 and
 translation response returned, but development remained 0/2 COLLISION; initial rotation
-outputs remain near constant. Next increase optimization steps only, retaining the same
-ten demos and corrected feature initialization/rate. No new held-out result yet.
+outputs remain near constant. The controlled act-10-h1-long-001 run is ACTIVE at10000 planned steps, changing only
+steps; its first5000 loss rows exactly reproduce the prior run. No new held-out result.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
 provenance is unresolved. No source-informed training or data-efficiency claim exists.
@@ -85,8 +85,13 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Run act-10-h1-long-001: increase only training steps5000 →10000, same data/seed/LRs/H1.
+Await active act-10-h1-long-001 (steps5000 →10000, same data/seed/LRs/H1).
 Inspect predicted initial rotation and development closed-loop behavior after completion.
+Input sensitivity and CVAE diagnostic modes in diagnose_act.py verify near-zero rotation
+response and no meaningful posterior/zero-latent gap in the5000-step model. Latest two
+failures are alignment failures from step0, not narrow insertion-tolerance rejection.
+Antigravity review was NOT_RUN: auto-review rejected transmitting project payload to an
+external reviewer; no workaround or retry was used. Local analysis continues.
 Do not increase dataset size blindly or tune on held-out seeds.
 Source regeneration: python scripts/local/fire.py --download, then offline command without
 --download. Offline clip SHA reproduced; two transform tests and full35-test suite passed.
