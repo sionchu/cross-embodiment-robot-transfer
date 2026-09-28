@@ -1,0 +1,44 @@
+{
+  "integration_status": "PASS",
+  "model_execution": "NOT_RUN",
+  "runtime_status": "MODEL_COMPUTE_NOT_AVAILABLE",
+  "checkpoint_validation": {
+    "status": "NOT_RUN",
+    "reason": "TARGET_CHECKPOINT_NOT_AVAILABLE"
+  },
+  "embodiment": "NEW_EMBODIMENT",
+  "observation_shapes": {
+    "front": [
+      1,
+      1,
+      480,
+      640,
+      3
+    ],
+    "state": [
+      1,
+      1,
+      6
+    ]
+  },
+  "official_observation_batching": "PASS",
+  "official_action_roundtrip": "PASS",
+  "decoded_chunk_shape": [
+    16,
+    6
+  ],
+  "gr00t_commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+  "base_model_reference": {
+    "id": "nvidia/GR00T-N1.7-3B",
+    "revision": "2fc962b973bccdd5d8ce4f67cc63b264d6886495",
+    "license": "NVIDIA Open Model License Agreement, per pinned model card"
+  },
+  "dataset_id": "ur10e_10",
+  "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+  "platform": "win32",
+  "gpu": "NVIDIA GeForce RTX 4070 Ti",
+  "gpu_total_bytes": 12878086144,
+  "minimum_inference_bytes": 15000000000,
+  "adapter_sha256": "6a7730005015cd9308536579c1829a7105f7f3101fcbf55a17661a41de28a675",
+  "project_commit": "25a1874ff992549288f805c27074587a72d50950"
+}
