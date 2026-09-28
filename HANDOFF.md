@@ -42,10 +42,12 @@ VRAM, gated access, both official sample inference runs and exact code/model/env
 
 ## Current checkpoint
 G0 hygiene implementation and local checks complete.
-E0 runtime was attempted on a real T4 and remains incomplete. After correcting the earlier
-A100-only gate, the T4 reached dependency installation successfully. The current retry fix
-resolves the pinned aarch64 torchcodec LFS wheel before `uv sync --locked`. HF gated-access
-check and model inference have not been reached yet.
+E0 now reaches a clean real-T4 runtime with bundle/HEAD checks, 16 GB-class GPU preflight,
+the pinned GR00T checkout, scoped LFS resolution, and `uv sync --locked` all passing.
+Verified runtime stack: Tesla T4, torch 2.9.0+cu128, torchcodec 0.8.0, FFmpeg 6.1.1.
+The first remaining blocker is authentication: Colab secret `HF_TOKEN` is missing or not
+shared with the notebook, so Cosmos gated-access validation and both official inference runs
+have not started yet.
 
 ## Decisions and reasons
 - Use official standalone inference unmodified; pin code, lock and model snapshots.
@@ -77,16 +79,17 @@ check and model inference have not been reached yet.
   Git; its SHA-256 is recorded in the sanitized JSON artifact.
 
 ## Not executed
-A complete Linux dependency installation, HF/Cosmos gated-access validation, both GR00T
-checkpoint inference runs, and all E1+ work. The first T4 install attempt stopped during
-`uv sync --locked` at the unresolved LFS wheel issue described above. No public push,
-release, or reference-repository modification.
+HF/Cosmos gated-access validation, both GR00T checkpoint inference runs, and all E1+ work.
+The Linux/T4 dependency installation now completes successfully. No public push, release,
+or reference-repository modification.
 
 ## Blockers
-E0 is no longer blocked on A100/40 GB compute. It can run on an authorized Linux x86_64
-NVIDIA CUDA GPU with 16 GB+ VRAM, including the measured free-tier T4. The first T4 install
-failure had a concrete local cause (unresolved LFS wheel) and is fixed in the workflow. The
-next expected blocker is Hugging Face/Cosmos gated access because that has not yet been tested.
+E0 compute/install is no longer blocked. A measured free-tier T4 reaches a complete pinned
+GR00T environment. The active blocker is Hugging Face authentication: the browser is logged
+out, no saved Hugging Face credential was found in Aside Vault, and Colab has no shared
+`HF_TOKEN` secret. The connected Hugging Face app is authenticated as `JE92`, but that OAuth
+credential cannot be exported into Colab through the available connector tools. Cosmos gated
+access has therefore not yet been tested.
 For E5 fine-tuning, 40 GB+ VRAM will still be required. Google AI Pro's bundled Colab CCU
 benefit is not available to this South Korea account; support said it cannot be separately
 provisioned or escalated. Do not use VPN/region spoofing or false account-country workarounds.
@@ -99,9 +102,9 @@ artifacts/environment/2026-09-28-colab-a100-unavailable.json, and
 artifacts/environment/2026-09-28-colab-region-ineligible.json.
 
 ## Next concrete action
-Rerun E0 on the Colab free-tier T4 (or any other authorized Linux NVIDIA GPU with 16 GB+
-VRAM). The official Colab CLI is installed in WSL2 and can be used for terminal lifecycle
-and `colab usage` evidence after one-time OAuth authorization. Do not start E1. Once
-`nvidia-smi` and the runner confirm the 16 GB inference gate, continue to installation,
-gated-access validation and both official checkpoint inference runs. Reserve 40 GB+ GPU
-access for E5 fine-tuning.
+Resume at Hugging Face authentication, not environment setup. Log in to the `JE92` Hugging
+Face account, review/accept the standard NVIDIA gate for `nvidia/Cosmos-Reason2-2B`, create a
+minimal read token, save it as Colab secret `HF_TOKEN`, and grant this notebook access. Then
+rerun only cell 5 / the E0 runner in the already-prepared notebook if the T4 runtime is still
+alive; otherwise rerun the notebook from the top. Do not start E1 until both official model
+inference runs finish and `e0.json` says PASS. Reserve 40 GB+ GPU access for E5 fine-tuning.
