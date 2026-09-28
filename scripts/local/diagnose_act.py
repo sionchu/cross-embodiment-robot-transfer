@@ -133,6 +133,11 @@ def plot(args):
             rr=[r for r in rows if int(r['seed'])==seed];x=[float(r['time_s']) for r in rr]
             for ax,key,label in zip(axes[:,col],['lateral_m','orientation_rad','state_dz'],['Lateral (m)','Angle (rad)','Depth (m)']):
                 ax.plot(x,[float(r[key]) for r in rr]);ax.set(title=f'Seed {seed}: {label}',xlabel='s')
+                receipt=args.output/'rollout_audit.json'
+                cfg=json.loads(receipt.read_text())['environment_config'] if receipt.exists() else json.loads((ROOT/'artifacts/eval/act-10-002/summary.json').read_text())['environment_config']
+                limits={'lateral_m':[cfg['lateral_tolerance_m']],'orientation_rad':[cfg['angular_tolerance_rad']],
+                        'state_dz':[cfg['min_depth_m'],cfg['max_depth_m']]}
+                for limit in limits[key]: ax.axhline(limit,color='gray',linestyle='--',linewidth=1)
         fig.savefig(args.output/'closed_loop.png',dpi=140);plt.close(fig)
 
 def features(args):
@@ -215,6 +220,7 @@ def rollouts(args):
     from insertion import CONFIG, expert
     summary=json.loads((args.rollout/'summary.json').read_text())
     if summary['execution_status']!='PASS': raise ValueError('ROLLOUT_EXECUTION_INCOMPLETE')
+    if summary['environment_config']!=CONFIG: raise ValueError('DIAGNOSTIC_TASK_VERSION_MISMATCH')
     rows=[]; episodes=[]
     for line in (args.rollout/'episodes.jsonl').read_text().splitlines():
         episode=json.loads(line); path=ROOT/episode['raw_artifact_dir']/f"{episode['seed']}_trace.json"
@@ -232,9 +238,16 @@ def rollouts(args):
         aligned=(lateral<=CONFIG['lateral_tolerance_m'])&(angle<=CONFIG['angular_tolerance_rad'])
         disagreement=np.linalg.norm(applied[:,3:]-expected[:,3:],axis=1)
         divergent=np.flatnonzero(disagreement>.003)
+        lateral_divergent=np.flatnonzero(np.linalg.norm(applied[:,:2]-expected[:,:2],axis=1)>.0005)
+        first=lambda mask: int(np.flatnonzero(mask)[0]) if np.any(mask) else None
         episodes.append({'seed':episode['seed'],'outcome':episode['outcome'],'trace_sha256':episode['trace_sha256'],
             'min_lateral_m':float(lateral.min()),'min_orientation_rad':float(angle.min()),
-            'ever_aligned':bool(aligned.any()),'first_rotation_disagreement_above_003_step':int(divergent[0]) if len(divergent) else None,
+            'ever_aligned':bool(aligned.any()),
+            'first_orientation_within_tolerance_step':first(angle<=CONFIG['angular_tolerance_rad']),
+            'first_lateral_within_tolerance_step':first(lateral<=CONFIG['lateral_tolerance_m']),
+            'first_joint_alignment_step':first(aligned),
+            'first_lateral_disagreement_above_0005_step':int(lateral_divergent[0]) if len(lateral_divergent) else None,
+            'first_rotation_disagreement_above_003_step':int(divergent[0]) if len(divergent) else None,
             'translation_tracking_mae_m':np.abs(translation_error).mean(0).tolist(),
             'rotation_tracking_mean_error_rad':float(rotation_error.mean()),'max_depth_m':float(states[:,2].max()),
             'max_contact_n':episode['max_contact_n'],'final_state':episode['final_state']})
@@ -250,13 +263,14 @@ def rollouts(args):
     args.output.mkdir(parents=True,exist_ok=True)
     with (args.output/'closed_loop.csv').open('w',newline='') as f:
         writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
-    report={'evaluation':args.rollout.relative_to(ROOT).as_posix(),'checkpoint_sha256':summary['checkpoint_files_sha256'],
+    report={'evaluation':args.rollout.relative_to(ROOT).as_posix(),'environment_config':summary['environment_config'],'checkpoint_sha256':summary['checkpoint_files_sha256'],
         'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'episodes':episodes}
     (args.output/'rollout_audit.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(report,indent=2))
 
 
 def vae_probe(args):
+    args.output.mkdir(parents=True,exist_ok=True)
     import torch
     from act import ACTConfig,LeRobotACT,CanonicalDataset
     from dataset import VIDEO

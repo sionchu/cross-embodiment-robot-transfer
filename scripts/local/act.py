@@ -123,7 +123,7 @@ def train(args):
         input_features={VIDEO:PolicyFeature(FeatureType.VISUAL,(3,240,320)),
                         'observation.state':PolicyFeature(FeatureType.STATE,(6,))},
         output_features={'action':PolicyFeature(FeatureType.ACTION,(6,))},
-        pretrained_backbone_weights=None if args.backbone_weights=='none' else 'ResNet18_Weights.IMAGENET1K_V1',optimizer_lr=1e-4,optimizer_lr_backbone=args.backbone_lr)
+        pretrained_backbone_weights=None if args.backbone_weights=='none' else 'ResNet18_Weights.IMAGENET1K_V1',optimizer_lr=args.lr,optimizer_lr_backbone=args.backbone_lr)
     model=LeRobotACT(config).cuda()
     data=CanonicalDataset(args.dataset,config.chunk_size)
     selected=list(range(len(evidence['train_seeds']))) if args.episodes is None else args.episodes
@@ -227,6 +227,7 @@ if __name__=='__main__':
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--chunk-size',type=int,default=16)
     parser.add_argument('--sampling',choices=['uniform','orientation-balanced','phase-balanced'],default='uniform')
+    parser.add_argument('--lr',type=float,default=1e-4,help='Main ACT optimizer rate; historical default preserved.')
     parser.add_argument('--backbone-lr',type=float,default=1e-4,help='Explicit controlled backbone optimizer rate; historical default preserved.')
     parser.add_argument('--backbone-weights',choices=['none','imagenet'],default='none')
     parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
@@ -234,5 +235,5 @@ if __name__=='__main__':
     parser.add_argument('--batch-size',type=int,default=8)
     parser.add_argument('--seed',type=int,default=20260929)
     args=parser.parse_args()
-    if min(args.steps,args.batch_size,args.chunk_size)<1 or args.backbone_lr<=0: parser.error('steps, batch-size and chunk-size must be positive')
+    if min(args.steps,args.batch_size,args.chunk_size)<1 or min(args.backbone_lr,args.lr)<=0: parser.error('steps, batch-size and chunk-size must be positive')
     train(args)

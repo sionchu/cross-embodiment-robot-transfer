@@ -34,12 +34,12 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
   task audit remains ANALOGOUS_TASK, with related-code dimensions explicitly unconfirmed.
 
 ## Current checkpoint
-Orientation-balanced ACT recovered rotation-dependent predictions and actual orientation
-alignment, but development0/1 both collided at~4.5mm lateral error. The known training
-seed10 also collided at7.35mm. Thus extra demonstrations are not yet the justified fix.
-The rotation-only sampler reduced lateral-phase probability to~11%; actual label groups
-are rotation23, lateral102, settled362. Next experiment act-10-phase-balanced-001 changes
-only sampling to equal mass across these three groups, keeping5000 steps/data/model/LRs.
+Phase-balanced ACT completed5000 steps; development0/1 both collided (1.80/2.18mm final
+lateral error). Both initially aligned within tolerance at steps11/12, then small biased
+lateral actions accumulated. This is classH approximate behavior with lost alignment;
+rotation is within tolerance. No environment/controller/detector change. Next controlled
+run act-10-lr-001 is ACTIVE: main optimizer LR1e-4→1e-5, everything else unchanged from
+phase-balanced. The current learning-rate hypothesis is not yet a proven correction.
 No new held-out evaluation or target demonstrations were generated.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
@@ -87,10 +87,12 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Run act-10-phase-balanced-001 and check physical predictions and the same development
-seeds; use the known training condition if needed. No new data, controller/tolerance change,
-expert fallback or held-out tuning. Full35-test suite passed before the sampler extension;
-new sampler modes are verified through actual controlled training and saved configurations.
+Finish act-10-lr-001, inspect actual predictions and evaluate unchanged development0/1.
+If successful, run all20 frozen held-out seeds and repeat a successful seed independently.
+Otherwise inspect drift without changing detector or selecting seeds. Regression suite:
+35 tests PASS in9.716s (artifacts/runtime/phase-regression-tests.log); E0 fixture outputs
+are mocked tests, not actual GR00T inference. Latest measured closed-loop plot inspected
+with file viewer; native-desktop verification remains separate and incomplete.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. Local diagnostics continue.
 Source regeneration: python scripts/local/fire.py --download, then offline command without

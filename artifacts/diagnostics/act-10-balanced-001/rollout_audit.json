@@ -1,0 +1,109 @@
+{
+  "evaluation": "artifacts/eval/act-10-balanced-dev-001",
+  "environment_config": {
+    "physics_dt": 0.016666666666666666,
+    "control_substeps": 4,
+    "max_steps": 180,
+    "initial_joints_deg": [
+      -90,
+      -60,
+      -100,
+      -110,
+      90,
+      0
+    ],
+    "hole_origin_m": [
+      0.194,
+      0.371,
+      0.57
+    ],
+    "peg_tip_offset_m": 0.12,
+    "peg_length_m": 0.08,
+    "peg_half_width_m": 0.004,
+    "hole_half_width_m": 0.005,
+    "hole_length_m": 0.05,
+    "position_randomization_m": [
+      0.008,
+      0.008,
+      0.004
+    ],
+    "rotation_randomization_rad": [
+      0.015,
+      0.015,
+      0.04
+    ],
+    "translation_limit_m": 0.003,
+    "rotation_limit_rad": 0.025,
+    "min_depth_m": 0.025,
+    "max_depth_m": 0.035,
+    "lateral_tolerance_m": 0.0007,
+    "angular_tolerance_rad": 0.01,
+    "contact_force_limit_n": 1.0
+  },
+  "checkpoint_sha256": {
+    "config.json": "575a3e3953fa1278fd6dcebce356bdda50af41b8df4ca7614815b7e2896af0ba",
+    "model.safetensors": "65197ebe5fa24d6f2d277e9effdd96b2b5a1ce2b4bc538bdad8514c8525f88f7",
+    "normalization.json": "3bcf493d2f77467a881178de851019db0d786dbaa29bce5c0c6aba14a75080c8"
+  },
+  "source_sha256": "4c4bd8b68359ce1758cbf9d9e4c363467208d98341fb3435c97eab4be8a83a0c",
+  "episodes": [
+    {
+      "seed": 0,
+      "outcome": "COLLISION",
+      "trace_sha256": "da32447ee5495e0b3c291546f02f7a5edebf25b6209afe34aa1fe1a05fdaae91",
+      "min_lateral_m": 0.004154637099041762,
+      "min_orientation_rad": 0.0015680586728846046,
+      "ever_aligned": false,
+      "first_orientation_within_tolerance_step": 3,
+      "first_lateral_within_tolerance_step": null,
+      "first_joint_alignment_step": null,
+      "first_lateral_disagreement_above_0005_step": 7,
+      "first_rotation_disagreement_above_003_step": 0,
+      "translation_tracking_mae_m": [
+        0.00021309568950533358,
+        0.00021419213915186333,
+        0.00042547721017130463
+      ],
+      "rotation_tracking_mean_error_rad": 0.001174692105219304,
+      "max_depth_m": -9.528723527605497e-07,
+      "max_contact_n": 79.58976745605469,
+      "final_state": [
+        -0.004237620626402436,
+        -0.0013448819480380665,
+        -9.528723527605497e-07,
+        0.0012189751890894344,
+        -0.0004021148733560719,
+        0.0009342628828845876
+      ]
+    },
+    {
+      "seed": 1,
+      "outcome": "COLLISION",
+      "trace_sha256": "ac6044a24453e32b3815b36c2776ad9be6c65e745442de84db2afb4f6384310a",
+      "min_lateral_m": 0.004521969843432268,
+      "min_orientation_rad": 0.002196903331198277,
+      "ever_aligned": false,
+      "first_orientation_within_tolerance_step": 2,
+      "first_lateral_within_tolerance_step": null,
+      "first_joint_alignment_step": null,
+      "first_lateral_disagreement_above_0005_step": 8,
+      "first_rotation_disagreement_above_003_step": 0,
+      "translation_tracking_mae_m": [
+        0.00021369769527529691,
+        0.0002513925533973508,
+        0.0004227313644427034
+      ],
+      "rotation_tracking_mean_error_rad": 0.0010964270003349917,
+      "max_depth_m": -2.9813134575365748e-06,
+      "max_contact_n": 77.9565658569336,
+      "final_state": [
+        0.0025280274548283434,
+        0.0038576709183626764,
+        -2.9813134575365748e-06,
+        0.0006505688038827073,
+        -0.0005711935703537404,
+        0.003491828972512475
+      ]
+    }
+  ]
+}

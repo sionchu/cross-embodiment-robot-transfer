@@ -1,0 +1,46 @@
+{
+  "basis": "actual development trajectories; no new held-out result",
+  "classification": [
+    {
+      "seed": 0,
+      "primary_class": "H",
+      "failure_stage": "alignment lost during approach before insertion",
+      "evidence": {
+        "first_alignment_step": 11,
+        "minimum_lateral_error_m": 0.00037383641763177216,
+        "final_lateral_error_m": 0.001804878614034417,
+        "final_orientation_error_rad": 0.002466807461444906,
+        "max_depth_m": -8.044313177638524e-06,
+        "contact_n": 78.01028442382812
+      }
+    },
+    {
+      "seed": 1,
+      "primary_class": "H",
+      "failure_stage": "alignment lost during approach before insertion",
+      "evidence": {
+        "first_alignment_step": 12,
+        "minimum_lateral_error_m": 0.00044650429146029483,
+        "final_lateral_error_m": 0.002177020782520817,
+        "final_orientation_error_rad": 0.001824231172553851,
+        "max_depth_m": -4.552134294819568e-06,
+        "contact_n": 77.95930480957031
+      }
+    }
+  ],
+  "interpretation": "Approximate approach and orientation learned; small biased lateral actions accumulate after initial alignment. Task detector rejects real fixture contact. Learning-rate explanation is a hypothesis until controlled evaluation.",
+  "evidence_references": [
+    "rollout_audit.json",
+    "closed_loop.csv",
+    "open_loop.csv",
+    "state_sensitivity.json"
+  ],
+  "next_controlled_factor": {
+    "run": "act-10-lr-001",
+    "optimizer_lr": [
+      0.0001,
+      1e-05
+    ],
+    "all_other_training_and_task_settings": "unchanged"
+  }
+}
