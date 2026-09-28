@@ -74,13 +74,14 @@ def aggregate(rows):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--policy',choices=['expert','act'],required=True)
-    parser.add_argument('--split',choices=['development','held_out'],required=True)
+    parser.add_argument('--policy',choices=['expert','act','replay'],required=True)
+    parser.add_argument('--split',choices=['train','development','held_out'],required=True)
     parser.add_argument('--checkpoint',type=Path,default=ROOT/'checkpoints/act-10-001')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--seed-offset',type=int,default=0,help=argparse.SUPPRESS)
     parser.add_argument('--seed-count',type=int,help=argparse.SUPPRESS)
     args=parser.parse_args()
+    if args.policy=='replay' and args.split!='train': parser.error('replay requires train split')
     seeds=json.loads((ROOT/'configs/seeds.json').read_text())[args.split]
     frozen=json.loads(subprocess.check_output(['git','show','HEAD:configs/seeds.json'],cwd=ROOT))
     if seeds!=frozen[args.split]: raise ValueError('SEEDS_NOT_COMMITTED')
@@ -154,6 +155,12 @@ def main():
                 state=env.reset(seed); initial=state.copy(); trace=[]; frames=[]; positions=[state[:3].copy()]
                 outcome=None; clipped=0; latency=[]
                 if worker: worker.request({'op':'reset'})
+                replay_states=None; replay_errors=[]
+                if args.policy=='replay':
+                    episode=frozen['train'].index(seed)
+                    demo=json.loads((ROOT/f'artifacts/runtime/demos-01/{episode:02d}_trace.json').read_text())
+                    replay_states=np.asarray([r['state'] for r in demo],dtype=np.float32)
+                    replay_actions=np.asarray([r['action'] for r in demo],dtype=np.float32)
                 while outcome is None:
                     rgb=env.image()
                     if not np.allclose(env.state(),state,atol=1e-9,rtol=0): raise RuntimeError('CAPTURE_STATE_MISMATCH')
@@ -165,6 +172,10 @@ def main():
                         chunk=np.asarray(response['chunk'],dtype=float)
                         if chunk.shape!=(16,6) or not np.isfinite(chunk).all(): raise ValueError('INVALID_ACTION_CHUNK')
                         latency.append(response['inference_ms']); wall_ms=(time.perf_counter()-start)*1000
+                    elif args.policy=='replay':
+                        if env.steps>=len(replay_actions): raise RuntimeError('REPLAY_EXHAUSTED_WITHOUT_SUCCESS')
+                        replay_errors.append(np.abs(state-replay_states[env.steps]).tolist())
+                        chunk=replay_actions[env.steps:env.steps+1]; wall_ms=0.; latency.append(0.)
                     else:
                         start=time.perf_counter(); action,_=expert(state); chunk=action[None]
                         wall_ms=(time.perf_counter()-start)*1000; latency.append(wall_ms)
@@ -187,6 +198,8 @@ def main():
                     'inference_ms':float(np.mean(latency)),
                     'raw_artifact_dir':raw.relative_to(ROOT).as_posix(),
                     'trace_sha256':sha(raw/f'{seed}_trace.json'),'end_image_sha256':sha(raw/f'{seed}_end.png')}
+                if replay_states is not None:
+                    row['replay_max_state_error']=np.max(replay_errors,axis=0).tolist()
                 rows.append(row); results.write(json.dumps(row,allow_nan=False)+'\n'); results.flush()
                 print('EVALUATED',json.dumps(row),flush=True)
         context.update(aggregate(rows)); context['execution_status']='PASS'; context['stage']='complete'

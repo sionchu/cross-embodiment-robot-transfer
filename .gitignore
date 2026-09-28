@@ -38,3 +38,6 @@ raw_data/
 # Raw execution logs may contain machine-specific paths; review before exporting.
 artifacts/runtime/
 *.bundle
+
+# Regenerable media payloads
+/media/output/

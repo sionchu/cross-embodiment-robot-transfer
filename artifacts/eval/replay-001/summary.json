@@ -1,0 +1,68 @@
+{
+  "policy": "replay",
+  "split": "train",
+  "seeds": [
+    10
+  ],
+  "project_commit": "42048768bc8b06b8560e98da507fe89e2be034ff",
+  "source_hashes": {
+    "evaluate.py": "3f9a59809ce3767b9b5728cc1579c3b385a517a75238901f1d5bc844467ca588",
+    "policy_worker.py": "5f495c749f9267e256aff12d129de396eb2835c49fcb099d40eeb3b8a614ebbc",
+    "act.py": "9bb95ce355de7b5a01113477040166a6ed2be291a154e8c0904bc3ed701ded41",
+    "insertion.py": "38e5614c61dd8ac865416ce91b025fe79261785275ed8cfaf1b91845b4322aec"
+  },
+  "environment_config_hash": "cbd594861705dbe2ff46329b0098c892b69e618e338fa9437fb20dcaafc2d947",
+  "environment_config": {
+    "physics_dt": 0.016666666666666666,
+    "control_substeps": 4,
+    "max_steps": 180,
+    "initial_joints_deg": [
+      -90,
+      -60,
+      -100,
+      -110,
+      90,
+      0
+    ],
+    "hole_origin_m": [
+      0.194,
+      0.371,
+      0.57
+    ],
+    "peg_tip_offset_m": 0.12,
+    "peg_length_m": 0.08,
+    "peg_half_width_m": 0.004,
+    "hole_half_width_m": 0.005,
+    "hole_length_m": 0.05,
+    "position_randomization_m": [
+      0.008,
+      0.008,
+      0.004
+    ],
+    "rotation_randomization_rad": [
+      0.015,
+      0.015,
+      0.04
+    ],
+    "translation_limit_m": 0.003,
+    "rotation_limit_rad": 0.025,
+    "min_depth_m": 0.025,
+    "max_depth_m": 0.035,
+    "lateral_tolerance_m": 0.0007,
+    "angular_tolerance_rad": 0.01,
+    "contact_force_limit_n": 1.0
+  },
+  "gr00t_commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+  "lerobot_commit": "eb7a54c6ff4983fc86075442bf4fa61503e7b5d1",
+  "dataset_id": "ur10e_10",
+  "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+  "model_checkpoint_id": null,
+  "checkpoint_files_sha256": null,
+  "action_execution": "first action of fresh 16-step ACT chunk each control step; per-axis clipping recorded",
+  "gpu": "NVIDIA GeForce RTX 4070 Ti, 12282 MiB, 591.86",
+  "execution_status": "FAILED",
+  "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.0/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd",
+  "stage": "reset seed 10",
+  "completed_episodes": 0,
+  "error": "ModuleNotFoundError: No module named 'pandas'"
+}

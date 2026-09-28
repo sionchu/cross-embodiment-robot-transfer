@@ -1,0 +1,218 @@
+{
+  "baseline": "artifacts/eval/act-10-002",
+  "classification_status": "behavior evidenced; optimization root cause under investigation",
+  "episodes": [
+    {
+      "seed": 1000,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.003060352815674669,
+      "final_lateral_error_m": 0.018968219905426752,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "b9b12e9897f74918e188c9950f7685d9e602873463fc00be08167af2e7013c13"
+    },
+    {
+      "seed": 1001,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.023388508533059946,
+      "final_lateral_error_m": 0.025360906023691,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "276d8e19ae235c49864db5a9ddd9d61ca38d1042e06d039c53fcfd37a9d78ee5"
+    },
+    {
+      "seed": 1002,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.025409776084442243,
+      "final_lateral_error_m": 0.027144021759906493,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "c842607571d2c4393514af97083340a6f2523a0a4108da4dc7df9877bb6030c5"
+    },
+    {
+      "seed": 1003,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.022391389267126374,
+      "final_lateral_error_m": 0.024183760190938368,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "d212a90907f647a5785785d6e9ac14f2ca3db89e2cdfe0251f5e2344cd896f95"
+    },
+    {
+      "seed": 1004,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.019259871108688043,
+      "final_lateral_error_m": 0.021089920603030034,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "203085f71d73b2fb914bb785c6e905464a65d505f91cfe50794c1e7d906290e4"
+    },
+    {
+      "seed": 1005,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.030433335463301087,
+      "final_lateral_error_m": 0.032176292078999254,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "a91911b381843e4f82e70cd29655e3ff9d25ef16ccf844581c41ce1a1bbf6a02"
+    },
+    {
+      "seed": 1006,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.004032442474070287,
+      "final_lateral_error_m": 0.020797344596571465,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "10b6eadc163a67b6bb2f179fd78095bc1be209fddeb5eb1d26e2cac2a114a413"
+    },
+    {
+      "seed": 1007,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.02952577161537888,
+      "final_lateral_error_m": 0.031069943508679074,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "70ed9274673d1496bb7e04a32ffaa3cfde4bfc8bfa360ce6a84a3afa058b90e0"
+    },
+    {
+      "seed": 1008,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.02883967582649639,
+      "final_lateral_error_m": 0.03072127804778755,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "82725b90ecaf7d30ba43a17cadfa7e235ca2b69cbbb7a8b288e8c6fd0c9fae54"
+    },
+    {
+      "seed": 1009,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.008501557603035606,
+      "final_lateral_error_m": 0.008789766001749398,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "4dd2759558a3026eba8becf2850c6781edc8f7d1d2a1922f3ecfe6445276542b"
+    },
+    {
+      "seed": 1010,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.02432990759993717,
+      "final_lateral_error_m": 0.026089628372064688,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "4a6f0887e984cc29a01ccec390f851de36ce430ec86cb509f8cfac08bdf698e5"
+    },
+    {
+      "seed": 1011,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.005954448471848002,
+      "final_lateral_error_m": 0.03883909203103659,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "c3f9146efc115005e50f0a9a5e1de445ba6a5108fc6011742a99342d65950c00"
+    },
+    {
+      "seed": 1012,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.02910960639805203,
+      "final_lateral_error_m": 0.030948442041108803,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "38b47c65dffadbd29cc861218c2728efd6c928d6d5bc7705ca7c850f4231caa0"
+    },
+    {
+      "seed": 1013,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.007169603909659069,
+      "final_lateral_error_m": 0.013238438337227033,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "91ab7dcdaae3210e03c16ca30d8f2f0463a03b458a4cc305de9759353ff4fb3f"
+    },
+    {
+      "seed": 1014,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.02656814001669043,
+      "final_lateral_error_m": 0.02656814001669043,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "0e7345872b437664173bc26ab4fadabbc63e2286d364e2b3a15eca4d611fd0f5"
+    },
+    {
+      "seed": 1015,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.006057179180668436,
+      "final_lateral_error_m": 0.057325596130118235,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "74c9d0e67a35327a11c4883e043b1f8de69b1990f16182f40bed7e8dc1ce726b"
+    },
+    {
+      "seed": 1016,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.024565154286297422,
+      "final_lateral_error_m": 0.026362973641298325,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "95cd45ac647d306b6481444885f9bbd88a778dc0dc58a32daba7b7d6d98c06cd"
+    },
+    {
+      "seed": 1017,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.004168789356516382,
+      "final_lateral_error_m": 0.005065398097658874,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "9a552758c398394458b8cbb92dd903bedd8411e214ac6009d05009e774a0c330"
+    },
+    {
+      "seed": 1018,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "approach absent / nearly constant action",
+      "minimum_lateral_error_m": 0.028501571340765603,
+      "final_lateral_error_m": 0.030315080037708816,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "8ee2f71785fc5243e7701e8b8eb6dc74c6194e4bb853c0a575e2cb6db2244a05"
+    },
+    {
+      "seed": 1019,
+      "primary_class": "I",
+      "description": "Policy did not learn reliable approach/alignment",
+      "phase_failure": "partial approach followed by drift or overshoot",
+      "minimum_lateral_error_m": 0.013597593846133503,
+      "final_lateral_error_m": 0.0152064294113668,
+      "ever_geometrically_aligned": false,
+      "trace_sha256": "06358523859b0683c7722cb54b36835eda42c87706d985544bc7d283c01f556d"
+    }
+  ],
+  "checks": {
+    "A": "Excluded: all recorded chunks finite and shape (16,6).",
+    "B": "No adapter scaling defect found: normalization inverse roundtrip <=1e-8 and dataset labels match expert.",
+    "C_D": "Shared frame/convention path: expert 20/20; recorded-action replay seed 10 SUCCESS with max state error 3.65e-9.",
+    "E": "Common controller reproduces successful recorded trajectory; policy inputs already disagree with expert before contact.",
+    "F": "History 1, chunk 16, execution K=1, fresh observation at 15 Hz; no long open-loop chunk.",
+    "G": "Tensor preprocessing bit-exact on decoded training image; live/compressed image difference still to quantify. Off-trajectory states occur after policy drift.",
+    "H": "Not merely final insertion tolerance: every episode fails to reach simultaneous lateral/angular alignment; minimum lateral errors range 3.06-30.43 mm.",
+    "I": "Supported: baseline also misses recorded training actions; episode 0 first dx becomes near-zero after first frame, required approach persists about 0.7 s.",
+    "J": "Excluded for observed failures: physical collision, shallow depth and lateral error all reject insertion; same detector accepts expert/replay."
+  },
+  "next": "One-episode 5000-step overfit with unchanged normalization/model/15Hz K=1; no extra demonstrations."
+}

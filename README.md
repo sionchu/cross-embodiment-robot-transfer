@@ -29,7 +29,12 @@ and [full loss history](artifacts/training/act-10-001/loss.csv) identify the dat
 model, environment and source hashes. Training data consists solely of project-generated
 UR10e simulation; FIRe and DROID are references, not training data for this checkpoint.
 
-## Closed-loop results
+## Closed-loop debugging baseline
+
+The owner has prioritized recovery of reproducible learned-policy success. The
+0/20 checkpoint is preserved as a baseline; final media assembly is gated on a
+real learned held-out success. [Diagnostic evidence](artifacts/diagnostics/act-baseline-001/classification.json)
+records the active investigation.
 
 The table is generated from all fixed held-out episodes. Evaluation uses identical
 seeds, initial states, task tolerances and action bounds for both executed policies.

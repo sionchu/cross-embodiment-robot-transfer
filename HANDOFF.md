@@ -85,7 +85,21 @@ pinned dependencies/configs, compact execution evidence, README and this handoff
 No source data or model payloads are committed.
 
 ## Next concrete action
-Any follow-on experiment must preserve this checkpoint and held-out result. Use new
-run names as documented in scripts/local/README.md. Improved ACT training, larger
-datasets, FIRe mapping and actual GR00T adaptation are subsequent experiments,
-not missing claims to retrofit into this measured P0 result. Public release remains separate.
+Owner overrides priority: recover ACT learned success before final media assembly.
+0/20 baseline committed as 4204876. Exact-path expert already measured 20/20;
+verify replay, tensors, conventions, distributions, then one-episode overfit.
+Final media is blocked on learned success >0. FIRe candidate payloads (0,14,29,
+three views) and pinned metadata are cached at artifacts/runtime/fire-inspection;
+no source bridge or final media claim exists yet.
+
+## Active ACT diagnosis
+- Exact same evaluator/controller/detector expert baseline: 20/20.
+- Replay seed 10: SUCCESS in 48 steps, state error <=3.65e-9; replay-002.
+  replay-001 stopped because Isaac Python has no pandas; raw generator trace is
+  used with canonical float32 casting, without installing ML packages in Isaac.
+- Real checkpoint audit: 487 demo frames; train/adapter input tensors bit-exact;
+  label/expert comparison and normalization inverse pass. Temporal execution K=1.
+- All 20 baseline failures classified I with two observed approach patterns;
+  exact optimization cause remains under investigation, not asserted.
+- Running act-overfit-001: episode 0 only (seed 10), 5000 steps, same architecture
+  and full-training-set normalization; no extra data or changed success detector.

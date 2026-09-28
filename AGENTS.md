@@ -74,6 +74,21 @@ After that milestone only: 25/50/100 demos, FIRe source inspection/mapping,
 source-informed comparison, GR00T inference on available >=16 GB compute and
 fine-tuning on >=40 GB. Quantization is not P0. Media polish waits until evidence exists.
 
+### P0 priority override: recover learned-policy success (2026-09-29)
+
+The preserved 0/20 ACT result is a debugging baseline, not the final conclusion.
+Immediate order: exact-path expert -> recorded demonstration replay -> actual
+observation tensors -> normalization/frame/convention audit -> action distributions
+-> one-episode overfit -> same-condition closed-loop test -> fix proven cause ->
+retrain 10-demo ACT -> existing fixed 20-seed evaluation. Expand to 25/50 only if
+needed. Classify each failure A-J with evidence. No GR00T compute, quantization,
+alternative architecture or final editing during this loop. Final assembly requires
+at least one reproducible learned-policy held-out success; preserve all failures.
+Do not change seeds, substitute expert actions, intervene or relax only the video.
+Any justified task simplification must be deterministic, documented and shared by
+expert and ACT with a new protocol identity. Debug on training/development cases;
+held-out results confirm rather than drive tuning. Report actual denominators.
+
 ## 0. Mission
 
 Build and validate a reproducible cross-embodiment robot-learning pipeline:
@@ -594,116 +609,68 @@ Optional:
 - Rerun;
 - Jupyter/Colab notebook wrapper.
 
-## 17. Video / LinkedIn narrative
+## 17. Owner-approved real-source/media milestone (2026-09-29)
 
-Working title:
-**Can Robot Intelligence Transfer Across Robots? From Real Franka Data to an Isaac Sim UR10e**
+The owner extends local P0 with an evidence-linked video. Begin FIRe inspection now;
+do not wait for GR00T cloud compute. This section supersedes the older storyboard.
+The completed ACT checkpoint remains target-only and scored 0/20 held-out success.
+Do not retrospectively claim that it learned from FIRe or succeeded at insertion.
 
-Technical alternate:
-**Cross-Embodiment Robot Learning: Adapting GR00T N1.7 to a New UR10e Embodiment**
+Canonical source: `bhe1004/FIRe-VLA-GR00T-PegInsert-Real`. Inspect the card, actual
+media, views, license and state/action contract. Select 2-3 candidate episodes and
+one canonical episode/view. Pin revision, exact paths and hashes; cache only needed
+payloads outside Git. Keep third-party attribution and required license material.
 
-Do not title it as aerospace unless an aerospace-specific experiment is actually performed.
+Order: source inspection/provenance -> measured source trajectory -> verified
+Franka-to-task-space transform -> trajectory transition -> matched UR10e capture ->
+expert capture -> actual training evidence -> learned rollout -> measured result
+card -> architecture -> canonical cut -> claim/visual review -> hero and poster.
+Missing physical units, frames or camera calibration must remain explicit; never
+fabricate projected telemetry. A source-informed experiment needs its own lineage.
 
-Recommended final video:
-- 16:9, 1920×1080.
-- 30 fps export.
-- 55–75 seconds.
-- English on-screen technical captions.
-- Korean explanation belongs primarily in the LinkedIn post body if desired.
-- No cinematic intro longer than ~2 seconds.
+Deliver a 55-70 s 1920x1080 16:9 cut at 30 fps, understandable muted, then a 10-15 s
+hero and poster. Optional social formats wait for acceptance of the canonical cut.
+Hook: `GR00T N1.7 x UR10e / Real-World Cross-Embodiment Robot Learning`.
+Show actual Franka motion in the first frame; no black intro or unrelated footage.
 
-### Storyboard
+Canonical storyboard (seconds):
+- 0-4 real Franka hook; 4-9 episode/view and evidence-derived source overlays.
+- 9-17 morphology fades while actual task trajectory/frame persists; show six
+  translation/rotation deltas, then reveal the UR10e scene. No joint replay claim.
+- 17-24 analogous real/sim task; 24-31 source adapter/canonical dataset/modalities.
+- 31-37 ACT TRAINED + EVALUATED versus GR00T INTEGRATION READY, shared policy API.
+- 37-44 actual RTX 4070 Ti training/loss/checkpoint; 44-54 actual learned rollout.
+- 54-59 measured P0 smoke metrics; 59-65 whole pipeline and GR00T headline.
 
-**0–4 s — Hook**
-Visual: split-screen real Franka insertion source vs Isaac Sim UR10e.
-Caption:
-`Can robot intelligence transfer across robots?`
+A learned failure remains a failure; INSERT SUCCESS is allowed only for the actual
+policy that succeeded. GR00T TRAINED requires a real fine-tuning checkpoint.
+Do not connect source data to target-only training as if that transfer was executed.
 
-Sub-caption:
-`Real Franka demonstrations → Open-weight VLA → UR10e`
+## 18. Reproducible media implementation and acceptance
 
-**4–12 s — Real source evidence**
-Visual: licensed/public FIRe/DROID clip or dataset viewer capture.
-Caption:
-`Public real-robot data | Franka Panda`
-`Precision insertion demonstrations`
-Small source attribution on screen:
-`Source: Hugging Face public dataset — see project references`
+Use the smallest scripts that acquire selected source media, derive trajectories,
+capture simulation and render charts/cards from actual JSON/CSV. One canonical
+edit manifest maps shot/time/source/caption/transition/claim/evidence/truth status.
+Heavy output remains ignored with hashes and regeneration instructions. Internal
+classes: PUBLIC_REAL_DATA, PROJECT_SIM_EXPERT, PROJECT_SIM_LEARNED,
+PROJECT_TRAINING, PROJECT_EVALUATION, ARCHITECTURE_GRAPHIC.
 
-**12–20 s — Representation bridge**
-Visual: freeze frame; overlay source EEF frame, target EEF frame, Δpose arrow.
-Captions:
-`Different joints. Shared task-space motion.`
-`Relative end-effector action`
+Define only needed HERO, MATCHED_SOURCE, CLOSE_INSERTION and EVALUATION cameras;
+record transform, resolution, seed, task episode, policy and frame range. Rendering
+must not change policy observations or advance physics. Never substitute expert
+footage for learned control. Altered playback speed must be labeled.
 
-Show a simple transformation graphic:
-`Franka → canonical EEF action → UR10e`
+Keep overlays restrained and legible: actual video, trajectory, coordinate frames,
+real loss and generated results. No fake HUD, stock robots or invented sounds.
+Audio is optional; any music must have a recorded usable license.
 
-**20–31 s — Open-weight model**
-Visual: clean architecture card, not a wall of logos.
-Captions:
-`GR00T N1.7 — open-weight cross-embodiment VLA`
-`Cosmos-Reason2-2B + flow-matching DiT action head`
-`Target robot registered as NEW_EMBODIMENT`
+G5 PASS requires real FIRe footage and provenance; an actual architecture-backed
+Real -> task-space -> UR10e transition; expert and learned rollout evidence; real
+ACT training; generated evaluation values; explicit ACT/GR00T status distinction;
+no unsupported transfer/fine-tuning claim; clear real/simulation identity; muted
+comprehensibility; and an edit manifest linking every claim to evidence.
+Final assembly waits only on genuinely missing evidence, not cloud entitlement.
 
-**31–44 s — Target simulator**
-Visual: UR10e target randomization montage and one complete insertion.
-Captions:
-`Isaac Sim | UR10e precision insertion`
-`Randomized target pose + fixed held-out seeds`
-State callouts:
-`APPROACH → ALIGN → INSERT → VERIFY`
-
-**44–57 s — Experiment**
-Visual: data-size cards and training/eval plots.
-Captions:
-`10 / 25 / 50 / 100 target demonstrations`
-`GR00T adaptation vs ACT from scratch`
-`Same held-out episodes. Closed-loop evaluation.`
-
-**57–68 s — Results**
-Visual: final success-vs-data curve plus one matched pair of rollout clips.
-Caption template:
-`Target-data efficiency`
-`ACT: <measured>`
-`GR00T: <measured>`
-Never place placeholder numbers into the final render.
-
-**68–75 s — Engineering boundary/end card**
-Caption:
-`Transfer is measured, not assumed.`
-`Public real data → reproducible embodiment adaptation`
-Small footer:
-`Simulation target only. No real UR10e validation claimed.`
-
-## 18. Premiere Pro editing guidance
-
-Use Premiere only to improve comprehension, never to manufacture evidence.
-
-Recommended effects:
-- split-screen Crop for source-vs-target comparison;
-- Match Cut at the moment both robots enter insertion alignment;
-- keyframed Transform/Scale for 5–10% push-ins on important pose details;
-- freeze frame for the embodiment/action explanation;
-- simple tracked line/arrow graphics for EEF Δpose;
-- Linear Wipe or mask reveal for metric curves;
-- subtle Time Remapping only for non-measurement B-roll;
-- clean lower thirds for model/dataset IDs;
-- hard cuts or 4–8 frame dissolves; avoid flashy transitions;
-- very light UI click/servo sound design only if it does not obscure narration.
-
-Do not:
-- use fake HUD numbers;
-- speed up a measured rollout without an explicit `2×` / `4×` badge;
-- crop away failures when presenting quantitative results;
-- add synthetic robot sounds that imply hardware execution;
-- show another dataset’s robot footage while labeling it as UR10e.
-
-Suggested visual language:
-- engineering-white/neutral background;
-- one consistent accent color;
-- monospace labels for model/dataset IDs;
-- large result numbers only when sourced from final JSON.
 ## 19. LinkedIn post claim boundaries
 
 Allowed after evidence exists:

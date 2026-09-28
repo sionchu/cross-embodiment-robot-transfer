@@ -126,7 +126,14 @@ def train(args):
         pretrained_backbone_weights=None,optimizer_lr=1e-4,optimizer_lr_backbone=1e-4)
     model=LeRobotACT(config).cuda()
     data=CanonicalDataset(args.dataset,config.chunk_size)
-    loader=torch.utils.data.DataLoader(data,batch_size=args.batch_size,shuffle=True,num_workers=0,
+    selected=list(range(len(evidence['train_seeds']))) if args.episodes is None else args.episodes
+    if not selected or len(set(selected))!=len(selected) or any(i<0 or i>=len(evidence['train_seeds']) for i in selected):
+        raise ValueError('INVALID_TRAINING_EPISODES')
+    lengths=[e['length'] for e in jsonl(args.dataset/'meta/episodes.jsonl')]
+    starts=np.r_[0,np.cumsum(lengths)]
+    indices=[j for i in selected for j in range(int(starts[i]),int(starts[i+1]))]
+    training_data=torch.utils.data.Subset(data,indices)
+    loader=torch.utils.data.DataLoader(training_data,batch_size=args.batch_size,shuffle=True,num_workers=0,
                                        generator=torch.Generator().manual_seed(args.seed))
     optimizer=torch.optim.AdamW(model.get_optim_params(),lr=config.optimizer_lr,
                                 weight_decay=config.optimizer_weight_decay)
@@ -137,7 +144,10 @@ def train(args):
         'dependency_lock_sha256':hashlib.sha256((ROOT/'scripts/local/requirements.lock.txt').read_bytes()).hexdigest(),
         'gr00t_commit':pins['upstream']['commit'],'lerobot_commit':pins['local']['lerobot']['commit'],
         'dataset_id':args.dataset.name,'dataset_sha256':evidence['dataset_sha256'],
-        'train_seeds':evidence['train_seeds'],'held_out_seeds':evidence['held_out_seeds'],
+        'train_seeds':[evidence['train_seeds'][i] for i in selected],
+        'training_episode_indices':selected,'training_frames':len(indices),
+        'normalization_source':'full canonical training dataset; unchanged for subset sanity',
+        'held_out_seeds':evidence['held_out_seeds'],
         'training_seed':args.seed,'steps':args.steps,'batch_size':args.batch_size,'initialization':'from scratch',
         'device':torch.cuda.get_device_name(0),'device_total_bytes':torch.cuda.get_device_properties(0).total_memory,
         'packages':{k:importlib.metadata.version(k) for k in ('torch','torchvision','lerobot','av','numpy')},
@@ -189,6 +199,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
     parser.add_argument('--steps',type=int,default=1000)
     parser.add_argument('--batch-size',type=int,default=8)
     parser.add_argument('--seed',type=int,default=20260929)
