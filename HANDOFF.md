@@ -34,15 +34,13 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
   task audit remains ANALOGOUS_TASK, with related-code dimensions explicitly unconfirmed.
 
 ## Current checkpoint
-Latest controlled run act-10-h1-backbonelr-001 (backbone LR1e-5, other settings unchanged)
-completed 5000 steps and reload PASS. Image projection RMS fell 421.55 → .03637 and
-translation response returned, but development remained 0/2 COLLISION; initial rotation
-outputs remain near constant. The10000-step run act-10-h1-long-001 also completed and failed both development seeds.
-Its first5000 loss rows exactly reproduce the5000-step control; initial rotation remains
-near constant. Next controlled factor: orientation-balanced sampling on the SAME487
-frames, assigning probability mass.5 to23 frames with rotation-action norm>.003rad.
-Comparator is the5000-step act-10-h1-backbonelr-001; all model/optimizer/seed/data settings
-remain identical. No new held-out result or additional demonstrations.
+Orientation-balanced ACT recovered rotation-dependent predictions and actual orientation
+alignment, but development0/1 both collided at~4.5mm lateral error. The known training
+seed10 also collided at7.35mm. Thus extra demonstrations are not yet the justified fix.
+The rotation-only sampler reduced lateral-phase probability to~11%; actual label groups
+are rotation23, lateral102, settled362. Next experiment act-10-phase-balanced-001 changes
+only sampling to equal mass across these three groups, keeping5000 steps/data/model/LRs.
+No new held-out evaluation or target demonstrations were generated.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
 provenance is unresolved. No source-informed training or data-efficiency claim exists.
@@ -89,10 +87,10 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Run and inspect act-10-balanced-001 (same5000-step control, sampling change only), then
-same development protocol. Retain all failures and do not alter evaluation seeds.
-Input sensitivity and CVAE diagnostics ruled out a latent gap in the5000-step control;
-rotation response is nearly zero. New sampler directly tests rare-alignment supervision.
+Run act-10-phase-balanced-001 and check physical predictions and the same development
+seeds; use the known training condition if needed. No new data, controller/tolerance change,
+expert fallback or held-out tuning. Full35-test suite passed before the sampler extension;
+new sampler modes are verified through actual controlled training and saved configurations.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. Local diagnostics continue.
 Source regeneration: python scripts/local/fire.py --download, then offline command without

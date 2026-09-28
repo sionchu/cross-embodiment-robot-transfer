@@ -1,0 +1,41 @@
+{
+  "control": "artifacts/training/act-10-h1-backbonelr-001",
+  "candidate": "artifacts/training/act-10-balanced-001",
+  "identical_model_config": true,
+  "unchanged_training_fields": {
+    "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+    "training_episode_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "steps": 5000,
+    "batch_size": 8,
+    "training_seed": 20260929,
+    "normalization_source": "full canonical training dataset; unchanged for subset sanity"
+  },
+  "changed_factor": {
+    "mode": "orientation-balanced",
+    "rotation_threshold_rad": 0.003,
+    "critical_frames": 23,
+    "total_frames": 487,
+    "critical_probability_mass": 0.5000000055879354,
+    "replacement": true,
+    "sampler_seed": 20260929,
+    "target_data_unchanged": true
+  },
+  "control_sampling": "uniform shuffle, no replacement within epoch",
+  "loss_comparability": "Sampling objective differs; use physical prediction and closed-loop metrics, not aggregate training-loss difference.",
+  "result": "Initial orientation response recovered; development0/2 and known training seed10 both collide from remaining lateral error. No held-out claim.",
+  "evaluation": [
+    "artifacts/eval/act-10-balanced-dev-001",
+    "artifacts/eval/act-10-balanced-train-001"
+  ]
+}

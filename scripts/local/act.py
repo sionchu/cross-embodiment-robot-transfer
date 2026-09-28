@@ -135,13 +135,24 @@ def train(args):
     training_data=torch.utils.data.Subset(data,indices)
     sampler=None
     sampling={'mode':args.sampling}
-    if args.sampling=='orientation-balanced':
+    if args.sampling!='uniform':
         action_stats=data.statistics['action']
         physical=data.actions[indices]*torch.tensor(action_stats['std']).clamp_min(1e-6)+torch.tensor(action_stats['mean'])
         critical=torch.linalg.vector_norm(physical[:,3:],dim=1)>.003
         count=int(critical.sum())
         if not 0<count<len(indices): raise ValueError('BOTH_ORIENTATION_SAMPLING_GROUPS_REQUIRED')
-        weights=torch.where(critical,.5/count,.5/(len(indices)-count)).double()
+        if args.sampling=='orientation-balanced':
+            weights=torch.where(critical,.5/count,.5/(len(indices)-count)).double()
+        else:
+            lateral=(torch.linalg.vector_norm(physical[:,:2],dim=1)>.0003)&~critical
+            groups=[critical,lateral,~(critical|lateral)]
+            counts=[int(mask.sum()) for mask in groups]
+            if min(counts)<1: raise ValueError('ALL_PHASE_SAMPLING_GROUPS_REQUIRED')
+            weights=torch.zeros(len(indices),dtype=torch.double)
+            for mask,n in zip(groups,counts): weights[mask]=1/(3*n)
+            sampling.update({'phase_order':['rotation','lateral_alignment','settled'],
+                'phase_counts':counts,'phase_probability_mass':[float(weights[m].sum()) for m in groups],
+                'lateral_action_threshold_m':.0003})
         sampler=torch.utils.data.WeightedRandomSampler(weights,len(indices),replacement=True,
                     generator=torch.Generator().manual_seed(args.seed))
         sampling.update({'rotation_threshold_rad':.003,'critical_frames':count,'total_frames':len(indices),
@@ -215,7 +226,7 @@ if __name__=='__main__':
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--chunk-size',type=int,default=16)
-    parser.add_argument('--sampling',choices=['uniform','orientation-balanced'],default='uniform')
+    parser.add_argument('--sampling',choices=['uniform','orientation-balanced','phase-balanced'],default='uniform')
     parser.add_argument('--backbone-lr',type=float,default=1e-4,help='Explicit controlled backbone optimizer rate; historical default preserved.')
     parser.add_argument('--backbone-weights',choices=['none','imagenet'],default='none')
     parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
