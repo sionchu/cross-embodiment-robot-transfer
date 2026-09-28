@@ -15,6 +15,11 @@ third-party public research data declaring Apache-2.0. [Actual source inspection
 [the task audit](artifacts/datasets/fire_task_audit.json) currently classifies the tasks as
 ANALOGOUS_TASK. Source-informed learning remains unexecuted; no data-efficiency result is claimed.
 
+![Actual FIRe episode 29 wrist-camera frame](artifacts/datasets/fire_real_source.png)
+
+Real source: FIRe episode 29, wrist_view, frame 0. Third-party research data;
+[attribution and modifications](references/FIRe-source-credit.md).
+
 ```mermaid
 flowchart LR
   F[Real FIRe Franka data] --> R[Relative EEF representation]
