@@ -53,7 +53,14 @@ it is not a transfer or closed-loop task-success metric.
 `NEW_EMBODIMENT` requires an explicit modality configuration. The current
 [custom embodiment example](https://github.com/NVIDIA/Isaac-GR00T/blob/51d4c89f72fda44cbf77285c6a8114b52676b8a1/getting_started/finetune_new_embodiment.md)
 is SO100 joint-space, so it does not by itself settle a UR10e task-space adapter.
-That decision remains deferred until E0 succeeds.
+Local target actions now use a documented six-dimensional hole-frame delta with
+rotvec left composition; see `scripts/local/README.md`. The custom registered config
+is `configs/groot_ur10e.py`. Stored deltas bypass the pinned processor's optional
+absolute-to-relative conversion (`rep=ABSOLUTE`, `type=EEF`, `format=XYZ_ROTVEC`);
+the enum is a preprocessing switch, not a claim that these are absolute world poses.
+Using RELATIVE would incorrectly transform the already-encoded deltas again.
+Official-loader and normalization round-trip evidence is recorded separately from E0;
+passing it does not prove model execution or successful GR00T adaptation.
 
 ## Provenance and licenses
 

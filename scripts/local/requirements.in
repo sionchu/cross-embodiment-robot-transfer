@@ -1,0 +1,9 @@
+lerobot @ git+https://github.com/huggingface/lerobot.git@eb7a54c6ff4983fc86075442bf4fa61503e7b5d1
+torch==2.9.0
+torchvision==0.24.0
+torchcodec==0.8.1
+numpy==2.2.6
+scipy==1.17.0
+pandas==2.3.3
+pyarrow==21.0.0
+av==15.1.0

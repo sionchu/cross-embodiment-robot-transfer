@@ -7,8 +7,16 @@
     "lock_sha256": "0d67d3b0dd41b28375bbc2351eefc9e064cbad2d1c40682a52b97fc625a60f19"
   },
   "models": [
-    {"id": "nvidia/GR00T-N1.7-3B", "revision": "2fc962b973bccdd5d8ce4f67cc63b264d6886495", "license": "NVIDIA Open Model License Agreement, per pinned model card"},
-    {"id": "nvidia/GR00T-N1.7-DROID", "revision": "05e7cc97e40dbd33b0890c35cc0214fcb0547ab5", "license": "NVIDIA Open Model License Agreement, per pinned model card"}
+    {
+      "id": "nvidia/GR00T-N1.7-3B",
+      "revision": "2fc962b973bccdd5d8ce4f67cc63b264d6886495",
+      "license": "NVIDIA Open Model License Agreement, per pinned model card"
+    },
+    {
+      "id": "nvidia/GR00T-N1.7-DROID",
+      "revision": "05e7cc97e40dbd33b0890c35cc0214fcb0547ab5",
+      "license": "NVIDIA Open Model License Agreement, per pinned model card"
+    }
   ],
   "backbone": {
     "id": "nvidia/Cosmos-Reason2-2B",
@@ -31,18 +39,44 @@
     "torch": "2.9.0",
     "cuda_wheel_index": "cu128",
     "torchcodec": "0.8.0",
-    "ffmpeg_major": [4, 5, 6, 7],
+    "ffmpeg_major": [
+      4,
+      5,
+      6,
+      7
+    ],
     "inference_min_vram_bytes": 15000000000,
     "inference_vram_gate_note": "Operational torch-visible floor for nominal 16 GB-class GPUs; NVIDIA's official minimum remains 16 GB+ VRAM and real inference is the final viability check.",
     "finetune_min_vram_bytes": 40000000000
   },
   "official_files_reviewed": [
-    "README.md", "LICENSE", "pyproject.toml", "uv.lock", ".gitmodules",
-    "examples/DROID/README.md", "getting_started/data_preparation.md",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+    "uv.lock",
+    ".gitmodules",
+    "examples/DROID/README.md",
+    "getting_started/data_preparation.md",
     "getting_started/finetune_new_embodiment.md",
     "scripts/deployment/standalone_inference_script.py",
     "gr00t/model/modules/qwen3_backbone.py",
     "gr00t/configs/data/embodiment_configs.py",
-    "demo_data/droid_sample/meta/info.json", "demo_data/droid_sample/meta/modality.json"
-  ]
+    "demo_data/droid_sample/meta/info.json",
+    "demo_data/droid_sample/meta/modality.json"
+  ],
+  "local": {
+    "lerobot": {
+      "url": "https://github.com/huggingface/lerobot",
+      "commit": "eb7a54c6ff4983fc86075442bf4fa61503e7b5d1",
+      "license": "Apache-2.0"
+    },
+    "dependencies": "scripts/local/requirements.lock.txt",
+    "ffmpeg_reader": {
+      "url": "https://github.com/GyanD/codexffmpeg/releases/download/7.1.1/ffmpeg-7.1.1-full_build-shared.7z",
+      "sha256": "b73e7ed754d7aae42783bb3d768c33f0c8dbe53ed9859b7cf910a23d442780b3",
+      "version": "7.1.1 shared Windows x64",
+      "license": "GPLv3 binary build; downloaded locally, not redistributed"
+    },
+    "note": "Separate Windows data/ACT environment; does not change the pinned official Linux E0 environment."
+  }
 }

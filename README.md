@@ -9,8 +9,11 @@ closed-loop held-out evaluation. GR00T N1.7 remains the foundation-model integra
 target. The official UR10e environment and deterministic expert smoke now run locally.
 Seeds 0, 0 and 1 succeeded; repeated seed results matched exactly. A deliberate
 15 mm miss was rejected as a physical collision. See [measured G1 evidence](artifacts/simulation/g1_smoke.json)
-and [local execution/action contract](scripts/local/README.md). Demonstration dataset
-export, ACT training and learned-policy evaluation have not yet run.
+and [local execution/action contract](scripts/local/README.md). Ten successful expert
+demonstrations now form one canonical dataset: 487 synchronized RGB/state/action
+frames. Schema, corruption checks, the pinned official GR00T episode loader and
+its action normalization round-trip passed; see [G2 evidence](artifacts/datasets/validation.json).
+ACT training and learned-policy evaluation have not yet run.
 
 E0 is an independent GR00T runtime gate, not a prerequisite for local target learning.
 The existing project record reports a T4 pinned installation and gated access followed
@@ -26,10 +29,10 @@ closed-loop GR00T results remain unexecuted.
 - [Verified upstream contract](references/gr00t_contract.md)
 - [Execution checkpoint](HANDOFF.md)
 
-Local checks (Python 3.12 with NumPy and SciPy; E0-only tests use the standard library):
+Local checks after the [isolated ML setup](scripts/local/README.md) and dataset generation:
 
 ```text
-python -m unittest discover -s tests -v
+.venv/Scripts/python.exe -m unittest discover -s tests -v
 ```
 
 Weights, datasets, caches and raw run folders stay outside Git. Review compact

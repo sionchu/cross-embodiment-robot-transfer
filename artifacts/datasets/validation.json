@@ -1,0 +1,289 @@
+{
+  "status": "PASS",
+  "episodes": 10,
+  "frames": 487,
+  "video_frames": [
+    48,
+    48,
+    49,
+    48,
+    48,
+    49,
+    50,
+    49,
+    49,
+    49
+  ],
+  "train_seeds": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "held_out_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "official_loader": "PASS",
+  "episode_results": [
+    {
+      "episode_index": 0,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 48,
+      "seed": 10,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        3.499380124855372e-05,
+        0.00010950504864824205,
+        0.027497836021029634,
+        -0.0008266000583079902,
+        -4.091132278186427e-05,
+        0.0001068120021663691
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 1,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 48,
+      "seed": 11,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        2.676591714033698e-05,
+        0.00010971804289047327,
+        0.02556998208780866,
+        -0.0008200268359069917,
+        -5.907603022021328e-05,
+        9.886555298127135e-05
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 2,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 49,
+      "seed": 12,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        3.5201084560605646e-05,
+        0.00010904263524255409,
+        0.025208302126615085,
+        -0.0008392895949759472,
+        -1.967698067162279e-05,
+        0.00010120107543956339
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 3,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 48,
+      "seed": 13,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        2.256419956446e-05,
+        0.00010923642194240213,
+        0.02732600094635814,
+        -0.0008432542313224727,
+        -8.579385970706793e-05,
+        9.422510090605954e-05
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 4,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 48,
+      "seed": 14,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        3.3746138484640197e-05,
+        0.0001230537683230944,
+        0.0261899939357629,
+        -0.0008203397946690132,
+        -6.328805586907489e-05,
+        0.00011128612590011744
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 5,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 49,
+      "seed": 15,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        3.837101157200158e-05,
+        0.00010598309761910507,
+        0.02675486662677244,
+        -0.0008457278304235538,
+        -2.6514412825734345e-05,
+        0.0001055737584265542
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 6,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 50,
+      "seed": 16,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        4.084365617936486e-05,
+        0.0001169311651785121,
+        0.026804572926882323,
+        -0.0008231577759896004,
+        -1.4817222641043712e-05,
+        0.00011002185705989478
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 7,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 49,
+      "seed": 17,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        2.8975350478782236e-05,
+        0.00011740574337543807,
+        0.027462546189553377,
+        -0.0008168603681105624,
+        -4.912825726987757e-05,
+        0.00010101290342905567
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 8,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 49,
+      "seed": 18,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        4.2018818953425416e-05,
+        0.00010902162949129736,
+        0.026312960681521072,
+        -0.0008356757786748002,
+        -4.73328165556629e-05,
+        0.00011600495223717622
+      ],
+      "max_contact_n": 0.0
+    },
+    {
+      "episode_index": 9,
+      "tasks": [
+        "Insert the fixed square peg into the receptacle."
+      ],
+      "length": 49,
+      "seed": 19,
+      "success": true,
+      "expert": "measured_jacobian_scripted",
+      "final_state": [
+        2.9761336965308082e-05,
+        0.00010800744618625117,
+        0.025996912355062848,
+        -0.0008419889324573885,
+        -5.8176931015716866e-05,
+        0.00010024090835916987
+      ],
+      "max_contact_n": 0.0
+    }
+  ],
+  "generator_source_sha256": "38e5614c61dd8ac865416ce91b025fe79261785275ed8cfaf1b91845b4322aec",
+  "validator_sha256": "cbf47d908098b7dd59a5fba228f8bc000575220f48dfe84a8ebf4596dddd268e",
+  "modality_config_sha256": "46c35c0e3cbb7e000c15274da6b538a9a02637ad42972b71a3bcffee2cc2a695",
+  "project_dirty": true,
+  "project_commit": "0155e3ed809f64dfa604c1684c2df48bc816a6c5",
+  "official_action_roundtrip": "PASS",
+  "gr00t_commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+  "reader_environment": {
+    "torch": "2.9.0+cu128",
+    "torchcodec": "0.8.1",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "pyarrow": "21.0.0"
+  },
+  "ffmpeg_reader": "7.1.1 shared",
+  "files_sha256": {
+    "data/chunk-000/episode_000000.parquet": "cc49584a13839ae9383d3944ef90ff3a6245eac4959c24bf0f15103d6c31d691",
+    "data/chunk-000/episode_000001.parquet": "9e10f88548e57a7d78488eb0bfc6fdb5f22d762f6efd6a3aef512489797a894b",
+    "data/chunk-000/episode_000002.parquet": "46a8541d3171d4a6535dc1c9c9962f52aab4f080c774031b7c737d26ea76a2c3",
+    "data/chunk-000/episode_000003.parquet": "671854bda1cda69fa19613baed46e2d0749127d24884c7ae6c1601b480cfbf98",
+    "data/chunk-000/episode_000004.parquet": "76fa22142399cdc3c28eda994911c9882bcbe95b00bd2e88caa72ff2c5a17d1b",
+    "data/chunk-000/episode_000005.parquet": "8041c63764e3c59cf9be1356608e7ca709004befb70a3fd840602604ce6490df",
+    "data/chunk-000/episode_000006.parquet": "fea85bf2b15f8ce66e73efbf8346da7076e004f123c6e21b58a48997af040510",
+    "data/chunk-000/episode_000007.parquet": "11c7d493929080e9301e2f820bb611ff4fd39345f5f9b38b3491e7f5831be284",
+    "data/chunk-000/episode_000008.parquet": "cf41267581bcfc079e4122e5cea29b29ebec0b4c8f70a597608977dfc2f99b3a",
+    "data/chunk-000/episode_000009.parquet": "915c0ad7c76200873538c7d75d6cbdfb8bc19f574d5ad3387aa98b83327cd518",
+    "meta/episodes.jsonl": "2e388dab6c99963d2a12fc3cb5e92656fbf47750ddc21433d57193f3683aab48",
+    "meta/episodes_stats.jsonl": "e537534ff6596f6f56c2587b28a754aac02d6f9affb6f2a76c8d49b9cc9e6dbb",
+    "meta/info.json": "9cb18d8ade6ddc4d6661edaf8b0d79dbdbfc03514f56938f99d811e1f6843c62",
+    "meta/modality.json": "58f8011a6e74f100ed6315843c75d926b5f62f624e113d1eda4823e66550674b",
+    "meta/provenance.json": "916a55216f4e0c4a42a88441a21844533cc87f4c9c5eaec92e14c20e7f5de1b8",
+    "meta/stats.json": "9a527378dd397e24ab3fae0cbb482c3b25973df0e62e2b740bd47aa7d760f787",
+    "meta/tasks.jsonl": "87a88f773b99b4b636e193237ff6dd0823b6ab4f2d407b92a946e8414a1b6776",
+    "videos/chunk-000/observation.images.front/episode_000000.mp4": "e655fe6f970afcc2181be313142adcde1f4b1d2fd629048b7b4df09814c1e8b9",
+    "videos/chunk-000/observation.images.front/episode_000001.mp4": "c0906d269e54f67309ce24b35964b11bc3c4691444411ea43d788eed2ef0c4ef",
+    "videos/chunk-000/observation.images.front/episode_000002.mp4": "8eaf74cb2ed6dcbd0d5dd3424c3fdfc60d18f8b7b9900dda41b3221dd58ef1a4",
+    "videos/chunk-000/observation.images.front/episode_000003.mp4": "2af85fd53ce4475785f3e535193601f3fd8745714006324905b400e8d0f86988",
+    "videos/chunk-000/observation.images.front/episode_000004.mp4": "bac73bd7d6af3225e94bf075abd66b00207002edfc9bf391f95ce79657dfcc20",
+    "videos/chunk-000/observation.images.front/episode_000005.mp4": "00f3e9ae37c1da7c961587c1bf655a68cdc84dba2c74f05b06177b08d6cfc0db",
+    "videos/chunk-000/observation.images.front/episode_000006.mp4": "87fbb08acb32b63d3251cbff0b3708a306419124aeb8726f95b57993ef2b66cc",
+    "videos/chunk-000/observation.images.front/episode_000007.mp4": "da1d73b81fea3c800d1cfaa74d7d9b89ae5047f27f072eb5bdc3767631c1445c",
+    "videos/chunk-000/observation.images.front/episode_000008.mp4": "e7cf66b8e32709360059acc260ad3686297058da5390d24568e43faac9aebfaa",
+    "videos/chunk-000/observation.images.front/episode_000009.mp4": "8203b9a96b738bdfa0294d8856a66842672079ab9ff6d235e65d1b50b6dd5c13"
+  },
+  "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017"
+}

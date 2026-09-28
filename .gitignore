@@ -19,7 +19,7 @@ hf_cache/
 wandb/
 checkpoints/
 weights/
-datasets/
+/datasets/
 raw_data/
 *.safetensors
 *.pt

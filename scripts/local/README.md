@@ -44,3 +44,35 @@ Sources: [NVIDIA articulation API](https://docs.isaacsim.omniverse.nvidia.com/6.
 Local implementation was checked against installed 6.0.1 API source. The separate
 Apache-2.0 aerospace reference supplied examples of asset loading, SimulationApp
 startup and Replicator capture; no runtime import or modification of that project occurs.
+
+## Canonical dataset and isolated ML environment
+
+Run `./scripts/local/setup.ps1` with Python 3.12, uv, Git, FFmpeg/ffprobe and 7-Zip
+installed. It installs the pinned Windows ML dependencies in `.venv`, checks CUDA,
+checks out the pinned GR00T data reader and downloads hash-verified shared FFmpeg
+7.1.1 into `.external`. TorchCodec uses these DLLs through a process-local directory
+handle. Isaac Sim and the Linux E0 dependency pins remain separate.
+
+```powershell
+& C:\isaacsim\python.bat scripts/local/insertion.py --seeds 10 11 12 13 14 15 16 17 18 19 --record --output artifacts/runtime/demos-new
+.venv/Scripts/python.exe scripts/local/dataset.py --raw artifacts/runtime/demos-new --dataset datasets/ur10e_10 --upstream .external/Isaac-GR00T --report artifacts/datasets/validation.json
+.venv/Scripts/python.exe -m unittest discover -s tests -v
+```
+
+Both output directories must be new. To validate an existing dataset, omit `--raw`.
+The recorded run produced 10 successful episodes and 487 synchronized frames. The
+training, development and held-out seed lists are frozen in `configs/seeds.json`.
+Corruption tests require this real dataset; a fresh checkout without it reports
+those tests as skipped, not passed.
+
+Recording captures RGB before each action and checks that rendering neither advances
+physics nor changes the corresponding state. Actual simulation timestamps and video
+PTS are checked against the 15 Hz control cadence. The single v2.1 directory contains
+Parquet, MP4, modality/task metadata, statistics and generation provenance; ACT reads
+this same dataset through a runtime adapter.
+
+`configs/groot_ur10e.py` registers NEW_EMBODIMENT with a 16-step action horizon.
+`ABSOLUTE` is the official preprocessing bypass for already-encoded task-frame deltas,
+not a world-absolute pose command. The pinned official episode loader read all 487
+frames and its action processor round-tripped every action. This verifies the data
+contract; it does not establish GR00T model execution or target-policy competence.

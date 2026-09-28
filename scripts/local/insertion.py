@@ -192,7 +192,10 @@ class InsertionEnv:
 
     def image(self):
         for _ in range(10):
+            before = self.SM.get_simulation_time()
             self.rep.orchestrator.step(rt_subframes=2,delta_time=0.,pause_timeline=False)
+            if abs(self.SM.get_simulation_time()-before)>1e-9:
+                raise RuntimeError('CAPTURE_ADVANCED_PHYSICS')
             image = self.rgb.get_data()
             if getattr(image,'size',0):
                 return np.asarray(image)[...,:3].copy()
@@ -203,6 +206,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--seeds',type=int,nargs='+',default=[0,0,1])
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--record',action='store_true',help='Record one RGB frame per pre-action state at 15 Hz.')
     parser.add_argument('--collision-check',action='store_true',help='Intentionally miss the hole by 15 mm; expect physical contact failure.')
     args=parser.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
@@ -223,20 +227,38 @@ def main():
         report['gpu']=subprocess.check_output(['nvidia-smi','--query-gpu=name,memory.total','--format=csv,noheader'],text=True).strip()
         for i,seed in enumerate(args.seeds):
             state=env.reset(seed)
+            simulation_start=env.SM.get_simulation_time()
             initial=state.tolist()
             Image.fromarray(env.image()).save(args.output/f'{i:02d}_start.png')
             outcome=None
             trace=[]
+            frames=[]
             while outcome is None:
+                if args.record:
+                    frames.append(env.image())
+                    if not np.allclose(env.state(),state,atol=1e-9,rtol=0):
+                        raise RuntimeError('CAPTURE_STATE_MISMATCH')
                 policy_state=state.copy()
                 if args.collision_check:
                     policy_state[0]-=0.015
                 action,phase=expert(policy_state)
-                trace.append({'state':state.tolist(),'action':action.tolist(),'phase':phase})
+                trace.append({'state':state.tolist(),'action':action.tolist(),'phase':phase,
+                              'timestamp':env.steps*CONFIG['physics_dt']*CONFIG['control_substeps'],
+                              'simulation_timestamp':env.SM.get_simulation_time()-simulation_start})
                 state,outcome=env.step(action)
+            if args.record:
+                video=args.output/f'{i:02d}_front.mp4'
+                fps=1/(CONFIG['physics_dt']*CONFIG['control_substeps'])
+                subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-f','rawvideo',
+                                '-pix_fmt','rgb24','-s','640x480','-r',str(fps),'-i','pipe:0',
+                                '-an','-c:v','libx264','-crf','18','-pix_fmt','yuv420p',
+                                '-movflags','+faststart',str(video)],
+                               input=b''.join(frame.tobytes() for frame in frames),check=True)
             Image.fromarray(env.image()).save(args.output/f'{i:02d}_end.png')
             row={'seed':seed,'outcome':outcome,'steps':env.steps,'initial_state':initial,
-                 'final_state':state.tolist(),'max_contact_n':env.max_contact}
+                 'final_state':state.tolist(),'max_contact_n':env.max_contact,
+                 'recorded_frames':len(frames),
+                 'unique_rgb_frames':len({hashlib.sha256(f.tobytes()).digest() for f in frames})}
             report['episodes'].append(row)
             (args.output/f'{i:02d}_trace.json').write_text(json.dumps(trace))
             print('EPISODE',json.dumps(row),flush=True)

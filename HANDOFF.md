@@ -25,9 +25,10 @@ Unavailable GR00T execution must not acquire fabricated metrics.
 - Deliberate 15 mm miss terminated COLLISION at 98.3386 N; reviewed actual RGB frames.
 
 ## Current checkpoint
-G1 local simulator smoke is verified; next is synchronized per-frame demonstration
-capture and the single GR00T v2 export. Compact evidence and three inspected frames
-are in artifacts/simulation/. This is scripted expert evidence, not learned control.
+G2 canonical dataset is verified: 10 successful episodes, 487 frames. Pinned official
+GR00T loader and action round-trip PASS are in artifacts/datasets/validation.json.
+This is scripted expert/data evidence, not learned control. Fixed held-out seeds
+1000-1019 are in configs/seeds.json before ACT training; 0 and 1 are development only.
 No E0 PASS artifact is committed; GR00T remains independent and compute-deferred.
 
 ## Decisions and reasons
@@ -38,6 +39,18 @@ No E0 PASS artifact is committed; GR00T remains independent and compute-deferred
 - Keep exact upstream/model pins and existing E0 failure diagnostics.
 
 ## Verification evidence
+- scripts/local/setup.ps1: exit 0; locked environment, torch 2.9.0+cu128 and RTX 4070 Ti CUDA.
+- C:\isaacsim\python.bat scripts/local/insertion.py --seeds 10 11 12 13 14 15 16 17 18 19 --record --output artifacts/runtime/demos-01:
+  exit 0; all 10 SUCCESS, no contact, 487 distinct per-episode RGB frames total.
+- .venv/Scripts/python.exe scripts/local/dataset.py --dataset datasets/ur10e_10 --upstream .external/Isaac-GR00T --report artifacts/datasets/validation.json:
+  PASS, official_loader PASS, official_action_roundtrip PASS.
+- Dataset SHA256: cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017.
+- .venv/Scripts/python.exe -m unittest discover -s tests -v: 22 passed, including
+  10 corruption tests against copies of the actual dataset. E0 PASS lines in these
+  unit tests are temporary mocked fixtures, not actual GR00T inference evidence.
+- Opened a decoded middle video frame; actual UR10e approach and fixture were visible.
+- Windows TorchCodec requires shared FFmpeg DLL discovery; pinned 7.1.1 plus a local
+  os.add_dll_directory handle resolved decoding without modifying upstream/Isaac Sim.
 - python -m unittest discover -s tests -v: 12 passed (9 E0 wrapper, 3 task predicate/expert checks).
 - C:\isaacsim\python.bat scripts\local\insertion.py --seeds 0 0 1 --output artifacts\runtime\insertion-03:
   exit 0; 3 successful expert trials, 50 control steps each; repeated seed exactly reproduced.
@@ -53,19 +66,19 @@ No E0 PASS artifact is committed; GR00T remains independent and compute-deferred
 - Staged source digest and committed image digests match the measured evidence.
 
 ## Not executed
-Synchronized demonstration dataset generation/export, ACT training and learned
-closed-loop evaluation. GR00T fine-tuning and real UR10e deployment. No cloud rerun.
+ACT training and learned closed-loop evaluation. GR00T fine-tuning and real UR10e deployment. No cloud rerun.
 
 ## Blockers
 No E0 prerequisite blocks local P0. GR00T execution remains compute-deferred and the
-last recorded inference failed. Local simulator smoke runs; ML environment/training feasibility is not yet measured.
+last recorded inference failed. Local data/ML environment has working CUDA; training feasibility is not yet measured.
 
 ## Modified files
-scripts/local/insertion.py, scripts/local/README.md, tests/test_insertion.py,
-artifacts/simulation/g1_smoke.json and inspected PNGs, README.md, HANDOFF.md.
+G2 slice: recorder, canonical exporter/validator, corruption tests, seed/modality
+configs, isolated ML setup and dependency lock, source manifest, dataset evidence,
+README/HANDOFF and the root-only raw-dataset ignore rule.
 
 ## Next concrete action
-Record at least 10 successful episodes with RGB/state/action synchronized at 15 Hz,
-export one pinned GR00T LeRobot v2 dataset and validate it before ACT smoke training.
-Freeze held-out seeds before model selection/evaluation; seeds 0 and 1 are development
-seeds and must not be presented as held-out learned-policy evaluation.
+Train maintained LeRobot ACT on the single datasets/ur10e_10 dataset using .venv.
+Record actual CUDA training/loss, checkpoint and reload before connecting inference
+to Isaac Sim. Keep the two Python environments isolated. Then execute fixed held-out
+closed-loop evaluation and implement/validate the real GR00T adapter contract.
