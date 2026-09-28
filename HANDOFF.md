@@ -37,8 +37,12 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
 Latest controlled run act-10-h1-backbonelr-001 (backbone LR1e-5, other settings unchanged)
 completed 5000 steps and reload PASS. Image projection RMS fell 421.55 → .03637 and
 translation response returned, but development remained 0/2 COLLISION; initial rotation
-outputs remain near constant. The controlled act-10-h1-long-001 run is ACTIVE at10000 planned steps, changing only
-steps; its first5000 loss rows exactly reproduce the prior run. No new held-out result.
+outputs remain near constant. The10000-step run act-10-h1-long-001 also completed and failed both development seeds.
+Its first5000 loss rows exactly reproduce the5000-step control; initial rotation remains
+near constant. Next controlled factor: orientation-balanced sampling on the SAME487
+frames, assigning probability mass.5 to23 frames with rotation-action norm>.003rad.
+Comparator is the5000-step act-10-h1-backbonelr-001; all model/optimizer/seed/data settings
+remain identical. No new held-out result or additional demonstrations.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
 provenance is unresolved. No source-informed training or data-efficiency claim exists.
@@ -85,14 +89,12 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Await active act-10-h1-long-001 (steps5000 →10000, same data/seed/LRs/H1).
-Inspect predicted initial rotation and development closed-loop behavior after completion.
-Input sensitivity and CVAE diagnostic modes in diagnose_act.py verify near-zero rotation
-response and no meaningful posterior/zero-latent gap in the5000-step model. Latest two
-failures are alignment failures from step0, not narrow insertion-tolerance rejection.
-Antigravity review was NOT_RUN: auto-review rejected transmitting project payload to an
-external reviewer; no workaround or retry was used. Local analysis continues.
-Do not increase dataset size blindly or tune on held-out seeds.
+Run and inspect act-10-balanced-001 (same5000-step control, sampling change only), then
+same development protocol. Retain all failures and do not alter evaluation seeds.
+Input sensitivity and CVAE diagnostics ruled out a latent gap in the5000-step control;
+rotation response is nearly zero. New sampler directly tests rare-alignment supervision.
+Antigravity was NOT_RUN after auto-review rejected external payload transmission;
+no workaround was used. Local diagnostics continue.
 Source regeneration: python scripts/local/fire.py --download, then offline command without
 --download. Offline clip SHA reproduced; two transform tests and full35-test suite passed.
 Native desktop source inspection is NOT_COMPLETED: Computer Use app approval timed out.

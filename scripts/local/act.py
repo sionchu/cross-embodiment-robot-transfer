@@ -133,7 +133,21 @@ def train(args):
     starts=np.r_[0,np.cumsum(lengths)]
     indices=[j for i in selected for j in range(int(starts[i]),int(starts[i+1]))]
     training_data=torch.utils.data.Subset(data,indices)
-    loader=torch.utils.data.DataLoader(training_data,batch_size=args.batch_size,shuffle=True,num_workers=0,
+    sampler=None
+    sampling={'mode':args.sampling}
+    if args.sampling=='orientation-balanced':
+        action_stats=data.statistics['action']
+        physical=data.actions[indices]*torch.tensor(action_stats['std']).clamp_min(1e-6)+torch.tensor(action_stats['mean'])
+        critical=torch.linalg.vector_norm(physical[:,3:],dim=1)>.003
+        count=int(critical.sum())
+        if not 0<count<len(indices): raise ValueError('BOTH_ORIENTATION_SAMPLING_GROUPS_REQUIRED')
+        weights=torch.where(critical,.5/count,.5/(len(indices)-count)).double()
+        sampler=torch.utils.data.WeightedRandomSampler(weights,len(indices),replacement=True,
+                    generator=torch.Generator().manual_seed(args.seed))
+        sampling.update({'rotation_threshold_rad':.003,'critical_frames':count,'total_frames':len(indices),
+            'critical_probability_mass':float(weights[critical].sum()/weights.sum()),
+            'replacement':True,'sampler_seed':args.seed,'target_data_unchanged':True})
+    loader=torch.utils.data.DataLoader(training_data,batch_size=args.batch_size,shuffle=sampler is None,sampler=sampler,num_workers=0,
                                        generator=torch.Generator().manual_seed(args.seed))
     optimizer=torch.optim.AdamW(model.get_optim_params(),lr=config.optimizer_lr,
                                 weight_decay=config.optimizer_weight_decay)
@@ -145,7 +159,7 @@ def train(args):
         'gr00t_commit':pins['upstream']['commit'],'lerobot_commit':pins['local']['lerobot']['commit'],
         'dataset_id':args.dataset.name,'dataset_sha256':evidence['dataset_sha256'],
         'train_seeds':[evidence['train_seeds'][i] for i in selected],
-        'training_episode_indices':selected,'training_frames':len(indices),
+        'training_episode_indices':selected,'training_frames':len(indices),'sampling':sampling,
         'normalization_source':'full canonical training dataset; unchanged for subset sanity',
         'held_out_seeds':evidence['held_out_seeds'],
         'training_seed':args.seed,'steps':args.steps,'batch_size':args.batch_size,'initialization':'from scratch' if args.backbone_weights=='none' else 'ImageNet ResNet18; fresh ACT transformer/action head',
@@ -201,6 +215,7 @@ if __name__=='__main__':
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--chunk-size',type=int,default=16)
+    parser.add_argument('--sampling',choices=['uniform','orientation-balanced'],default='uniform')
     parser.add_argument('--backbone-lr',type=float,default=1e-4,help='Explicit controlled backbone optimizer rate; historical default preserved.')
     parser.add_argument('--backbone-weights',choices=['none','imagenet'],default='none')
     parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
