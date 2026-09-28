@@ -212,3 +212,8 @@ and nearly saturated attention motivate a controlled `--backbone-weights imagene
 experiment: official ResNet18 visual initialization only; robot-action learning still
 uses target demonstrations. All other hyperparameters and task thresholds stay fixed.
 The exact image weights are pinned in `artifacts/diagnostics/backbone_initialization.json`.
+
+The controlled initialization test now succeeded on its training condition; see
+`artifacts/diagnostics/recovery.json`. Regenerate this receipt with:
+`python scripts/local/diagnose_act.py --recovery --output artifacts/diagnostics`.
+This does not establish held-out success. Keep all-10-demo evaluation separate.

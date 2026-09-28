@@ -209,10 +209,20 @@
     "C_D": "Shared frame/convention path: expert 20/20; recorded-action replay seed 10 SUCCESS with max state error 3.65e-9.",
     "E": "Common controller reproduces successful recorded trajectory; policy inputs already disagree with expert before contact.",
     "F": "History 1, chunk 16, execution K=1, fresh observation at 15 Hz; no long open-loop chunk.",
-    "G": "Tensor preprocessing bit-exact on decoded training image; live/compressed image difference still to quantify. Off-trajectory states occur after policy drift.",
+    "G": "Training/inference share bit-exact preprocessing on decoded data; actual same-seed live-vs-training raw pixel MAE 0.232/255 and video codec MAE 1.113/255. Policy also fails on its decoded training observations, so a deployment-only observation mismatch does not explain the collapse.",
     "H": "Not merely final insertion tolerance: every episode fails to reach simultaneous lateral/angular alignment; minimum lateral errors range 3.06-30.43 mm.",
     "I": "Supported: baseline also misses recorded training actions; episode 0 first dx becomes near-zero after first frame, required approach persists about 0.7 s.",
     "J": "Excluded for observed failures: physical collision, shallow depth and lateral error all reject insertion; same detector accepts expert/replay."
   },
-  "next": "One-episode 5000-step overfit with unchanged normalization/model/15Hz K=1; no extra demonstrations."
+  "next": "Evaluate all-10-demo corrected training on development seeds, then all fixed held-out seeds. No held-out recovery claim yet.",
+  "optimization_findings": {
+    "baseline_image_projection_rms": 6773.50537109375,
+    "baseline_state_projection_rms": 2.5395667552948,
+    "baseline_first_attention_fraction_above_099": 0.9923780560493469,
+    "one_episode_overfit": "5000 steps, COLLISION on seed 10",
+    "overfit_image_projection_rms": 35918.26171875,
+    "overfit_first_attention_fraction_above_099": 0.9984756112098694,
+    "interpretation": "Randomly initialized FrozenBatchNorm ResNet with large image feature scale and attention saturation is a measured training-configuration failure mechanism; controlled ImageNet initialization trial is pending.",
+    "controlled_result": "Same-condition rollout changes COLLISION -> SUCCESS when only official visual initialization changes; see ../recovery.json."
+  }
 }

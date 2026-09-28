@@ -115,3 +115,16 @@ no source bridge or final media claim exists yet.
 - Fixed explicit relative --checkpoint path resolution after pre-simulation
   failure `act-overfit-train-001`. No action/controller/detector change.
 - New traces include post-action state, contact force and terminal state.
+
+### One-episode learned success verified
+- `act-overfit-002` completed 5000 steps; `act-overfit-train-003` is SUCCESS on
+  training seed 10: 48 steps, 0 N contact, lateral error 0.309 mm. Actual final
+  image opened. This is not a held-out claim.
+- `artifacts/diagnostics/recovery.json` verifies identical data/seed/steps/LRs/
+  control/detector, with only pretrained_backbone_weights different. Feature RMS
+  35918 -> 0.027; attention saturation .9985 -> .0137.
+- Now training `act-10-imagenet-001`: all original 10 demos, 5000 steps, ImageNet
+  visual initialization. Next evaluate development 0/1, then ALL original held-out
+  1000-1019, then independently repeat the first successful held-out episode.
+  No data expansion, altered seeds, success thresholds or controller changes.
+- Regression suite: 33 tests passed. E0 PASS strings are mocked fixtures only.

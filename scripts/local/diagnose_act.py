@@ -172,6 +172,35 @@ def features(args):
     (args.output/'feature_probe.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(report,indent=2))
 
+def recovery(args):
+    paths=['artifacts/training/act-overfit-001','artifacts/training/act-overfit-002']
+    training=[json.loads((ROOT/p/'summary.json').read_text()) for p in paths]
+    configs=[json.loads((ROOT/p/'config.json').read_text()) for p in paths]
+    difference={k:[configs[0][k],configs[1][k]] for k in configs[0] if configs[0][k]!=configs[1][k]}
+    if set(difference)!={'pretrained_backbone_weights'}: raise ValueError('NOT_SINGLE_FACTOR')
+    for key in ['dataset_sha256','training_episode_indices','train_seeds','steps','batch_size','training_seed','normalization_source']:
+        if training[0][key]!=training[1][key]: raise ValueError('TRAINING_PROTOCOL_MISMATCH')
+    evaluations=['artifacts/eval/act-overfit-train-002','artifacts/eval/act-overfit-train-003']
+    results=[json.loads((ROOT/p/'summary.json').read_text()) for p in evaluations]
+    rows=[json.loads((ROOT/p/'episodes.jsonl').read_text()) for p in evaluations]
+    for key in ['environment_config_hash','dataset_sha256','seeds','action_execution']:
+        if results[0][key]!=results[1][key]: raise ValueError('CONTROL_PROTOCOL_MISMATCH')
+    np.testing.assert_array_equal(rows[0]['initial_state'],rows[1]['initial_state'])
+    if any(x['execution_status']!='PASS' for x in results): raise ValueError('INCOMPLETE_ROLLOUT')
+    features=[json.loads((ROOT/f'artifacts/diagnostics/act-overfit-{i:03d}/feature_probe.json').read_text()) for i in [1,2]]
+    report={'experiment':'one-episode controlled ACT sanity','changed_config':difference,
+        'same_data_seed_steps_normalization_control_and_detector':True,'training_condition_seed':10,
+        'outcomes':[r['outcome'] for r in rows],'held_out_claim':False,
+        'image_projection_rms':[f['records'][0]['features']['encoder_img_feat_input_proj']['rms'] for f in features],
+        'attention_saturated_query_fraction':[f['records'][0]['features']['first_attention']['fraction_queries_max_probability_above_099'] for f in features],
+        'checkpoint_sha256':[t['checkpoint_files_sha256']['model.safetensors'] for t in training],
+        'training_evidence':paths,'rollout_evidence':evaluations,
+        'interpretation':'Restoring maintained ACT visual initialization resolves failed one-episode learning without new data or task relaxation. Ten-demo held-out recovery remains a separate experiment.',
+        'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    args.output.mkdir(parents=True,exist_ok=True)
+    (args.output/'recovery.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    print(json.dumps(report,indent=2))
+
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--checkpoint',type=Path,default=ROOT/'checkpoints/act-10-001')
@@ -180,5 +209,6 @@ if __name__=='__main__':
     p.add_argument('--episodes',type=int,nargs='+')
     p.add_argument('--plot',action='store_true')
     p.add_argument('--features',action='store_true')
+    p.add_argument('--recovery',action='store_true')
     a=p.parse_args();a.output=a.output.resolve();a.checkpoint=a.checkpoint.resolve()
-    plot(a) if a.plot else features(a) if a.features else audit(a)
+    plot(a) if a.plot else features(a) if a.features else recovery(a) if a.recovery else audit(a)

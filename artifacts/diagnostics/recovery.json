@@ -1,0 +1,38 @@
+{
+  "experiment": "one-episode controlled ACT sanity",
+  "changed_config": {
+    "pretrained_backbone_weights": [
+      null,
+      "ResNet18_Weights.IMAGENET1K_V1"
+    ]
+  },
+  "same_data_seed_steps_normalization_control_and_detector": true,
+  "training_condition_seed": 10,
+  "outcomes": [
+    "COLLISION",
+    "SUCCESS"
+  ],
+  "held_out_claim": false,
+  "image_projection_rms": [
+    35918.26171875,
+    0.027161087840795517
+  ],
+  "attention_saturated_query_fraction": [
+    0.9984756112098694,
+    0.013719512149691582
+  ],
+  "checkpoint_sha256": [
+    "39b4549e9b9f4f819a9a1ad0c76497bfdad34a624ab67cf217563009cf06a83a",
+    "88112479fbe19be29d527e32288dac724c2b765bea18e4738bbfed01278fa8e9"
+  ],
+  "training_evidence": [
+    "artifacts/training/act-overfit-001",
+    "artifacts/training/act-overfit-002"
+  ],
+  "rollout_evidence": [
+    "artifacts/eval/act-overfit-train-002",
+    "artifacts/eval/act-overfit-train-003"
+  ],
+  "interpretation": "Restoring maintained ACT visual initialization resolves failed one-episode learning without new data or task relaxation. Ten-demo held-out recovery remains a separate experiment.",
+  "source_sha256": "91a24eb7b643cfe991afb257c9c9d7ca8c75f4cfec1747fdde7e51f599c1c4bb"
+}
