@@ -1,143 +1,85 @@
 # Project handoff
 
 ## Objective
-Owner-approved local P0: UR10e expert -> 10 demonstrations -> one GR00T-compatible
-dataset -> actual ACT GPU checkpoint -> held-out closed-loop results -> real GR00T
-adapter contract and truthful comparison. AGENTS.md and the owner's revised scope govern.
+Real FIRe Franka experience → relative EEF representation → UR10e → measured target
+sample efficiency. Execute target-only and source-informed ACT at 10/25/50 target demos,
+with a real GR00T N1.7 NEW_EMBODIMENT integration path and evidence-linked technical video.
+The owner's final 2026-09-29 direction is reconciled in AGENTS.md; it supersedes older P0 scope.
 
 ## Scope
-E0 remains independent. No further Colab entitlement work; preserve its pinned runner.
-The aerospace reference remained read-only. No public push, tag or release was performed.
+Existing canonical dataset, policy API and artifacts remain SSOT. Local RTX 4070 Ti and
+Isaac Sim are independent of E0. No Colab entitlement work, extra architectures or final
+video before evidence. Aerospace reference stays read-only. No external push/tag/release.
 
 ## Acceptance criteria
-Real deterministic simulation/rendering; at least 10 valid demos; one canonical v2
-dataset; actual CUDA training/checkpoint reload; learned closed-loop held-out results;
-real GR00T interface with unavailable execution explicit; reproducible compact evidence.
+Pinned actual source footage/data and task audit; verified relative EEF transform;
+reproducible learned held-out success; two executable tracks at 10/25/50 with identical
+protocol; structured measured curves; truthful GR00T status; inspected source/simulator/
+training/rollout/evaluation/video receipts and reproducible claim-linked media.
 
 ## Completed
-- G1: official UR10e fixed-peg task, measured-pose/Jacobian controller, front RGB,
-  contact monitoring, geometric success and deterministic seeded reset.
-- G2: 10 successful expert episodes, 487 synchronized frames; official GR00T reader
-  and action normalization round-trip passed. No Franka joint replay or separate ACT dataset.
-- G3: maintained LeRobot ACT trained from scratch for 1,000 steps on RTX 4070 Ti;
-  real checkpoint saved and strictly reloaded with matching finite action chunks.
-- G4: actual checkpoint-controlled simulation completed on all 20 frozen held-out seeds.
-  Expert: 20/20 successful. ACT: 0/20 successful, all COLLISION. This is a negative
-  learned-control result, not a successful insertion or transfer claim.
-- GR00TPolicy implements the official N1.7 NEW_EMBODIMENT checkpoint/policy/decoding
-  path. Official observation batching and action round-trip passed; model execution
-  and target-checkpoint validation remain separately unavailable.
-- Comparison CSV/README table/plot generated from recorded episodes; every raw trace
-  hash, executed/clipped action, timestamp, terminal outcome and matched initial state checked.
-- Opened and inspected the actual held-out failure image, expert terminal image and plot.
+- Official UR10e fixed-peg simulation, deterministic reset, contact detector and front RGB.
+- Ten expert demos (seeds 10-19), 487 synchronized frames; canonical GR00T v2 reader validated.
+- Real maintained LeRobot ACT CUDA training and strict checkpoint reload.
+- Preserved fixed held-out baseline: expert 20/20, ACT 0/20, all collisions.
+- Same-path replay seed 10 succeeds in 48 steps; state error <=3.65e-9.
+- Actual train/eval input tensor equality, normalization inverse, expert/label comparison,
+  action/frame/chunk audit and per-episode baseline failure classification.
+- One-episode ACT overfit: ImageNet initialization alone changes same-seed result from
+  COLLISION to SUCCESS (48 steps, 0 N contact, 0.309 mm lateral error). Training condition
+  only; not held-out success. Actual end image inspected.
+- Real GR00TPolicy official observation/action contract validated, model execution NOT_RUN.
+- FIRe pinned metadata and candidate episodes 0/14/29, all three views, cached locally.
 
 ## Current checkpoint
-The local P0 execution chain is complete. Evidence is under artifacts/datasets/,
-artifacts/training/act-10-001/, artifacts/eval/{expert-002,act-10-002}/ and
-artifacts/environment/gr00t_local_contract.json. No live evaluation job remains.
-Raw datasets, checkpoints, logs and videos are ignored but available locally.
+Latest 10-demo ImageNet H16 model failed both development seeds 0/1. H1 diagnostic also
+failed both, so shorter training horizon has not solved the issue. No new held-out result.
+No training/simulator job remains active. Source videos are downloaded but not yet visually
+inspected. Source-informed learning, task matching and paired data-efficiency study remain
+unexecuted. Follow new source/task audit priority before another training change.
 
 ## Decisions and reasons
-- Keep Isaac Sim and the pinned ML .venv separate; a local stdio worker carries
-  fresh RGB/state to actual ACT inference and returns physical action chunks.
-- Execute the first action of each new 16-step chunk; record per-axis clipping.
-- Seeds 1000-1019 were committed in 0392ba1 before ACT training. Seeds 0/1 are development.
-- ACT's first long evaluation stalled at the seventeenth render reset. Two live
-  py-spy stack samples and the unchanged Kit log confirmed SimulationApp.update in reset.
-  Preserve act-10-001 as SIMULATOR_RESET_STALL and expert-001 as cancelled recovery evidence.
-  Final runs use two fresh processes of 10 episodes for both policies. No model/seed tuning.
-- Run metadata records the parent Git HEAD and exact source hashes. The final
-  committed evaluator source matches those hashes, including the reset-isolation fix.
+- Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
+- Isolated ML .venv and Isaac Python communicate via local stdio worker; no expert fallback.
+- K=1 receding horizon at 15 Hz; prediction horizon follows checkpoint (16 or diagnostic 1).
+- Held-out seeds 1000-1019 frozen in 0392ba1; development 0/1; never select better seeds.
+- Two fresh simulator processes of ten episodes avoid measured seventeenth-reset Kit stall.
+- Random ResNet with FrozenBatchNorm produced saturated image features; controlled official
+  ImageNet initialization fixed one-episode overfit but did not fix all-ten learning.
+- Source Hub names Panda; related FIRe code describes FR3. Verify provenance rather than
+  assert exact hardware. Source normalized actions are not physical delta units by default.
 
 ## Verification evidence
-- scripts/local/setup.ps1: pinned clean ML environment and CUDA verified independently of Isaac Sim.
-- C:\isaacsim\python.bat scripts/local/insertion.py --seeds 0 0 1 --output artifacts/runtime/insertion-03:
-  repeated seed matched exactly; deliberate miss in collision-02 triggered physical collision.
-- C:\isaacsim\python.bat scripts/local/insertion.py --seeds 10 11 12 13 14 15 16 17 18 19 --record --output artifacts/runtime/demos-01:
-  10 successful episodes; actual images/physics timestamps remained synchronized at 15 Hz.
-- .venv/Scripts/python.exe scripts/local/dataset.py --dataset datasets/ur10e_10 --upstream .external/Isaac-GR00T --report artifacts/datasets/validation.json:
-  schema/official loader/official action round-trip PASS.
-- .venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-10-001:
-  1,000 CUDA steps, 81.258 s, real changed weights, reload PASS. Model SHA256:
-  957d617972c5ae2d37b3060c57223e330d191dee8becec98a06b00e29e015631.
-- C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --output artifacts/eval/act-10-002:
-  all 20 completed; same command with --policy expert and expert-002 completed 20 successes.
-- .venv/Scripts/python.exe scripts/local/groot.py --report artifacts/environment/gr00t_local_contract.json:
-  integration PASS; MODEL_COMPUTE_NOT_AVAILABLE; TARGET_CHECKPOINT_NOT_AVAILABLE.
-- python scripts/local/compare.py: all 40 trajectories and initial-state matching verified;
-  CSV/table/plot and actual 15 Hz video metadata generated from results.
-- .venv/Scripts/python.exe -m unittest discover -s tests -v: 33 passed, no skips.
-  E0 PASS text in unit-test logs refers to mocked temporary fixtures, not model execution.
+- artifacts/simulation/g1_smoke.json: repeated reset/render/control and collision evidence.
+- artifacts/datasets/validation.json: canonical schema/official loader/action round-trip PASS.
+- artifacts/eval/{expert-002,act-10-002}/: complete fixed 20-seed matched baseline.
+- artifacts/eval/replay-002/: successful same-path demonstration replay.
+- artifacts/diagnostics/act-baseline-001/: actual 487-frame tensor/action/failure audits.
+- artifacts/diagnostics/recovery.json: single-factor one-episode correction, no held-out claim.
+- artifacts/training/act-overfit-002/ and artifacts/eval/act-overfit-train-003/: learned
+  training-condition success, checkpoint 88112479fbe19be29d527e32288dac724c2b765bea18e4738bbfed01278fa8e9.
+- artifacts/training/act-10-imagenet-001/ and artifacts/eval/act-10-imagenet-dev-001/: 0/2.
+- artifacts/training/act-10-h1-001/ and artifacts/eval/act-10-h1-dev-001/: 5000 CUDA steps,
+  reload PASS, 0/2 collisions; checkpoint 090185e98a540e369d44fcc5676f3152f8166d0048e38bdbae42f7ddcd245d0c.
+- .venv/Scripts/python.exe -m unittest discover -s tests -v: 33 passed, no skips;
+  artifacts/runtime/horizon-regression-tests.log. E0 PASS strings are mocked fixtures only.
+- artifacts/environment/gr00t_local_contract.json: integration PASS, model/target checkpoint NOT_RUN.
 
 ## Not executed
-Successful learned insertion, GR00T target fine-tuning/inference, cross-embodiment
-transfer, FIRe source specialization, real UR10e deployment and fresh-machine validation.
-The prior E0 inference failed; no real E0 PASS artifact is committed.
+Actual FIRe visual selection/verified bridge, matched-task changes, source-informed training,
+25/50 datasets, learned held-out success, data-efficiency curves, final video, native desktop
+verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
 ## Blockers
-No local P0 execution blocker remains. GR00T runtime needs supported Linux GPU
-compute and an adapted target checkpoint; its metrics stay N/A. Current ACT competence
-is insufficient: failures are retained rather than relabeled or tuned on held-out results.
+Source units/frame/tool geometry and dataset-to-code provenance need verification. ACT general
+learning remains unresolved. GR00T runtime requires supported compute and adapted checkpoint;
+that does not block local experiments. No real E0 PASS exists.
 
 ## Modified files
-Canonical local simulator/data/learning/policy/evaluation scripts, targeted tests,
-pinned dependencies/configs, compact execution evidence, README and this handoff.
-No source data or model payloads are committed.
+Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence preserved;
+open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Owner overrides priority: recover ACT learned success before final media assembly.
-0/20 baseline committed as 4204876. Exact-path expert already measured 20/20;
-verify replay, tensors, conventions, distributions, then one-episode overfit.
-Final media is blocked on learned success >0. FIRe candidate payloads (0,14,29,
-three views) and pinned metadata are cached at artifacts/runtime/fire-inspection;
-no source bridge or final media claim exists yet.
-
-## Active ACT diagnosis
-- Exact same evaluator/controller/detector expert baseline: 20/20.
-- Replay seed 10: SUCCESS in 48 steps, state error <=3.65e-9; replay-002.
-  replay-001 stopped because Isaac Python has no pandas; raw generator trace is
-  used with canonical float32 casting, without installing ML packages in Isaac.
-- Real checkpoint audit: 487 demo frames; train/adapter input tensors bit-exact;
-  label/expert comparison and normalization inverse pass. Temporal execution K=1.
-- All 20 baseline failures classified I with two observed approach patterns;
-  exact optimization cause remains under investigation, not asserted.
-- Running act-overfit-001: episode 0 only (seed 10), 5000 steps, same architecture
-  and full-training-set normalization; no extra data or changed success detector.
-
-### Recovery checkpoint
-- `act-overfit-001`: 5000 steps on episode 0, reload PASS, but same-seed
-  `act-overfit-train-002` COLLISION. No demonstration expansion is justified yet.
-- Visual projection RMS: baseline ~6770, failed overfit ~35918; first attention
-  max probability >.99 for ~99% of queries. See feature_probe.json.
-- Running `act-overfit-002`: same episode/seed/5000 steps/LRs; ONLY visual backbone
-  initialization changed to official ImageNet ResNet18. Await checkpoint and run
-  same-condition test before claiming the correction works or training all 10 demos.
-- Fixed explicit relative --checkpoint path resolution after pre-simulation
-  failure `act-overfit-train-001`. No action/controller/detector change.
-- New traces include post-action state, contact force and terminal state.
-
-### One-episode learned success verified
-- `act-overfit-002` completed 5000 steps; `act-overfit-train-003` is SUCCESS on
-  training seed 10: 48 steps, 0 N contact, lateral error 0.309 mm. Actual final
-  image opened. This is not a held-out claim.
-- `artifacts/diagnostics/recovery.json` verifies identical data/seed/steps/LRs/
-  control/detector, with only pretrained_backbone_weights different. Feature RMS
-  35918 -> 0.027; attention saturation .9985 -> .0137.
-- Now training `act-10-imagenet-001`: all original 10 demos, 5000 steps, ImageNet
-  visual initialization. Next evaluate development 0/1, then ALL original held-out
-  1000-1019, then independently repeat the first successful held-out episode.
-  No data expansion, altered seeds, success thresholds or controller changes.
-- Regression suite: 33 tests passed. E0 PASS strings are mocked fixtures only.
-
-### Ten-demo temporal diagnosis
-- `act-10-imagenet-001` trained 5000 steps but failed both fixed development seeds
-  0/1. No new held-out evaluation was run. Image features are stable (RMS .214),
-  but initial rotational actions are almost absent even on all ten training episodes.
-- `temporal_supervision.json`: corrections >.003 rad are 4.72% of per-frame labels
-  but only .592% of valid 16-step training targets. K=1 remains the executed horizon.
-- Running `act-10-h1-001`: ONLY training chunk_size 16 -> 1 changes relative to the
-  preceding ten-demo run. Same 5000 steps, ImageNet init, LR, data, seeds and task.
-  Evaluator validates the checkpoint's configured chunk length and still executes
-  one freshly predicted action at 15 Hz. GR00T horizon remains unchanged.
-- Next: inspect its training-frame predictions; evaluate development 0/1; proceed
-  to the fixed full 20 held-out seeds only after the development gate is credible.
+Inspect cached FIRe candidate media at artifacts/runtime/fire-inspection, select episode/view,
+record provenance, and audit source task/pose/action semantics against UR10e. Then continue
+ACT diagnosis without interpreting the failed H1 hypothesis as established cause.

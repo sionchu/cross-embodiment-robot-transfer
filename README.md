@@ -1,20 +1,34 @@
-# GR00T N1.7 × UR10e Cross-Embodiment Robot Learning
+# GR00T N1.7 × UR10e
 
-A GR00T N1.7-compatible task-space dataset and policy interface, with real local ACT
-training and checkpoint-controlled UR10e insertion in NVIDIA Isaac Sim. The research
-question is whether cross-embodiment pretraining can reduce target demonstration needs.
-The current experiment establishes the target learning/evaluation pipeline; transfer
-from real Franka data and GR00T adaptation remain unexecuted.
+**Real-World Cross-Embodiment Robot Learning**
+
+Real Franka demonstrations → Relative EEF representation → New UR10e embodiment →
+Closed-loop data-efficiency evaluation.
+
+Can real-world manipulation experience and an embodiment-independent action representation
+reduce the target-robot data needed for precision insertion? This project tests target-only
+versus source-informed ACT at **10, 25 and 50 target demonstrations**, with identical
+closed-loop evaluation and a GR00T N1.7 NEW_EMBODIMENT integration path.
+
+The canonical real source is [FIRe Franka peg insertion](https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real),
+third-party public research data declaring Apache-2.0. Source inspection, task matching and
+the source-informed comparison are in progress; no data-efficiency result is claimed yet.
 
 ```mermaid
 flowchart LR
-  E[UR10e expert demonstrations] --> D[One GR00T LeRobot v2 dataset]
-  D --> A[ACT: locally trained checkpoint]
-  D --> G[GR00T N1.7: validated contract]
-  A --> I[RGB + relative pose → task-frame action chunk]
-  G -. supported compute and target checkpoint required .-> I
-  I --> S[UR10e closed-loop simulation]
+  F[Real FIRe Franka data] --> R[Relative EEF representation]
+  R -. source-informed learning: pending .-> B[Track B: source-informed ACT]
+  D[Canonical UR10e target demos: 10 / 25 / 50] --> B
+  D --> A[Track A: target-only ACT]
+  A --> E[Same fixed-seed closed-loop UR10e evaluation]
+  B --> E
+  E --> C[Measured data-efficiency curves]
+  D --> G[GR00T N1.7 NEW_EMBODIMENT: validated contract]
 ```
+
+The current executable evidence covers the original 10-demo target-only pipeline and
+active debugging. One training-condition learned success is verified; held-out recovery
+and both-track 10/25/50 experiments remain unexecuted.
 
 The official UR10e asset, deterministic reset, collision checks and actual front RGB
 capture are verified in [simulator evidence](artifacts/simulation/g1_smoke.json).
@@ -27,7 +41,7 @@ Maintained LeRobot ACT trained from scratch on the RTX 4070 Ti, produced a real
 checkpoint and reproduced its output after strict reloading. The [training summary](artifacts/training/act-10-001/summary.json)
 and [full loss history](artifacts/training/act-10-001/loss.csv) identify the dataset,
 model, environment and source hashes. Training data consists solely of project-generated
-UR10e simulation; FIRe and DROID are references, not training data for this checkpoint.
+UR10e simulation; FIRe and DROID were not training data for this checkpoint.
 
 ## Closed-loop debugging baseline
 
@@ -40,7 +54,7 @@ The table is generated from all fixed held-out episodes. Evaluation uses identic
 seeds, initial states, task tolerances and action bounds for both executed policies.
 ACT failed by collision throughout the completed evaluation. Lower training loss did
 not translate into successful insertion; these results do not establish transfer or
-successful learned control. Twenty episodes are a smoke evaluation, not a broad
+successful held-out learned control for this checkpoint. Twenty episodes are a smoke evaluation, not a broad
 performance study.
 
 <!-- RESULTS:START -->
@@ -63,6 +77,22 @@ The completed protocol isolates blocks of ten episodes in fresh simulator proces
 for both policies. No checkpoint parameters or evaluation seeds changed during this
 infrastructure recovery. The [first ACT failure image](artifacts/figures/act_first_failure.png)
 and [raw video manifest](artifacts/video_manifest.json) preserve actual simulation evidence.
+
+## Recovery checkpoint
+
+A controlled one-episode test changed only the ResNet18 initialization to official
+ImageNet weights and achieved learned insertion on training seed 10. The
+[recovery receipt](artifacts/diagnostics/recovery.json) records identical data, optimizer,
+steps, task, controller and detector. This demonstrates pipeline sanity, not generalization.
+The subsequent ten-demo ImageNet models with prediction horizons 16 and 1 both failed the
+two fixed development seeds. Their records remain under
+[H16 development](artifacts/eval/act-10-imagenet-dev-001/summary.json) and
+[H1 development](artifacts/eval/act-10-h1-dev-001/summary.json). No evaluation seed was replaced.
+
+Before transfer claims, the source/target audit will compare task geometry, frames,
+orientation, approach and success definitions. Unknown source measurements remain unknown.
+Final video assembly waits for reproducible held-out learned success and the measured
+paired study; actual source footage and transforms are prepared first.
 
 ## GR00T integration status
 

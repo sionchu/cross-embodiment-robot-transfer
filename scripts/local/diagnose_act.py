@@ -119,7 +119,9 @@ def plot(args):
     for k,ax in zip(DIMS,axes.flat):
         ax.plot([float(r['time_s']) for r in rows],[float(r['gt_'+k]) for r in rows],label='Dataset expert')
         ax.plot([float(r['time_s']) for r in rows],[float(r['pred_'+k]) for r in rows],label='ACT first action')
-        ax.set(title=k+' ('+('m' if k in DIMS[:3] else 'rad')+')',xlabel='s');ax.legend(fontsize=8)
+        limit=max(.003 if k in DIMS[:3] else .025, max(abs(float(r[key])) for r in rows for key in ['gt_'+k,'pred_'+k]))
+        ax.set(title=k+' ('+('m' if k in DIMS[:3] else 'rad')+')',xlabel='s',ylim=(-1.15*limit,1.15*limit))
+        ax.ticklabel_format(axis='y',style='plain',useOffset=False);ax.legend(fontsize=8)
     fig.savefig(args.output/'open_loop.png',dpi=140);plt.close(fig)
     p=args.output/'closed_loop.csv'
     if p.exists():

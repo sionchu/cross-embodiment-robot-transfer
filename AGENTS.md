@@ -1,7 +1,7 @@
 # Cross-Embodiment Robot Transfer — Codex Execution Plan
 
 Status: canonical project instruction
-Date: 2026-09-28
+Date: 2026-09-29
 Owner intent: build an evidence-first public portfolio/research project, not a demo that merely name-drops VLA models.
 
 ## New Codex chat bootstrap — read this first
@@ -33,73 +33,67 @@ Available execution environments:
 5. Start at the earliest incomplete local P0 gate below. E0 is independent and must not block target-task work.
 6. Make the smallest coherent change, run its verification, review the diff, then commit it. Do not scaffold the whole future folder tree up front.
 
-### Current owner-approved execution priority (2026-09-28)
+### Current execution priority (owner final goal, 2026-09-29)
 
-The owner explicitly approved this scope change after the Colab availability limitation.
-Do not spend further time on Colab entitlement or waiting for T4. Preserve the existing
-pinned E0 runner. E0 gates actual GR00T runtime claims and GR00T fine-tuning only;
-it does not gate the simulator, demonstrations, canonical dataset, ACT or ACT evaluation.
+This direction replaces conflicting earlier P0 plans. Use this file as the canonical
+plan and HANDOFF.md as the current execution checkpoint; do not append competing plans.
+Public identity: **GR00T N1.7 × UR10e — Real-World Cross-Embodiment Robot Learning**.
+Technical subtitle: Real Franka demonstrations → Relative EEF representation → New
+UR10e embodiment → Closed-loop data-efficiency evaluation.
 
-Execute this local P0 in order:
-1. Reconcile the canonical planning/status files in place.
-2. Build the smallest deterministic official UR10e fixed-peg insertion task in Isaac Sim.
-   Verify reset, repeated seeds, geometric success, collisions and actual rendered output.
-3. Generate at least 10 successful expert demonstrations.
-4. Export one GR00T LeRobot v2 dataset with explicit `meta/modality.json`. Validate
-   modalities, dimensions, finite values, timestamps, episode continuity, action limits
-   and video/state synchronization. ACT and GR00T consume this same canonical data.
-5. Train maintained LeRobot ACT on the RTX 4070 Ti in an isolated ML environment.
-   Record actual GPU use/loss and a real checkpoint; reload it.
-6. Execute checkpoint inference in closed-loop UR10e simulation on fixed held-out seeds.
-   Save every episode outcome and generated aggregate results, including failures.
-7. Implement real ACTPolicy and GR00TPolicy paths mapping observation to action chunks.
-   Validate N1.7 embodiment/modality/checkpoint/action decoding before model execution.
-   GR00T may explicitly report MODEL_COMPUTE_NOT_AVAILABLE; never substitute fake outputs.
-8. Publish a compact local result table for Expert, ACT and GR00T with missing GR00T
-   metrics as unavailable. No external push/publication is authorized by this plan.
+Execute in this order:
+1. Reconcile canonical documents with this goal.
+2. Inspect actual FIRe media/data and record pinned source provenance.
+3. Audit Franka versus UR10e task equivalence; prefer a documented MATCHED_TASK.
+4. Resolve the preserved ACT 0/20 baseline through the debugging protocol below.
+5. Pass one-episode overfit and obtain reproducible learned held-out success.
+6. Execute the target-only 10-demo baseline and a technically valid source-informed
+   10-demo comparison; then execute both tracks at 25 and 50 target demos.
+7. Generate measured data-efficiency curves from structured evidence.
+8. Validate GR00T N1.7 NEW_EMBODIMENT integration and its actual execution status.
+9. Generate evidence-linked assets, assemble the technical video, inspect the actual
+   rendered video through Remote Desktop and recheck every public claim.
 
-Minimum input: front RGB and target-relative EEF pose. Extra velocity, cameras, depth
-or gripper channels require a measured task need. Canonical action is six-dimensional
-relative task-space `[dx, dy, dz, dRx, dRy, dRz]`; document units, reference frame,
-rotation convention and composition explicitly and verify the N1.7 transformation contract.
-No Franka joint replay or separate ACT dataset.
+FIRe inspection and the 10/25/50 comparison are required, not stretch work. Do not
+wait for GR00T compute. E0 gates GR00T runtime/fine-tuning claims only. Preserve its
+pinned runner; no further Colab entitlement work, quantization or extra architectures.
+No external push, tag or publication is authorized by this plan.
 
-GR00T N1.7 remains the primary foundation-model integration target. Until execution
-is evidenced, use compatible/ready/integration language; ACT metrics belong to ACT.
-The minimum milestone requires actual simulation, 10 valid demos, GPU training,
-checkpoint reload, learned closed-loop held-out results and the real GR00T adapter
-contract. Unit tests or a planning update alone cannot complete it.
+### Learned-policy debugging gate
 
-After that milestone only: 25/50/100 demos, FIRe source inspection/mapping,
-source-informed comparison, GR00T inference on available >=16 GB compute and
-fine-tuning on >=40 GB. Quantization is not P0. Media polish waits until evidence exists.
+Preserve 0/20 as baseline evidence. Before adding demonstrations: exact same-path
+expert → successful demonstration replay → actual observation tensors → action
+normalization/frames/conventions/distributions → ACT chunk/replanning audit →
+one-episode overfit → same-condition closed-loop test → proven root-cause correction
+→ 10-demo retraining. Change one coherent factor at a time and retain failed runs.
 
-### P0 priority override: recover learned-policy success (2026-09-29)
+Classify every failed episode with evidence: A invalid output; B scaling/normalization;
+C coordinate frame; D action convention; E controller tracking; F temporal/chunking;
+G observation mismatch; H approximate behavior misses tolerance; I task not learned;
+J incorrect success detection. Do not guess a cause from aggregate success alone.
+Expert must succeed reliably through the identical adapter/controller/detector before
+policy tuning. Replay must approximately reproduce its recorded successful episode.
 
-The preserved 0/20 ACT result is a debugging baseline, not the final conclusion.
-Immediate order: exact-path expert -> recorded demonstration replay -> actual
-observation tensors -> normalization/frame/convention audit -> action distributions
--> one-episode overfit -> same-condition closed-loop test -> fix proven cause ->
-retrain 10-demo ACT -> existing fixed 20-seed evaluation. Expand to 25/50 only if
-needed. Classify each failure A-J with evidence. No GR00T compute, quantization,
-alternative architecture or final editing during this loop. Final assembly requires
-at least one reproducible learned-policy held-out success; preserve all failures.
-Do not change seeds, substitute expert actions, intervene or relax only the video.
-Any justified task simplification must be deterministic, documented and shared by
-expert and ACT with a new protocol identity. Debug on training/development cases;
-held-out results confirm rather than drive tuning. Report actual denominators.
+Use training/development seeds for diagnosis; do not select new evaluation seeds after
+seeing results. Never replace policy actions with expert actions, intervene manually,
+or relax detection for video. Any task change gets a new protocol identity and applies
+to expert, both learning tracks and all data sizes. At least one reproducible held-out
+learned success is required before final media; 50%/80% are useful goals, not invented
+results. One training-condition success is not a held-out result.
 
 ## 0. Mission
 
-Build and validate a reproducible cross-embodiment robot-learning pipeline:
+Can real-world manipulation experience and an embodiment-independent action
+representation reduce the target-robot data required to transfer a precision task?
 
-**public real-robot manipulation data → open-weight GR00T N1.7 prior → new UR10e embodiment in NVIDIA Isaac Sim → closed-loop evaluation.**
+**Real Franka experience → relative task-space EEF representation → UR10e adapter →
+actual training → closed-loop evaluation → measured target-data efficiency.**
 
-Primary research question:
-
-> Does cross-embodiment pretraining reduce the amount of target-robot demonstration data required to learn a precision insertion task?
-
-The project is successful if the experiment is reproducible and honestly measured, even if transfer does **not** outperform a from-scratch baseline.
+Foundation-model extension: how does this pipeline map onto NVIDIA GR00T N1.7's
+cross-embodiment / NEW_EMBODIMENT workflow? GR00T remains the foundation-model target;
+ACT is the executable local policy for the controlled source-informed comparison.
+A valid negative transfer comparison is acceptable after pipeline debugging and the
+required experiments; an unresolved 0/20 pipeline is not the final project result.
 
 ## 1. Scope decision
 
@@ -112,7 +106,7 @@ Reference-only local repository:
 ## 2. Clean-v0 rules
 
 - Prefer one clear vertical slice over many half-finished features.
-- P0 is GR00T N1.7 + UR10e peg insertion + ACT baseline + fixed evaluation.
+- Core scope is real FIRe source + relative EEF bridge + UR10e + two ACT tracks at 10/25/50 demos + fixed evaluation + GR00T integration.
 - Do not add dashboards, agents, RAG, web backends, Kubernetes, ROS 2 orchestration, humanoids, or extra simulators unless a measured requirement appears.
 - Do not implement a custom VLA architecture in P0.
 - Do not add SmolVLA, π0.5, Diffusion Policy, or Isaac Lab Mimic to P0 merely for technology breadth.
@@ -168,11 +162,11 @@ Do not silently substitute N1.6-era APIs or data layouts.
 ## 5. Primary public datasets
 
 ### P0-A — Real Franka peg insertion
-Use as the most task-aligned real-world source reference:
+Use as the canonical real-world source unless direct inspection proves it unsuitable:
 - Dataset: https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real
 - Task: contact-rich peg insertion.
 - Domain: real.
-- Robot: Franka Emika Panda.
+- Hub metadata names Franka Emika Panda; verify physical robot provenance rather than inferring it from a label.
 - Format: LeRobot / GR00T-oriented.
 - Published card reports 30 episodes, 3,840 frames, 15 FPS.
 - License shown on Hub: Apache-2.0.
@@ -203,6 +197,23 @@ Use DROID to verify official N1.7 installation and embodiment handling on the in
 - generation docs/code: https://huggingface.co/datasets/yqi19/omnireset_reproduce
 - useful as a reference for GR00T-ready relative Cartesian action layout and large synthetic demo generation.
 - do not use as the “real source” because it is simulation.
+
+### Source/task matching audit
+
+Inspect actual downloaded episode media, all useful views, RGB/state/action samples
+and episode metadata. Select 2-3 candidate clips and one canonical episode/view.
+Record dataset ID/revision, license, episode, camera, frame/time range, exact resolved
+source file and SHA256. Cache only required media outside Git; retain attribution.
+Do not invent MP4 URLs or substitute stock/simulated Franka footage.
+
+Compare source and target peg/hole dimensions, clearance, insertion depth/axis,
+initial relative pose, EEF/tool orientation, approach direction, workspace scale and
+success condition. Classify SAME_TASK_INSTANCE, MATCHED_TASK, ANALOGOUS_TASK or
+DIFFERENT_TASK. Prefer MATCHED_TASK; unknown measurements remain unknown and prevent
+stronger claims. Related source code is not proof of the dataset's collection revision.
+Derive trajectories from actual poses (or verified kinematics), with explicit SI units,
+frames, quaternion ordering and relative rotation composition. Never relabel normalized
+actions as metres/radians or project telemetry onto images without camera calibration.
 
 ### Source-use policy
 - Prefer linking to public sources over copying them into this repository.
@@ -358,7 +369,7 @@ Do not import from that local path at runtime.
 
 ### E3 — generate target demonstrations
 Use a deterministic/collision-aware expert to create successful UR10e demonstrations.
-Initial target: 10 successful episodes. Increase to 25/50/100 only after the first checkpoint trains and executes in closed loop.
+Required sizes: 10, 25 and 50 successful episodes, expanded incrementally only after one-episode overfit and pipeline sanity pass.
 
 Keep one larger source pool if generation is cheap, but train on exact deterministic subsets.
 
@@ -374,29 +385,37 @@ Every episode must record:
 - dataset/code version identifiers.
 
 Failed episodes belong in evidence/failure analysis but should not silently enter an imitation-learning training split unless the experiment explicitly requires them.
-### E4 — ACT target-data-only baseline
-Train ACT from scratch or standard initialization using only UR10e target demonstrations.
-P0 trains on the first 10 successful episodes. Larger data-size comparisons are stretch work after checkpoint execution.
+### E4 — executable target-only versus source-informed study
 
-Keep architecture/training choices constant across data-size comparisons.
+Track A: UR10e target demonstrations → maintained LeRobot ACT → closed-loop UR10e.
+Track B: actual FIRe poses → canonical relative EEF representation → a documented
+source-informed learning, initialization or conditioning mechanism → the same target
+policy/evaluation contract, plus the same UR10e target demonstrations.
 
-### E5 — GR00T base → UR10e adaptation
-Fine-tune `nvidia/GR00T-N1.7-3B` using the UR10e `NEW_EMBODIMENT` dataset.
-Use the same target-data sizes where compute permits.
+Implement both tracks before GR00T fine-tuning. The source must demonstrably influence
+learning; visualization or concatenation alone does not establish transfer. Record
+source lineage, transform, objective/parameters affected and checkpoint provenance.
+Choose the smallest technically valid mechanism after inspecting source semantics.
 
-Default fine-tuning should remain the official projector + flow-matching DiT action-head path.
-Do not enable full LLM or visual-backbone tuning without a measured reason.
+Run both tracks at 10, 25 and 50 target demonstrations. Freeze architecture, task,
+controller, detector, observation/action contract and evaluation seeds for paired
+comparisons. Record training budget and source-data budget separately. Use deterministic
+nested target subsets and change training factors only in explicit separate diagnostics.
+Primary plot: actual closed-loop success versus target demonstration count, with both
+curves and actual denominators. Never fabricate monotonic improvement.
 
-### E6 — source-specialized transfer (stretch but high value)
-If E0–E5 are stable:
-1. fine-tune GR00T base on the real Franka peg-insertion source;
-2. use that checkpoint as the initialization for UR10e target adaptation;
-3. compare against direct base → UR10e adaptation.
+### E5 — GR00T N1.7 NEW_EMBODIMENT integration
 
-This is the clearest experiment matching the narrative:
-**real Franka insertion experience → new UR10e embodiment**.
+Implement a real GR00TPolicy using the pinned NVIDIA Isaac-GR00T policy, canonical
+LeRobot v2 data, modality.json, six-dimensional relative EEF actions and UR10e adapter.
+Validate observation batching, modality/embodiment config, checkpoint identity,
+statistics and action decoding. Do not transform already-relative actions twice.
+INTEGRATION_READY / COMPUTE_DEFERRED is acceptable until supported compute and a real
+adapted checkpoint exist. Do not return fake outputs or claim GR00T TRAINED.
 
-Do not assume sequential source fine-tuning helps. Catastrophic forgetting or modality mismatch is a valid negative result.
+Official base → UR10e fine-tuning and source-specialized GR00T adaptation are optional
+compute-dependent extensions after the two local experimental tracks. Use the default
+projector + flow-matching DiT path; additional backbone tuning needs measured reason.
 
 ## 10. Evaluation protocol
 
@@ -407,10 +426,14 @@ Before comparing final checkpoints:
 - freeze a fixed held-out seed list;
 - store it in Git;
 - do not tune on it.
-Recommended final held-out evaluation:
-- 100 episodes per final condition if runtime permits;
-- minimum 20 for smoke/iteration only;
-- identical target poses/randomization seeds across compared policies.
+The existing fixed protocol is seeds 1000-1019 (20 episodes); training and development
+seeds are separate. Report this as a P0 smoke distribution, not a broad benchmark.
+All six track/data-size conditions use identical initial conditions. A larger benchmark
+requires a prospectively defined separate protocol, never replacement of failed seeds.
+
+Use receding-horizon control: observe → predict chunk → execute K → re-observe/replan.
+Record actual observation/prediction/execution horizons, interpolation, control frequency
+and policy query frequency. Use the smallest justified K; do not blindly sweep it.
 
 Primary metric:
 - task success rate.
@@ -435,29 +458,19 @@ Optional OOD split:
 
 No cherry-picking best-looking episodes for numerical claims.
 
-## 11. Research hypotheses and result goals
+## 11. Hypothesis and completion boundary
 
-H1:
-A cross-embodiment GR00T prior will require fewer UR10e target demonstrations than ACT trained only on target data to reach a comparable success rate.
+Hypothesis: real-source relative EEF information reduces target demonstrations needed
+by the same target policy compared with target-only learning. The result is measured,
+not required to be positive. Report source-informed mechanism and task-match limitations.
+GR00T cross-embodiment adaptation remains a separately labeled foundation-model extension.
 
-H2:
-A GR00T checkpoint additionally exposed to real Franka peg-insertion data may adapt more efficiently to UR10e peg insertion than the generic GR00T base.
+Required outcomes are evidence of actual source use, validated transferable representation,
+new embodiment control, real GPU training, reproducible learned held-out success, all
+10/25/50 paired experiments, generated data-efficiency curves and verified technical media.
+Simulator appearance, checkpoint existence or a single overfit success alone cannot finish
+this project. Every public claim must trace to structured results.
 
-These are hypotheses, **not required outcomes**.
-
-Minimum project success:
-- target simulator and expert are reproducible;
-- 10 successful demonstrations form one validated GR00T-compatible dataset;
-- local ACT training produces and reloads a real checkpoint;
-- held-out learned closed-loop evaluation completes;
-- a real GR00T adapter contract is validated, with unavailable model execution explicit;
-- all published charts are generated from committed result JSON/CSV files.
-
-Strong-result target, not a gate:
-- GR00T at 25–50 target episodes matches or exceeds ACT using materially more target data;
-- or source-specialized transfer improves low-data success by a meaningful margin.
-
-A negative result is publishable if methodology and evidence are sound.
 ## 12. Result artifact contract
 
 Do not hand-edit numbers in README or video.
@@ -609,67 +622,58 @@ Optional:
 - Rerun;
 - Jupyter/Colab notebook wrapper.
 
-## 17. Owner-approved real-source/media milestone (2026-09-29)
+## 17. Evidence-linked media milestone
 
-The owner extends local P0 with an evidence-linked video. Begin FIRe inspection now;
-do not wait for GR00T cloud compute. This section supersedes the older storyboard.
-The completed ACT checkpoint remains target-only and scored 0/20 held-out success.
-Do not retrospectively claim that it learned from FIRe or succeeded at insertion.
+Final assembly requires underlying evidence and learned held-out success. Prepare actual
+FIRe source, measured trajectory, real-to-sim transition and expert capture beforehand.
+Deliver one 55-70 s 1920x1080 16:9 video at 30 fps, understandable muted, followed by a
+10-15 s hero clip and poster. Optional social formats wait for canonical-cut acceptance.
+Hook: GR00T N1.7 × UR10e / Real-World Cross-Embodiment Robot Learning.
+Show actual Franka motion from the first frame, with compact third-party source credit.
 
-Canonical source: `bhe1004/FIRe-VLA-GR00T-PegInsert-Real`. Inspect the card, actual
-media, views, license and state/action contract. Select 2-3 candidate episodes and
-one canonical episode/view. Pin revision, exact paths and hashes; cache only needed
-payloads outside Git. Keep third-party attribution and required license material.
+Canonical sequence: real Franka video → actual source trajectory → relative EEF abstraction
+→ GR00T cross-embodiment context → NEW_EMBODIMENT UR10e / Isaac Sim → 10/25/50 paired
+tracks → actual ACT training → multi-UR10e evaluation wall → real Franka versus learned
+UR10e split-screen → measured success curves → GR00T N1.7 integration.
 
-Order: source inspection/provenance -> measured source trajectory -> verified
-Franka-to-task-space transform -> trajectory transition -> matched UR10e capture ->
-expert capture -> actual training evidence -> learned rollout -> measured result
-card -> architecture -> canonical cut -> claim/visual review -> hero and poster.
-Missing physical units, frames or camera calibration must remain explicit; never
-fabricate projected telemetry. A source-informed experiment needs its own lineage.
+The signature transition preserves a measured trajectory/coordinate frame while source
+morphology fades and the target scene appears. It must trace to the actual software
+transform, not an arbitrary spline. Show Δx Δy Δz ΔRx ΔRy ΔRz; never imply joint replay.
+GR00T ecosystem examples (DROID, Franka, WidowX, Google Robot, G1, R1, human video) require
+official verification and explicit ecosystem/pretrained-embodiment labels, not project
+training claims. ACT TRAINED + EVALUATED and GR00T INTEGRATION READY remain distinct.
 
-Deliver a 55-70 s 1920x1080 16:9 cut at 30 fps, understandable muted, then a 10-15 s
-hero and poster. Optional social formats wait for acceptance of the canonical cut.
-Hook: `GR00T N1.7 x UR10e / Real-World Cross-Embodiment Robot Learning`.
-Show actual Franka motion in the first frame; no black intro or unrelated footage.
+Build the multi-UR10e wall from actual evaluation episodes, each identified by seed and
+recorded APPROACH/ALIGN/INSERT/SUCCESS/FAIL state. Do not fabricate extra embodiments.
+Final payoff: left REAL WORLD / original Franka demonstration; right SIMULATION / learned
+UR10e policy, aligned in approach/alignment/insertion where possible. Render ACT identity,
+actual target demo count and held-out X/20 from results, then the GR00T integration hook.
 
-Canonical storyboard (seconds):
-- 0-4 real Franka hook; 4-9 episode/view and evidence-derived source overlays.
-- 9-17 morphology fades while actual task trajectory/frame persists; show six
-  translation/rotation deltas, then reveal the UR10e scene. No joint replay claim.
-- 17-24 analogous real/sim task; 24-31 source adapter/canonical dataset/modalities.
-- 31-37 ACT TRAINED + EVALUATED versus GR00T INTEGRATION READY, shared policy API.
-- 37-44 actual RTX 4070 Ti training/loss/checkpoint; 44-54 actual learned rollout.
-- 54-59 measured P0 smoke metrics; 59-65 whole pipeline and GR00T headline.
+## 18. Reproducible assets and verification
 
-A learned failure remains a failure; INSERT SUCCESS is allowed only for the actual
-policy that succeeded. GR00T TRAINED requires a real fine-tuning checkpoint.
-Do not connect source data to target-only training as if that transfer was executed.
+Use existing artifacts/, references/ and scripts/ as SSOT; create only needed media
+helpers. One edit manifest maps shot, timing, source artifact/type, caption, transition,
+claim, evidence reference and truth status. Generated charts/cards consume JSON/CSV,
+not manually copied numbers. Keep heavy media/checkpoints/data ignored, with hashes and
+regeneration commands. Internal classes: PUBLIC_REAL_DATA, PROJECT_SIM_EXPERT,
+PROJECT_SIM_LEARNED, PROJECT_TRAINING, PROJECT_EVALUATION, ARCHITECTURE_GRAPHIC.
 
-## 18. Reproducible media implementation and acceptance
+Only necessary cameras: HERO, MATCHED_SOURCE, CLOSE_INSERTION, EVALUATION. Store transform,
+resolution, seed, task version, policy/expert identity and frame range. Capture must not
+advance physics or change policy observations. Use measured loss, real GPU/run receipt,
+checkpoint path/hash and actual evaluation. No fake telemetry, terminal output, HUD,
+stock robot footage or synthetic success. Any music needs recorded usable rights.
 
-Use the smallest scripts that acquire selected source media, derive trajectories,
-capture simulation and render charts/cards from actual JSON/CSV. One canonical
-edit manifest maps shot/time/source/caption/transition/claim/evidence/truth status.
-Heavy output remains ignored with hashes and regeneration instructions. Internal
-classes: PUBLIC_REAL_DATA, PROJECT_SIM_EXPERT, PROJECT_SIM_LEARNED,
-PROJECT_TRAINING, PROJECT_EVALUATION, ARCHITECTURE_GRAPHIC.
+Inspect actual execution environments through Remote Desktop at major stages: source
+media/data, derived trajectory/canonical data, launched Isaac Sim scene, GPU training/logs,
+checkpoint, actual learned rollout, representative success/failure and final rendered video.
+Separate code, runtime, visual, evaluation and media verification. Save only representative
+claim-linked receipts: REAL_SOURCE, SOURCE_TRAJECTORY, TARGET_ENV, TRAINING, CHECKPOINT,
+LEARNED_ROLLOUT, EVALUATION, FINAL_VIDEO. Generated files alone do not establish visual PASS.
 
-Define only needed HERO, MATCHED_SOURCE, CLOSE_INSERTION and EVALUATION cameras;
-record transform, resolution, seed, task episode, policy and frame range. Rendering
-must not change policy observations or advance physics. Never substitute expert
-footage for learned control. Altered playback speed must be labeled.
-
-Keep overlays restrained and legible: actual video, trajectory, coordinate frames,
-real loss and generated results. No fake HUD, stock robots or invented sounds.
-Audio is optional; any music must have a recorded usable license.
-
-G5 PASS requires real FIRe footage and provenance; an actual architecture-backed
-Real -> task-space -> UR10e transition; expert and learned rollout evidence; real
-ACT training; generated evaluation values; explicit ACT/GR00T status distinction;
-no unsupported transfer/fine-tuning claim; clear real/simulation identity; muted
-comprehensibility; and an edit manifest linking every claim to evidence.
-Final assembly waits only on genuinely missing evidence, not cloud entitlement.
+Media PASS requires actual source footage/provenance, architecture-backed transition,
+expert and learned control evidence, real training, canonical evaluation numbers and
+curves, clear ACT/GR00T and real/sim status, muted comprehension and claim-linked manifest.
 
 ## 19. LinkedIn post claim boundaries
 
@@ -792,11 +796,9 @@ If a planned technology becomes incompatible with the actual runtime, prefer the
 
 ## 23. First execution order
 
-Follow the owner-approved local P0 order at the top of this file. Preserve G0 hygiene
-throughout. G1 simulator -> G2 canonical dataset -> G3 ACT training -> G4 evaluation
-is independent of E0. FIRe source specialization, larger dataset comparisons and
-GR00T fine-tuning are stretch experiments. No portfolio polish before the first real
-checkpoint and closed-loop result.
+Follow the current execution priority at the top. Read HANDOFF.md, inspect actual state,
+and continue the earliest incomplete required step. Preserve G0 throughout. Do not redo
+completed baseline runs or treat compute-deferred GR00T as a local experiment blocker.
 
 ## 24. Decision log / non-goals for P0
 
@@ -817,27 +819,29 @@ These may become P1/P2 only after the core transfer study is complete.
 
 ## 25. Definition of done
 
-The project is done for first public release when a reviewer can answer all of these from the repository:
+A reviewer must trace the complete causal chain: real robot experience → verified relative
+EEF representation → new UR10e embodiment → actual source-informed and target-only training
+→ matched fixed-seed closed-loop evaluation → measured 10/25/50 data efficiency.
 
-1. What real public robot data was used, and under what license?
-2. What open-weight model/checkpoint was used?
-3. What exactly changed between Franka-source and UR10e-target embodiment representations?
-4. How was the UR10e target data generated?
-5. How many target demonstrations were used?
-6. What baseline was compared?
-7. Were both policies evaluated on identical held-out closed-loop episodes?
-8. What were success rate and failure modes?
-9. Can every graph and video number be traced to result artifacts?
-10. What is simulation-only and what, if anything, was physically validated?
+The repository must identify exact source/license/episode/camera/files/hashes, task-match
+classification, transform, algorithm/upstream versions, configurations, budgets, checkpoint
+hashes, horizons/frequencies, seeds and all outcomes. It must reproduce each public number
+and media claim. Include real-source/learned-target visual evidence and the inspected final
+video. GR00T N1.7 NEW_EMBODIMENT integration must be real; runtime/fine-tuning status may
+remain explicitly compute-deferred. Physical UR10e deployment is outside scope.
 
-If any answer depends on memory, manual explanation, or an uncommitted notebook state, the release is not ready.
+G0-G6 are evidence/release gates, not a substitute for this definition. G4 includes both
+tracks at all three sizes; G5 includes the media acceptance above. Tagging/publication still
+requires owner authorization. No completion claim may depend on undocumented session memory.
 
 ## 26. One-sentence project description
 
-> A GR00T N1.7-compatible UR10e robot-learning pipeline with a canonical task-space dataset, local ACT training and closed-loop simulation evaluation; foundation-model transfer remains an experiment requiring actual compute and results.
+> Real Franka demonstrations inform a relative end-effector representation for a new
+> simulated UR10e embodiment, tested through controlled target-data-efficiency experiments
+> and a GR00T N1.7 NEW_EMBODIMENT integration path.
 
 ## 27. Video hook
 
-> **Can robot intelligence learned from a real Franka transfer to a UR10e it has never seen?**
+> **REAL FRANKA → TASK-SPACE MOTION → UR10e**
 
-That question—not aerospace, not a list of frameworks—is the project narrative.
+Show real data, real training and real closed-loop evidence with GR00T N1.7 prominent.
