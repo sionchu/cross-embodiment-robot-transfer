@@ -1,0 +1,7 @@
+{
+  "execution_status": "FAILED",
+  "failure_code": "ABORTED_FOR_PROCESS_ISOLATION",
+  "completed_episodes": 2,
+  "expected_episodes": 20,
+  "reason": "The batch wrapper continued after the stopped ACT process. Cancelled to use the same isolated evaluation protocol for both policies."
+}

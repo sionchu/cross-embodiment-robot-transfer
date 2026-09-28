@@ -108,8 +108,8 @@ deltas; the simulator applies its declared action limits and must record clippin
 
 ```powershell
 & C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split development --output artifacts/runtime/act-development-new
-& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --output artifacts/eval/act-10-001
-& C:\isaacsim\python.bat scripts/local/evaluate.py --policy expert --split held_out --output artifacts/eval/expert-001
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --output artifacts/eval/act-10-002
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy expert --split held_out --output artifacts/eval/expert-002
 ```
 
 Each output/run name must be new. The worker runs `.venv` ACT inference over a local
@@ -125,3 +125,61 @@ Wilson confidence intervals and measured error/time/path/latency statistics. Run
 The first episode video, all final/start images and action traces remain in ignored
 `artifacts/runtime/eval-<run-name>/`. Development seeds 0 and 1 are never counted as
 held-out results. No tuning is performed on held-out outcomes.
+
+
+A measured Kit 6.0.1 render initialization stall occurred at the seventeenth scene
+reset. Evaluation therefore uses fresh simulator processes for blocks of 10 seeds,
+then verifies and combines all 20 episodes. Both policies use the same isolation.
+Interrupted runs remain recorded as failures and are excluded from the comparison;
+no model parameters or held-out seeds change during this infrastructure recovery.
+
+## GR00T N1.7 integration
+
+```powershell
+.venv/Scripts/python.exe scripts/local/groot.py --report artifacts/environment/gr00t_local_contract.json
+```
+
+This checks the pinned upstream, hashes of the actual canonical data, official
+observation batching and official action normalization/physical decoding. It does
+not load model weights. The report keeps runtime availability and target-checkpoint
+validation separate: on this Windows 12 GB machine, runtime is
+`MODEL_COMPUTE_NOT_AVAILABLE`; target checkpoint validation is `NOT_RUN` because no
+UR10e-adapted GR00T checkpoint exists.
+
+On a supported Linux GPU environment prepared by the pinned E0 workflow, the real
+adapter is `GR00TPolicy(checkpoint, upstream, e0_evidence)` in `groot.py`. It checks
+N1.7 model/backbone identifiers, NEW_EMBODIMENT modalities, statistics, embodiment ID,
+action horizon, weight files and a matching E0 PASS before loading the official
+`Gr00tPolicy`. The same `predict({'state': state6, 'front': rgb})` interface returns
+a physical `(16,6)` action chunk. The official policy has already decoded physical
+units; the adapter never applies a second relative transform. A base/DROID checkpoint
+without the target embodiment is rejected. This runtime branch awaits real target
+fine-tuning and supported compute; contract PASS is not model-runtime PASS.
+
+`python scripts/local/compare.py` regenerates the CSV, README table and plot from
+complete matched evaluation artifacts. Plotting uses the separately installed
+Matplotlib 3.11.1; it does not alter the isolated training dependency lock. On a clean
+machine, install `matplotlib==3.11.1` in the Python environment used for this plotting
+command. Raw trajectory videos remain ignored; a compact failure image is retained.
+
+
+## Reproduce without overwriting committed evidence
+
+The commands above identify the recorded runs. Their output folders already exist
+in a checkout containing evidence. For a new training/evaluation run after generating
+the canonical dataset, use new names:
+
+```powershell
+$runStamp = Get-Date -Format yyyyMMdd-HHmmss
+$actRun = "act-reproduction-$runStamp"
+$expertRun = "expert-reproduction-$runStamp"
+.venv/Scripts/python.exe scripts/local/act.py --output "artifacts/training/$actRun"
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --checkpoint "checkpoints/$actRun" --output "artifacts/eval/$actRun"
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy expert --split held_out --output "artifacts/eval/$expertRun"
+python scripts/local/compare.py --act-run $actRun --expert-run $expertRun
+```
+
+The last command regenerates the comparison/README table from those named runs.
+The original run folders and checkpoint metadata remain intact. Inspect the generated
+`summary.json` execution status; a shell exit code alone is insufficient when the
+Isaac Sim Windows launcher is terminated externally.

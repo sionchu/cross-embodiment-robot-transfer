@@ -1,94 +1,91 @@
 # Project handoff
 
 ## Objective
-Complete the owner-approved local P0: UR10e expert -> 10 demonstrations -> canonical
-GR00T-compatible dataset -> actual ACT GPU checkpoint -> held-out closed-loop results.
+Owner-approved local P0: UR10e expert -> 10 demonstrations -> one GR00T-compatible
+dataset -> actual ACT GPU checkpoint -> held-out closed-loop results -> real GR00T
+adapter contract and truthful comparison. AGENTS.md and the owner's revised scope govern.
 
 ## Scope
-AGENTS.md is canonical. E0 is an independent GR00T runtime gate. Preserve its pinned
-runner; do not spend time on Colab entitlement or waiting for T4. Keep the aerospace
-reference read-only. No public push or release.
+E0 remains independent. No further Colab entitlement work; preserve its pinned runner.
+The aerospace reference remained read-only. No public push, tag or release was performed.
 
 ## Acceptance criteria
-Actual deterministic simulator and rendered verification; at least 10 valid successful
-episodes; one GR00T LeRobot v2 dataset; real RTX 4070 Ti ACT training/loss/checkpoint
-reload; checkpoint-controlled held-out evaluation; real GR00T adapter contract.
-Unavailable GR00T execution must not acquire fabricated metrics.
+Real deterministic simulation/rendering; at least 10 valid demos; one canonical v2
+dataset; actual CUDA training/checkpoint reload; learned closed-loop held-out results;
+real GR00T interface with unavailable execution explicit; reproducible compact evidence.
 
 ## Completed
-- Existing G0/E0 runner, pinned sources and sanitized evidence retained.
-- Owner directly approved switching to independent local work on 2026-09-28.
-- Reconciled obsolete serial E0 dependencies in AGENTS.md and README (de145e2).
-- Implemented official UR10e fixed-peg scene, measured-pose/Jacobian controller, front RGB,
+- G1: official UR10e fixed-peg task, measured-pose/Jacobian controller, front RGB,
   contact monitoring, geometric success and deterministic seeded reset.
-- Actual expert smoke seeds 0, 0, 1 succeeded; repeated results matched exactly.
-- Deliberate 15 mm miss terminated COLLISION at 98.3386 N; reviewed actual RGB frames.
+- G2: 10 successful expert episodes, 487 synchronized frames; official GR00T reader
+  and action normalization round-trip passed. No Franka joint replay or separate ACT dataset.
+- G3: maintained LeRobot ACT trained from scratch for 1,000 steps on RTX 4070 Ti;
+  real checkpoint saved and strictly reloaded with matching finite action chunks.
+- G4: actual checkpoint-controlled simulation completed on all 20 frozen held-out seeds.
+  Expert: 20/20 successful. ACT: 0/20 successful, all COLLISION. This is a negative
+  learned-control result, not a successful insertion or transfer claim.
+- GR00TPolicy implements the official N1.7 NEW_EMBODIMENT checkpoint/policy/decoding
+  path. Official observation batching and action round-trip passed; model execution
+  and target-checkpoint validation remain separately unavailable.
+- Comparison CSV/README table/plot generated from recorded episodes; every raw trace
+  hash, executed/clipped action, timestamp, terminal outcome and matched initial state checked.
+- Opened and inspected the actual held-out failure image, expert terminal image and plot.
 
 ## Current checkpoint
-G3 ACT training is verified: actual RTX 4070 Ti training for 1,000 steps, a real
-206,355,696-byte model.safetensors and strict checkpoint reload with identical finite
-(1,16,6) output. The checkpoint is checkpoints/act-10-001 (ignored). Closed-loop
-checkpoint control is the next gate. Held-out seeds 1000-1019 were committed in
-0392ba1 before training; 0 and 1 are development only.
-No E0 PASS artifact is committed; GR00T remains independent and compute-deferred.
+The local P0 execution chain is complete. Evidence is under artifacts/datasets/,
+artifacts/training/act-10-001/, artifacts/eval/{expert-002,act-10-002}/ and
+artifacts/environment/gr00t_local_contract.json. No live evaluation job remains.
+Raw datasets, checkpoints, logs and videos are ignored but available locally.
 
 ## Decisions and reasons
-- Local ACT establishes real learning evidence within available compute.
-- E0 gates actual GR00T runtime claims/fine-tuning only.
-- Minimum front RGB + target-relative EEF pose; explicit six-dimensional task-space deltas.
-- One canonical dataset feeds both maintained ACT and real N1.7 interfaces.
-- Keep exact upstream/model pins and existing E0 failure diagnostics.
+- Keep Isaac Sim and the pinned ML .venv separate; a local stdio worker carries
+  fresh RGB/state to actual ACT inference and returns physical action chunks.
+- Execute the first action of each new 16-step chunk; record per-axis clipping.
+- Seeds 1000-1019 were committed in 0392ba1 before ACT training. Seeds 0/1 are development.
+- ACT's first long evaluation stalled at the seventeenth render reset. Two live
+  py-spy stack samples and the unchanged Kit log confirmed SimulationApp.update in reset.
+  Preserve act-10-001 as SIMULATOR_RESET_STALL and expert-001 as cancelled recovery evidence.
+  Final runs use two fresh processes of 10 episodes for both policies. No model/seed tuning.
+- Run metadata records the parent Git HEAD and exact source hashes. The final
+  committed evaluator source matches those hashes, including the reset-isolation fix.
 
 ## Verification evidence
-- .venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-10-001:
-  exit 0; 1,000 actual CUDA optimizer steps, 81.258 s; tracked weights changed.
-- artifacts/training/act-10-001/{config.json,run.json,loss.csv,summary.json}: actual
-  architecture, upstream pins, dataset/source hashes, all step losses and reload PASS.
-- First/last 50-step mean loss: 8.666316 / 0.358156. This is training loss, not task success.
-- Checkpoint model SHA256: 957d617972c5ae2d37b3060c57223e330d191dee8becec98a06b00e29e015631.
-- .venv/Scripts/python.exe -m unittest discover -s tests -v: 26 passed, including actual
-  checkpoint physical-action inference, repeatability, episode padding and normalization.
-- scripts/local/setup.ps1: exit 0; locked environment, torch 2.9.0+cu128 and RTX 4070 Ti CUDA.
+- scripts/local/setup.ps1: pinned clean ML environment and CUDA verified independently of Isaac Sim.
+- C:\isaacsim\python.bat scripts/local/insertion.py --seeds 0 0 1 --output artifacts/runtime/insertion-03:
+  repeated seed matched exactly; deliberate miss in collision-02 triggered physical collision.
 - C:\isaacsim\python.bat scripts/local/insertion.py --seeds 10 11 12 13 14 15 16 17 18 19 --record --output artifacts/runtime/demos-01:
-  exit 0; all 10 SUCCESS, no contact, 487 distinct per-episode RGB frames total.
+  10 successful episodes; actual images/physics timestamps remained synchronized at 15 Hz.
 - .venv/Scripts/python.exe scripts/local/dataset.py --dataset datasets/ur10e_10 --upstream .external/Isaac-GR00T --report artifacts/datasets/validation.json:
-  PASS, official_loader PASS, official_action_roundtrip PASS.
-- Dataset SHA256: cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017.
-- .venv/Scripts/python.exe -m unittest discover -s tests -v: 22 passed, including
-  10 corruption tests against copies of the actual dataset. E0 PASS lines in these
-  unit tests are temporary mocked fixtures, not actual GR00T inference evidence.
-- Opened a decoded middle video frame; actual UR10e approach and fixture were visible.
-- Windows TorchCodec requires shared FFmpeg DLL discovery; pinned 7.1.1 plus a local
-  os.add_dll_directory handle resolved decoding without modifying upstream/Isaac Sim.
-- python -m unittest discover -s tests -v: 12 passed (9 E0 wrapper, 3 task predicate/expert checks).
-- C:\isaacsim\python.bat scripts\local\insertion.py --seeds 0 0 1 --output artifacts\runtime\insertion-03:
-  exit 0; 3 successful expert trials, 50 control steps each; repeated seed exactly reproduced.
-- Same runner --seeds 0 --collision-check --output artifacts\runtime\collision-02:
-  exit 0; physical COLLISION at step 40 (negative test passed).
-- artifacts/simulation/g1_smoke.json records actual environment, config, source digests,
-  outcomes and image hashes. Raw-source and LF-normalized digests distinguish Windows line endings.
-- Opened and inspected start, success and collision PNGs; no synthetic media used.
-- Runtime warns about the official asset's ee_joint initial disjoint transform; the reset
-  settles before measurement, and measured repeated-state control succeeded. This warning
-  is retained in ignored runtime logs; no hardware or force-control fidelity is claimed.
-- Full simulator source and staged documentation diff reviewed; git diff --cached --check passed.
-- Staged source digest and committed image digests match the measured evidence.
+  schema/official loader/official action round-trip PASS.
+- .venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-10-001:
+  1,000 CUDA steps, 81.258 s, real changed weights, reload PASS. Model SHA256:
+  957d617972c5ae2d37b3060c57223e330d191dee8becec98a06b00e29e015631.
+- C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --output artifacts/eval/act-10-002:
+  all 20 completed; same command with --policy expert and expert-002 completed 20 successes.
+- .venv/Scripts/python.exe scripts/local/groot.py --report artifacts/environment/gr00t_local_contract.json:
+  integration PASS; MODEL_COMPUTE_NOT_AVAILABLE; TARGET_CHECKPOINT_NOT_AVAILABLE.
+- python scripts/local/compare.py: all 40 trajectories and initial-state matching verified;
+  CSV/table/plot and actual 15 Hz video metadata generated from results.
+- .venv/Scripts/python.exe -m unittest discover -s tests -v: 33 passed, no skips.
+  E0 PASS text in unit-test logs refers to mocked temporary fixtures, not model execution.
 
 ## Not executed
-Learned closed-loop evaluation, GR00T model/fine-tuning and real UR10e deployment. No cloud rerun.
+Successful learned insertion, GR00T target fine-tuning/inference, cross-embodiment
+transfer, FIRe source specialization, real UR10e deployment and fresh-machine validation.
+The prior E0 inference failed; no real E0 PASS artifact is committed.
 
 ## Blockers
-No E0 prerequisite blocks local P0. GR00T execution remains compute-deferred and the
-last recorded inference failed. Local CUDA training and checkpoint reload are verified; no local blocker is known.
+No local P0 execution blocker remains. GR00T runtime needs supported Linux GPU
+compute and an adapted target checkpoint; its metrics stay N/A. Current ACT competence
+is insufficient: failures are retained rather than relabeled or tuned on held-out results.
 
 ## Modified files
-G3 slice: scripts/local/act.py, tests/test_act.py, scripts/local/README.md,
-artifacts/training/act-10-001/ compact evidence, README.md and HANDOFF.md.
+Canonical local simulator/data/learning/policy/evaluation scripts, targeted tests,
+pinned dependencies/configs, compact execution evidence, README and this handoff.
+No source data or model payloads are committed.
 
 ## Next concrete action
-Connect ACTPolicy.predict to InsertionEnv using a small local subprocess boundary:
-Isaac Sim Python and the ML .venv must remain isolated. Send front RGB/state, receive
-actual checkpoint action chunks, apply declared action bounds and log any clipping.
-Debug transport on development seeds only, then run the committed 20 held-out seeds
-for both expert and ACT without tuning on their outcomes. Preserve failures. Implement
-and validate the real GR00T adapter contract, then generate the compact comparison.
+Any follow-on experiment must preserve this checkpoint and held-out result. Use new
+run names as documented in scripts/local/README.md. Improved ACT training, larger
+datasets, FIRe mapping and actual GR00T adaptation are subsequent experiments,
+not missing claims to retrofit into this measured P0 result. Public release remains separate.

@@ -1,0 +1,39 @@
+{
+  "comparison": "PASS",
+  "matched_initial_states": true,
+  "all_trace_hashes_and_chunk_execution": "PASS",
+  "all_geometric_terminal_outcomes": "PASS",
+  "seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "matplotlib": "3.11.1",
+  "numpy": "2.2.6",
+  "source_sha256": "d23f318bde650561a12506ae9d705e534b9745d46eb89985b9f9960888eac930",
+  "input_hash_encoding": "JSON parsed then sorted compact UTF-8; independent of CRLF/LF",
+  "inputs_sha256": {
+    "artifacts/eval/expert-002/summary.json": "c01f0527d45a87145566eb42ed24058b318271655b668099a7d078aa2f64d247",
+    "artifacts/eval/expert-002/episodes.jsonl": "b124861b857de2cc7cd8f1e08083dac2f4aead211e38353dd8d775048a8a6005",
+    "artifacts/eval/act-10-002/summary.json": "74ff97403ff52a349c326492e9c03820b6bda1ff19c35b02f871eda58af87c32",
+    "artifacts/eval/act-10-002/episodes.jsonl": "9018efd85d7d1bb842924ff0a8a932478d2d400cfe98275c539dd1eef7876411"
+  },
+  "first_failure_seed": 1000
+}

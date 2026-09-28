@@ -1,0 +1,16 @@
+{
+  "execution_status": "FAILED",
+  "failure_code": "SIMULATOR_RESET_STALL",
+  "stage": "reset before seed 1016",
+  "completed_episodes": 16,
+  "expected_episodes": 20,
+  "policy": "act",
+  "split": "held_out",
+  "diagnosis": "Two live Python stack samples remained in InsertionEnv.reset -> SimulationApp.update; Kit log stopped at render-product initialization for viewport 17.",
+  "recorded_by": "external diagnostics; incomplete run is excluded from final comparison",
+  "project_commit": "25a1874ff992549288f805c27074587a72d50950",
+  "diagnostic_hashes": {
+    "eval-act-hang-stack.txt": "875140dea0504152bda4a02a2b3aefc5ae59613e728c352a0cb2c75d44e483bc",
+    "eval-act-hang-stack-2.txt": "cfe09036ad8fdaeec0c6688d5ef7464fe48add07890d6c1cc604d0474cdce8dd"
+  }
+}

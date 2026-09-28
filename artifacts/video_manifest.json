@@ -1,0 +1,50 @@
+[
+  {
+    "policy": "Expert",
+    "seed": 1000,
+    "outcome": "SUCCESS",
+    "path": "artifacts/runtime/eval-expert-002-part-00/1000.mp4",
+    "sha256": "9306a8f15d6defaebff436aa4ea3cb634226f9e4f0d8857ddc2d49e8923de78b",
+    "frames": 49,
+    "fps": 15,
+    "width": 640,
+    "height": 480,
+    "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
+  },
+  {
+    "policy": "Expert",
+    "seed": 1010,
+    "outcome": "SUCCESS",
+    "path": "artifacts/runtime/eval-expert-002-part-01/1010.mp4",
+    "sha256": "0755e8ea402b71515d7b192520d8d426d47b4a201dfa379b049fdc5fc253a57f",
+    "frames": 47,
+    "fps": 15,
+    "width": 640,
+    "height": 480,
+    "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
+  },
+  {
+    "policy": "ACT",
+    "seed": 1000,
+    "outcome": "COLLISION",
+    "path": "artifacts/runtime/eval-act-10-002-part-00/1000.mp4",
+    "sha256": "1286a1d2748b2d85c3851ab9a724bff1244df70b9fe83607248aad4c9037559d",
+    "frames": 39,
+    "fps": 15,
+    "width": 640,
+    "height": 480,
+    "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
+  },
+  {
+    "policy": "ACT",
+    "seed": 1010,
+    "outcome": "COLLISION",
+    "path": "artifacts/runtime/eval-act-10-002-part-01/1010.mp4",
+    "sha256": "981a474dd359a80d47541658ece05ec0a404a0c18bc1803a22d18a23739e55a8",
+    "frames": 38,
+    "fps": 15,
+    "width": 640,
+    "height": 480,
+    "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
+  }
+]
