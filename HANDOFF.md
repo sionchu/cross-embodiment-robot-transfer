@@ -30,9 +30,11 @@ inference runs and exact code/model/environment provenance.
 
 ## Current checkpoint
 G0 hygiene implementation and local checks complete.
-E0 runtime was attempted but remains incomplete. The A100 allocation gate failed with
-`GPU_NOT_A100`: Colab allocated T4 instead of the requested A100. No GR00T install,
-HF gated-access check or inference was started.
+E0 runtime was attempted but remains incomplete. The first allocation surfaced T4 instead
+of the requested A100, but follow-up account inspection identified the upstream blocker:
+the active Google AI Pro 5TB subscription is not being provisioned into Colab. Colab
+shows 0 compute units even though the plan is officially eligible for 200 CCU. No GR00T
+install, HF gated-access check or inference was started.
 
 ## Decisions and reasons
 - Use official standalone inference unmodified; pin code, lock and model snapshots.
@@ -67,19 +69,23 @@ checkpoint inference runs, and all E1+ work. No public push, release, or
 reference-repository modification.
 
 ## Blockers
-An actual A100 runtime is the current blocker. The current Colab account accepted
-an A100-high-memory request but reported A100 unavailable and allocated T4; its
-resource panel showed no available compute units. Do not weaken the E0 gate to T4.
+The current blocker is Colab entitlement provisioning, not a decision to buy more compute.
+The same Google account has a verified active Google AI Pro (5 TB) subscription billed
+directly through Google Play, but Colab shows 0 compute units and no included-benefit
+claim/activate control. Official Google documentation says eligible Google AI Pro members
+receive 200 CCU. Do not purchase Pay As You Go or Colab Pro as a workaround. Once the
+included entitlement appears, request A100 again and keep the E0 A100 gate unchanged.
 HF secret/gated access has not yet been tested because execution stopped earlier.
 
 ## Modified files
 .gitignore, .gitattributes, README.md, references/source_manifest.json,
 references/gr00t_contract.md, scripts/colab/README.md, scripts/colab/e0.py,
-tests/test_e0.py, HANDOFF.md, and
-artifacts/environment/2026-09-28-colab-a100-unavailable.json.
+tests/test_e0.py, HANDOFF.md,
+artifacts/environment/2026-09-28-colab-a100-unavailable.json, and
+artifacts/environment/2026-09-28-google-ai-pro-colab-entitlement-missing.json.
 
 ## Next concrete action
-Obtain a real A100 runtime (for example by making A100 capacity/compute units
-available on the intended Colab account) and rerun the same pinned E0 workflow.
-Do not start E1. Once A100 is confirmed by `nvidia-smi`, continue to installation,
-gated-access validation and both official checkpoint inference runs.
+Resolve the missing Google AI Pro → Colab 200 CCU entitlement on the existing account;
+do not purchase additional Colab compute. Then rerun the same pinned E0 workflow and
+request A100. Do not start E1. Once A100 is confirmed by `nvidia-smi`, continue to
+installation, gated-access validation and both official checkpoint inference runs.

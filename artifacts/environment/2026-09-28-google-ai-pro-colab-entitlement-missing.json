@@ -1,0 +1,41 @@
+{
+  "status": "BLOCKED",
+  "gate": "E0",
+  "stage": "colab_entitlement",
+  "failure_code": "COLAB_ENTITLEMENT_MISSING",
+  "observed_date": "2026-09-28",
+  "google_account": "sionchu1@gmail.com",
+  "subscription": {
+    "plan": "Google AI Pro (5 TB)",
+    "billing_provider": "Google Play / Google Digital Inc.",
+    "billing_cycle": "monthly",
+    "monthly_price_krw": 7300,
+    "started_at": "2026-08-30T03:57:55+09:00",
+    "next_renewal_date": "2026-09-30",
+    "trial": false,
+    "student_offer": false,
+    "family_group": false
+  },
+  "official_eligibility": {
+    "benefit": "Google Colab",
+    "included_ccu": 200,
+    "note": "Google AI Pro official help states 200 CCUs for eligible members."
+  },
+  "colab_observed": {
+    "signup_page_compute_units": 0,
+    "recognizes_google_ai_pro_entitlement": false,
+    "free_claim_or_activate_control_visible": false,
+    "paid_options_only": [
+      "Pay As You Go",
+      "Colab Pro",
+      "Colab Pro+",
+      "Colab Enterprise"
+    ]
+  },
+  "interpretation": "The active Google AI Pro subscription is verified, but Colab is not provisioning the included 200 CCU entitlement for this account. Do not purchase paid Colab units as a workaround.",
+  "privacy": {
+    "raw_emails_committed": false,
+    "raw_browser_screenshots_committed": false,
+    "sanitized_summary_only": true
+  }
+}
