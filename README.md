@@ -3,13 +3,19 @@
 An evidence-first study of GR00T adaptation to a simulated UR10e insertion task.
 The canonical scope and gate plan are in [AGENTS.md](AGENTS.md).
 
-Current slice: repository hygiene and the official N1.7 DROID sanity workflow.
-Official GR00T N1.7 guidance requires 16 GB+ VRAM for inference and 40 GB+ for later
-fine-tuning. A free-tier Tesla T4 completed the pinned environment and gated-access
-checks and reached the official inference stage, but E0 has **not passed**: the latest
-run ended with `OFFICIAL_INFERENCE_FAILED`. The next run preserves a sanitized per-model
-log so the failure can be diagnosed without exposing credentials. No custom fine-tuning
-or simulator implementation may start before E0 passes.
+Current priority: deterministic UR10e insertion -> 10 successful expert demonstrations
+-> one GR00T LeRobot v2 dataset -> local ACT GPU training -> checkpoint-driven
+closed-loop held-out evaluation. GR00T N1.7 remains the foundation-model integration
+target. These local stages have not yet run.
+
+E0 is an independent GR00T runtime gate, not a prerequisite for local target learning.
+The existing project record reports a T4 pinned installation and gated access followed
+by `OFFICIAL_INFERENCE_FAILED`; no E0 PASS artifact is committed. Colab entitlement
+and allocation work is deferred by owner decision. The recorded South Korea limitation
+concerns bundled Google AI Pro compute benefits, not a claim that all Colab service is
+unavailable. Official GR00T inference requires 16 GB-class VRAM and fine-tuning 40 GB+;
+the local RTX 4070 Ti 12 GB is assigned to Isaac Sim and ACT. GR00T training and
+closed-loop GR00T results remain unexecuted.
 
 - [Colab / cloud GPU E0 workflow](scripts/colab/README.md)
 - [Pinned sources and environment](references/source_manifest.json)

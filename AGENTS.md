@@ -30,17 +30,49 @@ Available execution environments:
 2. Run `git status --short`, `git log --oneline --decorate -5`, and inspect the current tree.
 3. Confirm the repository is still at the expected minimal/bootstrap state; if it has progressed, continue from the actual latest state instead of replaying this plan from the beginning.
 4. Re-verify time-sensitive upstream GR00T/LeRobot interfaces against the pinned/current official sources before implementing their schemas or CLI commands.
-5. Start at the **earliest incomplete gate**. On the initial state that means G0 repository hygiene, then E0 official GR00T N1.7 sanity validation.
+5. Start at the earliest incomplete local P0 gate below. E0 is independent and must not block target-task work.
 6. Make the smallest coherent change, run its verification, review the diff, then commit it. Do not scaffold the whole future folder tree up front.
 
-### Initial new-chat objective
+### Current owner-approved execution priority (2026-09-28)
 
-The first session should normally produce only the minimal G0/E0 foundation:
-- hygiene files needed now (`.gitignore`, minimal README only if useful, environment/reference manifest structure);
-- a reproducible Linux 16 GB+ GPU GR00T N1.7 inference-sanity workflow (Colab is optional) that begins with `nvidia-smi`, pins the upstream commit, checks gated model access, and runs the official DROID sample inference;
-- no UR10e scene implementation until the official GR00T environment and data contract are proven working.
+The owner explicitly approved this scope change after the Colab availability limitation.
+Do not spend further time on Colab entitlement or waiting for T4. Preserve the existing
+pinned E0 runner. E0 gates actual GR00T runtime claims and GR00T fine-tuning only;
+it does not gate the simulator, demonstrations, canonical dataset, ACT or ACT evaluation.
 
-Do not spend the first session on Premiere, LinkedIn copy, UI polish, extra models, or broad project scaffolding.
+Execute this local P0 in order:
+1. Reconcile the canonical planning/status files in place.
+2. Build the smallest deterministic official UR10e fixed-peg insertion task in Isaac Sim.
+   Verify reset, repeated seeds, geometric success, collisions and actual rendered output.
+3. Generate at least 10 successful expert demonstrations.
+4. Export one GR00T LeRobot v2 dataset with explicit `meta/modality.json`. Validate
+   modalities, dimensions, finite values, timestamps, episode continuity, action limits
+   and video/state synchronization. ACT and GR00T consume this same canonical data.
+5. Train maintained LeRobot ACT on the RTX 4070 Ti in an isolated ML environment.
+   Record actual GPU use/loss and a real checkpoint; reload it.
+6. Execute checkpoint inference in closed-loop UR10e simulation on fixed held-out seeds.
+   Save every episode outcome and generated aggregate results, including failures.
+7. Implement real ACTPolicy and GR00TPolicy paths mapping observation to action chunks.
+   Validate N1.7 embodiment/modality/checkpoint/action decoding before model execution.
+   GR00T may explicitly report MODEL_COMPUTE_NOT_AVAILABLE; never substitute fake outputs.
+8. Publish a compact local result table for Expert, ACT and GR00T with missing GR00T
+   metrics as unavailable. No external push/publication is authorized by this plan.
+
+Minimum input: front RGB and target-relative EEF pose. Extra velocity, cameras, depth
+or gripper channels require a measured task need. Canonical action is six-dimensional
+relative task-space `[dx, dy, dz, dRx, dRy, dRz]`; document units, reference frame,
+rotation convention and composition explicitly and verify the N1.7 transformation contract.
+No Franka joint replay or separate ACT dataset.
+
+GR00T N1.7 remains the primary foundation-model integration target. Until execution
+is evidenced, use compatible/ready/integration language; ACT metrics belong to ACT.
+The minimum milestone requires actual simulation, 10 valid demos, GPU training,
+checkpoint reload, learned closed-loop held-out results and the real GR00T adapter
+contract. Unit tests or a planning update alone cannot complete it.
+
+After that milestone only: 25/50/100 demos, FIRe source inspection/mapping,
+source-informed comparison, GR00T inference on available >=16 GB compute and
+fine-tuning on >=40 GB. Quantization is not P0. Media polish waits until evidence exists.
 
 ## 0. Mission
 
@@ -141,7 +173,7 @@ Before using it:
 - GR00T ships a small `demo_data/droid_sample` specifically for zero-shot/open-loop validation.
 - Current LeRobot card reports Franka, 95,658 episodes, 27,630,375 frames, 15 FPS, Apache-2.0.
 
-Use DROID primarily to verify that the official N1.7 installation and embodiment handling are correct before custom work.
+Use DROID to verify official N1.7 installation and embodiment handling on the independent GR00T track.
 ### P1/P2 reference datasets — do not pull into P0 unless needed
 
 **Stanford KUKA multimodal peg insertion**
@@ -195,7 +227,7 @@ Use DROID primarily to verify that the official N1.7 installation and embodiment
 Data-format decision:
 - **P0 training SSOT:** GR00T-compatible LeRobot v2 because current N1.7 reference implementation requires it.
 - **P1 interoperability:** deterministic export/conversion to LeRobot v3.
-- Do not build dual-format support before the first GR00T fine-tune succeeds.
+- Do not maintain separate ACT and GR00T datasets; runtime adapters may read the canonical v2 dataset.
 
 ## 7. Target embodiment and task
 
@@ -251,10 +283,10 @@ P0 target action should follow the closest officially documented N1.7 `NEW_EMBOD
 - relative end-effector translation;
 - relative orientation representation;
 - optional gripper/tool channel only if the task actually uses it.
-The exact rotation encoding and normalization must be copied from an official current N1.7 modality/action example, not invented.
+Document the six-dimensional delta encoding precisely. Verify official current N1.7 modality/action transforms so already-relative actions are not transformed twice.
 
 Target observation candidates:
-- `observation.state`: J1–J6 positions, plus only additional proprioception justified by the modality config;
+- `observation.state`: target-relative EEF pose; additional proprioception only when justified by evidence;
 - camera: front RGB;
 - optional wrist RGB;
 - task language;
@@ -279,7 +311,7 @@ On an authorized Linux NVIDIA GPU with at least 16 GB-class VRAM:
 6. run official DROID checkpoint inference with `nvidia/GR00T-N1.7-DROID`;
 7. save environment/package/commit manifest.
 
-Do not proceed to custom fine-tuning until E0 is green.
+E0 gates GR00T fine-tuning and runtime claims only. Local target-task work and ACT proceed independently.
 
 ### E1 — inspect real peg-insertion source
 Load FIRe real Franka peg-insertion data.
@@ -311,11 +343,7 @@ Do not import from that local path at runtime.
 
 ### E3 — generate target demonstrations
 Use a deterministic/collision-aware expert to create successful UR10e demonstrations.
-Initial target sizes:
-- 10 episodes;
-- 25 episodes;
-- 50 episodes;
-- 100 episodes.
+Initial target: 10 successful episodes. Increase to 25/50/100 only after the first checkpoint trains and executes in closed loop.
 
 Keep one larger source pool if generation is cheap, but train on exact deterministic subsets.
 
@@ -333,11 +361,7 @@ Every episode must record:
 Failed episodes belong in evidence/failure analysis but should not silently enter an imitation-learning training split unless the experiment explicitly requires them.
 ### E4 — ACT target-data-only baseline
 Train ACT from scratch or standard initialization using only UR10e target demonstrations.
-Train at minimum on:
-- 10;
-- 25;
-- 50;
-- 100 episodes.
+P0 trains on the first 10 successful episodes. Larger data-size comparisons are stretch work after checkpoint execution.
 
 Keep architecture/training choices constant across data-size comparisons.
 
@@ -407,11 +431,11 @@ A GR00T checkpoint additionally exposed to real Franka peg-insertion data may ad
 These are hypotheses, **not required outcomes**.
 
 Minimum project success:
-- source-data inspection is reproducible;
 - target simulator and expert are reproducible;
-- GR00T target fine-tuning completes;
-- ACT baseline completes;
-- fixed closed-loop comparison completes;
+- 10 successful demonstrations form one validated GR00T-compatible dataset;
+- local ACT training produces and reloads a real checkpoint;
+- held-out learned closed-loop evaluation completes;
+- a real GR00T adapter contract is validated, with unavailable model execution explicit;
 - all published charts are generated from committed result JSON/CSV files.
 
 Strong-result target, not a gate:
@@ -484,7 +508,7 @@ First cells/steps:
 5. `uv sync`.
 6. authenticate with `hf auth login` or an environment secret.
 7. verify `nvidia/Cosmos-Reason2-2B` access.
-8. run E0 before any custom dataset work.
+8. run E0 before GR00T runtime validation/fine-tuning; local dataset/ACT work remains independent.
 
 Training rules:
 - pin upstream commit IDs in the run manifest;
@@ -510,7 +534,7 @@ P0 local responsibility:
 - run policy client / closed-loop simulator;
 - record evidence video.
 
-Keep model training off the local 12 GB GPU if it creates avoidable memory workarounds.
+Run ACT training on the local 12 GB GPU in an isolated ML environment. Run Isaac Sim and training sequentially when needed for VRAM. Defer GR00T training to supported compute.
 A remote-policy architecture is acceptable:
 ```text
 40 GB+ Linux NVIDIA GPU server
@@ -532,7 +556,7 @@ A safer P0 workflow is:
 - run inference where supported;
 - or perform evaluation in a compatible Linux GPU environment.
 
-Choose the simplest reproducible route supported by the actual environment after E0.
+Choose the simplest reproducible route supported by the actual environment; E0 is independent of the local ACT route.
 
 ## 16. Required software
 
@@ -733,7 +757,8 @@ No public push or LinkedIn publication before all applicable gates pass.
 - source provenance is recorded.
 
 ### G3 — Training
-- official DROID sanity inference completed;
+- for GR00T training only: official DROID sanity inference completed;
+- for ACT: real local GPU training, loss, checkpoint and reload evidenced;
 - exact upstream commit recorded;
 - exact model checkpoint recorded;
 - training config saved;
@@ -742,7 +767,7 @@ No public push or LinkedIn publication before all applicable gates pass.
 
 ### G4 — Evaluation
 - fixed held-out seeds committed before final comparison;
-- ACT and GR00T use the same episode set;
+- evaluated policies use the same episode set; unavailable GR00T is explicitly not evaluated;
 - result JSONL saved;
 - aggregate CSV/JSON generated by script;
 - plots generated from aggregate artifacts;
@@ -800,24 +825,11 @@ If a planned technology becomes incompatible with the actual runtime, prefer the
 
 ## 23. First execution order
 
-P0 sequence:
-1. scaffold repo and hygiene files;
-2. create reference/source manifest;
-3. build provider-agnostic E0 GR00T sanity runner plus the optional Colab notebook adapter;
-4. verify source FIRe real peg dataset schema and compatibility;
-5. implement deterministic UR10e insertion environment;
-6. implement expert rollout + target dataset recording;
-7. validate GR00T v2 export;
-8. train ACT target-only baseline;
-9. fine-tune GR00T base on target embodiment;
-10. run fixed closed-loop evaluation;
-11. only then attempt source-specialized real-Franka → UR10e transfer;
-12. generate results figures;
-13. record matched source/target video;
-14. produce LinkedIn edit package;
-15. pass release gates.
-
-Do not start with Premiere, README cosmetics, or a custom UI.
+Follow the owner-approved local P0 order at the top of this file. Preserve G0 hygiene
+throughout. G1 simulator -> G2 canonical dataset -> G3 ACT training -> G4 evaluation
+is independent of E0. FIRe source specialization, larger dataset comparisons and
+GR00T fine-tuning are stretch experiments. No portfolio polish before the first real
+checkpoint and closed-loop result.
 
 ## 24. Decision log / non-goals for P0
 
@@ -855,7 +867,7 @@ If any answer depends on memory, manual explanation, or an uncommitted notebook 
 
 ## 26. One-sentence project description
 
-> An evidence-first cross-embodiment robot-learning study that adapts an open-weight GR00T N1.7 prior and public real-world manipulation experience to a new simulated UR10e precision-insertion embodiment, then measures target-data efficiency against an ACT target-only baseline.
+> A GR00T N1.7-compatible UR10e robot-learning pipeline with a canonical task-space dataset, local ACT training and closed-loop simulation evaluation; foundation-model transfer remains an experiment requiring actual compute and results.
 
 ## 27. Video hook
 
