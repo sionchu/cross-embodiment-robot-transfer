@@ -1,0 +1,270 @@
+{
+  "title": "GR00T N1.7 × UR10e",
+  "subtitle": "Real-World Cross-Embodiment Robot Learning",
+  "delivery": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration_s": 65,
+    "audio": "none; must be understandable muted"
+  },
+  "selection": {
+    "learned_checkpoint": "checkpoints/act-10-precision-001",
+    "checkpoint_sha256": "aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8",
+    "success_seed": 1005,
+    "success_selection": "first successful seed in original fixed20-seed recovery; independently reproduced before this study",
+    "wall_seeds": [
+      1000,
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007
+    ],
+    "wall_selection": "first eight protocol seeds, frozen before50-demo evaluation; no outcome-based replacement",
+    "shown_policy": "target-only ACT; do not label successful footage source-informed"
+  },
+  "assembly_gate": {
+    "complete_six_condition_study": true,
+    "actual_successful_learned_capture": true,
+    "all_asset_hashes_valid": true
+  },
+  "assets": {
+    "real_right": {
+      "source_type": "PUBLIC_REAL_DATA",
+      "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+      "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+      "license": "apache-2.0",
+      "episode": 29,
+      "camera": "right_view",
+      "frame_range_half_open": [
+        0,
+        60
+      ],
+      "fps": 15,
+      "source_file": "videos/chunk-000/observation.images.right_view/episode_000029.mp4",
+      "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.right_view/episode_000029.mp4",
+      "sha256": "41911597336b87ca90f8094a1048e233b6b94925fa2fd054d8e29eef57840e42",
+      "truth_status": "SOURCE_VERIFIED"
+    },
+    "real_wrist": {
+      "source_type": "PUBLIC_REAL_DATA",
+      "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+      "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+      "license": "apache-2.0",
+      "episode": 29,
+      "camera": "wrist_view",
+      "frame_range_half_open": [
+        60,
+        120
+      ],
+      "fps": 15,
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
+      "truth_status": "SOURCE_VERIFIED"
+    },
+    "hero": {
+      "receipt": "artifacts/media/media-hero-expert-1000.json",
+      "truth_status": "AWAITING_CAPTURE"
+    },
+    "matched": {
+      "receipt": "artifacts/media/media-matched-act-1005.json",
+      "truth_status": "AWAITING_CAPTURE"
+    },
+    "close": {
+      "receipt": "artifacts/media/media-close-act-1005.json",
+      "truth_status": "AWAITING_CAPTURE"
+    },
+    "evaluation": {
+      "receipt": "artifacts/media/media-evaluation-act-1005.json",
+      "truth_status": "AWAITING_CAPTURE"
+    }
+  },
+  "shots": [
+    {
+      "shot_id": "S01_REAL",
+      "start_s": 0,
+      "end_s": 4,
+      "mode": "real",
+      "caption": "REAL ROBOT DATA",
+      "source_types": [
+        "PUBLIC_REAL_DATA"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/fire_source.json"
+      ],
+      "claim": "Actual FIRe episode29 right camera",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S02_SOURCE",
+      "start_s": 4,
+      "end_s": 8,
+      "mode": "source",
+      "caption": "REAL FRANKA EXPERIENCE",
+      "source_types": [
+        "PUBLIC_REAL_DATA"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/fire_source.json"
+      ],
+      "claim": "Actual FIRe episode29 wrist camera, original cadence",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S03_BRIDGE",
+      "start_s": 8,
+      "end_s": 16,
+      "mode": "bridge",
+      "caption": "RELATIVE EEF MOTION",
+      "source_types": [
+        "PUBLIC_REAL_DATA",
+        "ARCHITECTURE_GRAPHIC"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/fire_motion_prior/manifest.json",
+        "artifacts/training/act-fire-10-001/source_pretraining.json"
+      ],
+      "claim": "Measured source motion normalized to task bounds informs ACT feature pretraining; not joint replay or calibrated image projection",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S04_ECOSYSTEM",
+      "start_s": 16,
+      "end_s": 20,
+      "mode": "ecosystem",
+      "caption": "GR00T N1.7",
+      "source_types": [
+        "ARCHITECTURE_GRAPHIC"
+      ],
+      "evidence_refs": [
+        "references/source_manifest.json"
+      ],
+      "claim": "Official GR00T ecosystem with distinct pretrain/posttrain categories; not project-trained robots",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S05_TARGET",
+      "start_s": 20,
+      "end_s": 25,
+      "mode": "target",
+      "caption": "NEW EMBODIMENT",
+      "source_types": [
+        "PROJECT_SIM_EXPERT"
+      ],
+      "evidence_refs": [
+        "artifacts/simulation/g1_smoke.json",
+        "artifacts/datasets/fire_task_audit.json"
+      ],
+      "claim": "Official UR10e asset, analogous insertion task; expert control is labeled",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S06_PIPELINE",
+      "start_s": 25,
+      "end_s": 31,
+      "mode": "pipeline",
+      "caption": "ONE CONTROLLED COMPARISON",
+      "source_types": [
+        "ARCHITECTURE_GRAPHIC"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/validation.json",
+        "artifacts/datasets/ur10e_25.json",
+        "artifacts/datasets/ur10e_50.json",
+        "artifacts/datasets/fire_motion_prior/manifest.json"
+      ],
+      "claim": "Target-only versus real-source feature pretraining, same ACT and target control contract",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S07_TRAINING",
+      "start_s": 31,
+      "end_s": 38,
+      "mode": "training",
+      "caption": "ACTUAL GPU TRAINING",
+      "source_types": [
+        "PROJECT_TRAINING"
+      ],
+      "evidence_refs": [
+        "artifacts/training/act-10-precision-001/summary.json",
+        "artifacts/training/act-10-precision-001/loss.csv"
+      ],
+      "claim": "Representative actual target-only10-demo training receipt; source pretraining budget remains separate",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S08_WALL",
+      "start_s": 38,
+      "end_s": 45,
+      "mode": "wall",
+      "caption": "CLOSED-LOOP ACT",
+      "source_types": [
+        "PROJECT_SIM_LEARNED"
+      ],
+      "evidence_refs": [
+        "artifacts/eval/media-wall-act-10/summary.json"
+      ],
+      "claim": "First eight fixed seeds repeated with frozen recovered10-demo checkpoint; all tile outcomes retained",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S09_PAYOFF",
+      "start_s": 45,
+      "end_s": 53,
+      "mode": "payoff",
+      "caption": "REAL DATA / LEARNED CONTROL",
+      "source_types": [
+        "PUBLIC_REAL_DATA",
+        "PROJECT_SIM_LEARNED"
+      ],
+      "evidence_refs": [
+        "artifacts/diagnostics/heldout_recovery.json",
+        "artifacts/eval/act-10-precision-heldout-001/summary.json"
+      ],
+      "claim": "Real source versus target-only ACT success, not proof that source pretraining improved performance",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S10_RESULTS",
+      "start_s": 53,
+      "end_s": 60,
+      "mode": "results",
+      "caption": "MEASURED DATA EFFICIENCY",
+      "source_types": [
+        "PROJECT_EVALUATION"
+      ],
+      "evidence_refs": [
+        "artifacts/eval/data_efficiency.json"
+      ],
+      "claim": "All six conditions and actual denominators, including negative/nonmonotonic results",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    },
+    {
+      "shot_id": "S11_CLOSE",
+      "start_s": 60,
+      "end_s": 65,
+      "mode": "close",
+      "caption": "GR00T N1.7 × UR10e",
+      "source_types": [
+        "ARCHITECTURE_GRAPHIC"
+      ],
+      "evidence_refs": [
+        "artifacts/environment/gr00t_50_contract.json"
+      ],
+      "claim": "NEW_EMBODIMENT integration ready; GR00T model execution and fine-tuning deferred",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+    }
+  ],
+  "verification": {
+    "assembly": "NOT_RUN",
+    "file_visual": "NOT_RUN",
+    "native_desktop": "NOT_COMPLETED",
+    "reason": "Computer Use app approval timed out"
+  },
+  "credit": "FIRe public research data: bhe1004/FIRe-VLA-GR00T-PegInsert-Real; Apache-2.0; episode29. Project UR10e footage is simulation.",
+  "license_reference": "references/FIRe-source-credit.md"
+}
