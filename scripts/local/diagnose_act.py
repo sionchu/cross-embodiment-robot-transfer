@@ -25,13 +25,19 @@ def audit(args):
     torch.set_num_threads(4)
     if (args.output/'audit.json').exists(): raise FileExistsError('AUDIT_ALREADY_EXISTS')
     args.output.mkdir(parents=True,exist_ok=True)
-    data=CanonicalDataset(ROOT/'datasets/ur10e_10',16)
+    training=json.loads((ROOT/'artifacts/training'/args.checkpoint.name/'summary.json').read_text())
+    folder=ROOT/'datasets'/training['dataset_id']
+    validation=json.loads((ROOT/training.get('dataset_validation_report','artifacts/datasets/validation.json')).read_text())
+    if validation['status']!='PASS' or validation['dataset_sha256']!=training['dataset_sha256']:
+        raise ValueError('AUDIT_DATASET_LINEAGE_MISMATCH')
+    for name,digest in validation['files_sha256'].items():
+        if hashlib.sha256((folder/name).read_bytes()).hexdigest()!=digest: raise ValueError('AUDIT_DATASET_HASH_MISMATCH')
     policy=ACTPolicy(args.checkpoint)
+    data=CanonicalDataset(folder,policy.model.config.chunk_size)
+    lengths=[json.loads(line)['length'] for line in (folder/'meta/episodes.jsonl').read_text().splitlines()]
     predictions=[]; truth=[]; states=[]; expert_labels=[]; tensor_evidence=None
     rows=[]; sample_ids=[]; offset=0
-    for ep in (range(10) if args.episodes is None else args.episodes):
-        folder=ROOT/'datasets/ur10e_10'
-        lengths=[json.loads(line)['length'] for line in (folder/'meta/episodes.jsonl').read_text().splitlines()]
+    for ep in (range(len(lengths)) if args.episodes is None else args.episodes):
         offset=sum(lengths[:ep])
         df=pd.read_parquet(folder/f'data/chunk-000/episode_{ep:06d}.parquet')
         with av.open(str(folder/f'videos/chunk-000/{VIDEO}/episode_{ep:06d}.mp4')) as c:
@@ -64,7 +70,8 @@ def audit(args):
     np.testing.assert_allclose(expert_labels,gt,atol=1e-8,rtol=0)
     with (args.output/'open_loop.csv').open('w',newline='') as f:
         w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
-    evidence={'checkpoint':args.checkpoint.relative_to(ROOT).as_posix(),
+    evidence={'dataset_id':training['dataset_id'],'dataset_sha256':validation['dataset_sha256'],
+        'audited_frames':len(rows),'checkpoint':args.checkpoint.relative_to(ROOT).as_posix(),
         'checkpoint_sha256':hashlib.sha256((args.checkpoint/'model.safetensors').read_bytes()).hexdigest(),
         'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'dimensions':DIMS,'units':['m']*3+['rad']*3,'tensor_audit':tensor_evidence,
