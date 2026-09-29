@@ -228,7 +228,7 @@ class Renderer:
             paste_fit(c,source,(80,220,780,680))
             shift=min(1,max(0,(t-2)/3));self.draw_trajectory(c,(1000-900*shift,225,800,635),t/duration)
             if t>4.5:
-                paste_fit(c,self.videos['matched'].at(0),(1020,270,820,530))
+                paste_fit(c,self.videos['hero'].at(0),(1020,270,820,530))
                 text(c,(1050,820),'UR10e / Isaac Sim environment',28,MUTED)
             text(c,(100,918),'Δx   Δy   Δz     ΔRx   ΔRy   ΔRz',44,WHITE,True)
             text(c,(1040,918),'Source motion → feature prior',30,TEAL,True,max_width=790)
@@ -275,7 +275,7 @@ class Renderer:
                 panel(c,(x,y,x+440,y+328));paste_fit(c,end if terminal else video.at(t),(x+8,y+40,424,250))
                 text(c,(x+16,y+5),f'Seed {row["seed"]}',26,WHITE,True)
                 text(c,(x+16,y+293),phase,24,TEAL if phase=='SUCCESS' else AMBER if phase=='FAIL' else MUTED,True)
-            text(c,(82,975),'Each tile is an actual learned-policy rollout; terminal frames held.',25,MUTED)
+            text(c,(82,975),'Observe → ACT → ΔEEF → UR10e → observe · 15 Hz / K=1 · terminal frames held',25,MUTED)
         elif mode=='payoff':
             paste_fit(c,self.source_full(t),(65,245,860,665))
             target_t=t;paste_fit(c,self.videos['close'].at(target_t),(985,245,870,665))
@@ -292,6 +292,8 @@ class Renderer:
                 text(c,(180,885),'No source-informed gain in this experiment',34,AMBER,True)
             text(c,(180,942),'P0 smoke evaluation · one training seed · all failures included',29,MUTED)
         elif mode=='close':
+            text(c,(120,192),'REAL FRANKA / FIRe SOURCE',28,TEAL,True)
+            text(c,(1050,192),'SIMULATION / TARGET-ONLY ACT',28,TEAL,True)
             paste_fit(c,self.source_full(7.5),(95,230,710,530))
             paste_fit(c,self.videos['close'].at(10),(1030,230,785,530))
             text(c,(830,400),'ΔEEF',45,TEAL,True)

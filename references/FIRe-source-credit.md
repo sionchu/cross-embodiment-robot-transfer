@@ -9,7 +9,11 @@ recordings collected by this project. Exact episode/camera/path/hash evidence is
 
 Include [the license copy](FIRe-Apache-2.0.txt) with redistributed source clips and
 retain source attribution. Mark modifications: the selected episode 29 wrist clip
-is trimmed to frames [0,112), re-encoded H.264, with no audio; the source was 128 frames.
+inspection clip is trimmed to frames [0,112), re-encoded H.264, with no audio; the source was128 frames.
+The final edit also uses episode29 wrist_view frames[0,60) and[60,120), and right_view
+frames[0,60). Exact clip hashes and edit timing are in media/edit_manifest.json.
+The edit scales footage and desaturates/fades one held source frame during the trajectory
+transition; recorded motion keeps its15fps timing with duplicate frames for30fps delivery.
 Pose CSVs and plots are project-derived from recorded state; they are not original
 commands or calibrated hole trajectories. Preserve applicable notices if additional
 upstream notices are later supplied. This follows [Apache-2.0 section 4](https://www.apache.org/licenses/LICENSE-2.0).

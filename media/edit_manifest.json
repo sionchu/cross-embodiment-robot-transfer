@@ -383,12 +383,20 @@
   ],
   "verification": {
     "assembly": "FORMAT_AND_EVIDENCE_CHECKS_PASS",
-    "file_visual": "NOT_RUN",
+    "file_visual": "REVIEWED_REPRESENTATIVE_ENCODED_FRAMES",
     "native_desktop": "NOT_COMPLETED",
     "reason": "Computer Use app approval timed out",
     "source_clip_reproduction": "BYTE_IDENTICAL_INDEPENDENT_REENCODE",
     "source_clip_visual": "Start/middle/end contact sheets opened for both real clips; native desktop not completed",
-    "source_selection_note": "Contact-sheet inspection confirms the canonical wrist view makes peg/hole interaction clearer; right view provides context."
+    "source_selection_note": "Contact-sheet inspection confirms the canonical wrist view makes peg/hole interaction clearer; right view provides context.",
+    "full_decode": "PASS",
+    "reviewed_encoded_frames_s": [
+      0,
+      14,
+      42,
+      64
+    ],
+    "main_file_review_sha256": "179ced3af9d1214c36f1cbc92bc2b226af417d2a23c320940355f6ed96a1b51c"
   },
   "credit": "FIRe public research data: bhe1004/FIRe-VLA-GR00T-PegInsert-Real; Apache-2.0; episode29. Project UR10e footage is simulation.",
   "license_reference": "references/FIRe-source-credit.md",
@@ -400,14 +408,20 @@
   "wall_phase_rules": "Derived geometric labels, not internal ACT states: terminal from trace; depth<-35mm APPROACH; outside pose tolerance ALIGN; aligned above hole APPROACH; aligned positive depth INSERT.",
   "output": {
     "path": "media/output/main.mp4",
-    "sha256": "74346458fe72610be88fc33a3ac6d98d453ac6cffbc1042d494a767e3def2686",
+    "sha256": "179ced3af9d1214c36f1cbc92bc2b226af417d2a23c320940355f6ed96a1b51c",
     "probe": {
       "width": 1920,
       "height": 1080,
       "r_frame_rate": "30/1",
       "nb_read_frames": "1950"
     },
-    "script_sha256": "9d271e3aed42ca84d52c8e2bcce48f7e44e2e900307b7bbebaa769f98508d332",
+    "script_sha256": "1d3c9a83edf8302e2a14769280d304cd13f2d127d92426db42a438f0045d72de",
     "playback": "15Hz recorded footage frame-duplicated to30fps; static terminal holds; no audio"
+  },
+  "reviewed_first_cut": {
+    "path": "media/output/review/main-first-cut.mp4",
+    "sha256": "74346458fe72610be88fc33a3ac6d98d453ac6cffbc1042d494a767e3def2686",
+    "full_decode": "PASS",
+    "visual_changes": "Show full UR10e in trajectory reveal; add actual replanning cadence and final real/simulation labels."
   }
 }

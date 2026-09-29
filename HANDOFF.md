@@ -49,7 +49,9 @@ Native desktop verification remains incomplete after app approval timeout. Sourc
 actual data and encoded trim contact sheets have been inspected through file tools.
 Media manifest retains fixed capture seeds1000-1007 and1005; it now selects the final50-demo
 target-only checkpoint, explicitly documented without changing any experiment or denominator.
-Capture cameras and renderer are implemented but runtime/media validation are still pending.
+All four capture cameras executed; expert and three learned captures succeeded.
+Hashes, full decode, unchanged initial conditions and zero-time capture invariance passed.
+The first65s main cut rendered and was visually reviewed; targeted final refinements are rendering.
 
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
@@ -76,6 +78,9 @@ Capture cameras and renderer are implemented but runtime/media validation are st
   reload PASS, 0/2 collisions; checkpoint 090185e98a540e369d44fcc5676f3152f8166d0048e38bdbae42f7ddcd245d0c.
 - .venv/Scripts/python.exe -m unittest discover -s tests -v: 35 passed, no skips;
   artifacts/runtime/source-regression-tests.log. E0 PASS strings are mocked fixtures only.
+- Latest evaluator/media regression:38 tests passed in9.393s, artifacts/runtime/media-regression-tests.log.
+- artifacts/eval/data_efficiency.json:COMPLETE, six fixed20-seed conditions.
+- artifacts/media/capture_validation.json:four actual captures hash/decode verified.
 - artifacts/environment/gr00t_local_contract.json: integration PASS, model/target checkpoint NOT_RUN.
 
 ## Not executed
@@ -85,7 +90,7 @@ verification of latest stages, GR00T target training/inference and fresh-machine
 
 ## Blockers
 Source units/frame/tool geometry and dataset-to-code provenance need verification. ACT achieved
-reproducible held-out success; broader robustness and source-informed comparison remain open. GR00T runtime requires supported compute and adapted checkpoint;
+reproducible held-out success; broader robustness remains open; the required source-informed comparison is complete with no improvement for this recipe. GR00T runtime requires supported compute and adapted checkpoint;
 that does not block local experiments. No real E0 PASS exists.
 
 ## Modified files
@@ -93,10 +98,11 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Complete reproducible media captures and render the canonical65s cut, then hero/poster.
-The first HERO expert run succeeded, but Kit exited before post-close video serialization.
-Capture persistence now runs before SimulationApp.close; retry with a new receipt ID.
-Inspect actual rendered frames; native desktop verification remains NOT_COMPLETED after
-Computer Use app approval timed out. Keep all original experiments and failed media receipts.
+Finish review of the refined65s main cut, then generate and inspect the12s hero/poster.
+Four camera captures succeeded; actual main evaluation videos supply the first-eight-seed
+wall. Main rendering is reproducible with media/build.py; output files stay ignored.
+The original post-close HERO serialization issue is preserved and fixed by saving before
+SimulationApp.close.38 regression tests passed. Review the actual encoded final frames
+and keep native desktop verification separate: Computer Use app approval timed out.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. GR00T actual model execution remains COMPUTE_DEFERRED.
