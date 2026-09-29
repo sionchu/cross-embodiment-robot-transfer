@@ -1,0 +1,164 @@
+{
+  "checkpoint": "checkpoints/act-25-001",
+  "device": "CPU diagnostic only",
+  "checkpoint_sha256": "8cdde69f871115887cc76c98b9982b1d3d9f023632f67de924c1549136068e0a",
+  "source_sha256": "85303fd55cd46cd6d70f8e159c6ba89a4edb53c30972837293ed8262b68fd2cd",
+  "records": [
+    {
+      "image_frame": 0,
+      "state_frame": 0,
+      "features": {
+        "encoder_robot_state_input_proj": {
+          "rms": 2.7040557861328125,
+          "max_abs": 7.54062557220459
+        },
+        "encoder_img_feat_input_proj": {
+          "rms": 0.28778547048568726,
+          "max_abs": 2.9470319747924805
+        },
+        "first_attention": {
+          "mean_entropy": 2.9630367755889893,
+          "fraction_queries_max_probability_above_099": 0.2591463327407837
+        }
+      },
+      "first_action_normalized": [
+        2.3520684242248535,
+        -2.321671724319458,
+        -0.0005038026720285416,
+        -8.88819694519043,
+        -0.2759436070919037,
+        7.1613874435424805
+      ]
+    },
+    {
+      "image_frame": 1,
+      "state_frame": 1,
+      "features": {
+        "encoder_robot_state_input_proj": {
+          "rms": 1.3848576545715332,
+          "max_abs": 3.7862236499786377
+        },
+        "encoder_img_feat_input_proj": {
+          "rms": 0.3043499290943146,
+          "max_abs": 2.9800474643707275
+        },
+        "first_attention": {
+          "mean_entropy": 2.952603340148926,
+          "fraction_queries_max_probability_above_099": 0.25457316637039185
+        }
+      },
+      "first_action_normalized": [
+        2.2927823066711426,
+        -2.2077102661132812,
+        -0.014067145064473152,
+        -2.5719618797302246,
+        -0.0631299763917923,
+        3.174475908279419
+      ]
+    },
+    {
+      "image_frame": 10,
+      "state_frame": 10,
+      "features": {
+        "encoder_robot_state_input_proj": {
+          "rms": 0.3348863422870636,
+          "max_abs": 0.9829121232032776
+        },
+        "encoder_img_feat_input_proj": {
+          "rms": 0.2642318606376648,
+          "max_abs": 2.7956297397613525
+        },
+        "first_attention": {
+          "mean_entropy": 3.0236294269561768,
+          "fraction_queries_max_probability_above_099": 0.25
+        }
+      },
+      "first_action_normalized": [
+        1.9618953466415405,
+        0.44461819529533386,
+        -0.03036678023636341,
+        0.17072437703609467,
+        -0.10472045838832855,
+        -0.022503562271595
+      ]
+    },
+    {
+      "image_frame": 30,
+      "state_frame": 30,
+      "features": {
+        "encoder_robot_state_input_proj": {
+          "rms": 0.3001466989517212,
+          "max_abs": 0.8104918003082275
+        },
+        "encoder_img_feat_input_proj": {
+          "rms": 0.3118351399898529,
+          "max_abs": 2.664371967315674
+        },
+        "first_attention": {
+          "mean_entropy": 2.9832193851470947,
+          "fraction_queries_max_probability_above_099": 0.25
+        }
+      },
+      "first_action_normalized": [
+        -0.5465242266654968,
+        0.5536004304885864,
+        -0.03222651779651642,
+        0.14910323917865753,
+        -0.030416669324040413,
+        0.015829451382160187
+      ]
+    },
+    {
+      "image_frame": 1,
+      "state_frame": 0,
+      "features": {
+        "encoder_robot_state_input_proj": {
+          "rms": 2.7040557861328125,
+          "max_abs": 7.54062557220459
+        },
+        "encoder_img_feat_input_proj": {
+          "rms": 0.3043499290943146,
+          "max_abs": 2.9800474643707275
+        },
+        "first_attention": {
+          "mean_entropy": 2.9410228729248047,
+          "fraction_queries_max_probability_above_099": 0.2606707215309143
+        }
+      },
+      "first_action_normalized": [
+        2.3516485691070557,
+        -2.321366548538208,
+        -0.0004982743412256241,
+        -8.879776000976562,
+        -0.28504544496536255,
+        7.1592607498168945
+      ]
+    },
+    {
+      "image_frame": 1,
+      "state_frame": 30,
+      "features": {
+        "encoder_robot_state_input_proj": {
+          "rms": 0.3001466989517212,
+          "max_abs": 0.8104918003082275
+        },
+        "encoder_img_feat_input_proj": {
+          "rms": 0.3043499290943146,
+          "max_abs": 2.9800474643707275
+        },
+        "first_attention": {
+          "mean_entropy": 2.9946489334106445,
+          "fraction_queries_max_probability_above_099": 0.25
+        }
+      },
+      "first_action_normalized": [
+        -0.5391082763671875,
+        0.5648837685585022,
+        -0.0322488397359848,
+        0.15139421820640564,
+        -0.03250265121459961,
+        0.016043581068515778
+      ]
+    }
+  ]
+}

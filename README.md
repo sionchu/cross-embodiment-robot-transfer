@@ -63,9 +63,10 @@ record the mechanism, budget and changed feature hashes.
 | Target demos | Target-only ACT | FIRe-informed ACT |
 |---|---|---|
 | 10 | 5/20 (25%) | 0/20 (0%) |
+| 25 | 0/20 (0%) | 0/20 (0%) |
 
 Both tracks use 5000 target updates. FIRe-informed adds 3 real source episodes and 1000 source updates.
-Remaining target-data sizes: 25, 50.
+Remaining target-data sizes: 50.
 
 [Structured evidence](artifacts/eval/data_efficiency.json) · [Measured CSV](artifacts/eval/data_efficiency.csv)
 
