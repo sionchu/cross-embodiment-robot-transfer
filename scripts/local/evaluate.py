@@ -72,7 +72,7 @@ def aggregate(rows):
            ('lateral_error_m','depth_error_m','orientation_error_rad','duration_s','path_length_m','inference_ms','clipped_steps')}}
 
 
-def main():
+def main(env_factory=InsertionEnv):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--policy',choices=['expert','act','replay'],required=True)
     parser.add_argument('--split',choices=['train','development','held_out'],required=True)
@@ -154,7 +154,7 @@ def main():
         from isaacsim import SimulationApp
         app=SimulationApp({'headless':True,'width':640,'height':480})
         from PIL import Image
-        env=InsertionEnv(app); context['asset']=env.asset
+        env=env_factory(app); context['asset']=env.asset
         bounds=np.array([CONFIG['translation_limit_m']]*3+[CONFIG['rotation_limit_rad']]*3)
         dt=CONFIG['physics_dt']*CONFIG['control_substeps']
         with (args.output/'episodes.jsonl').open('w',encoding='utf-8') as results:

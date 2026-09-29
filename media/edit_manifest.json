@@ -99,6 +99,32 @@
     "evaluation": {
       "receipt": "artifacts/media/media-evaluation-act-1005.json",
       "truth_status": "AWAITING_CAPTURE"
+    },
+    "real_hook": {
+      "source_type": "PUBLIC_REAL_DATA",
+      "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+      "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+      "license": "apache-2.0",
+      "episode": 29,
+      "camera": "wrist_view",
+      "frame_range_half_open": [
+        0,
+        60
+      ],
+      "fps": 15,
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
+      "truth_status": "CLIP_VERIFIED",
+      "clip": "media/output/source/real_franka_e29_wrist_f000-059.mp4",
+      "clip_sha256": "2744c6f0091982f87f3befab6853c1189e6d8778f16ff9b704df10b5cb316cfb",
+      "clip_probe": {
+        "width": 256,
+        "height": 256,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "60"
+      },
+      "modifications": "frame trim and H.264 re-encoding; no speed or geometry changes"
     }
   },
   "shots": [
@@ -114,8 +140,12 @@
       "evidence_refs": [
         "artifacts/datasets/fire_source.json"
       ],
-      "claim": "Actual FIRe episode29 right camera",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "claim": "Actual FIRe episode29 synchronized dataset wrist/right views; wrist is the main task view",
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": [
+        "real_hook",
+        "real_right"
+      ]
     },
     {
       "shot_id": "S02_SOURCE",
@@ -130,7 +160,10 @@
         "artifacts/datasets/fire_source.json"
       ],
       "claim": "Actual FIRe episode29 wrist camera, original cadence",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": [
+        "real_wrist"
+      ]
     },
     {
       "shot_id": "S03_BRIDGE",
@@ -147,7 +180,11 @@
         "artifacts/training/act-fire-10-001/source_pretraining.json"
       ],
       "claim": "Measured source motion normalized to task bounds informs ACT feature pretraining; not joint replay or calibrated image projection",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": [
+        "real_wrist",
+        "matched"
+      ]
     },
     {
       "shot_id": "S04_ECOSYSTEM",
@@ -162,7 +199,8 @@
         "references/source_manifest.json"
       ],
       "claim": "Official GR00T ecosystem with distinct pretrain/posttrain categories; not project-trained robots",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": []
     },
     {
       "shot_id": "S05_TARGET",
@@ -178,7 +216,10 @@
         "artifacts/datasets/fire_task_audit.json"
       ],
       "claim": "Official UR10e asset, analogous insertion task; expert control is labeled",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": [
+        "hero"
+      ]
     },
     {
       "shot_id": "S06_PIPELINE",
@@ -196,7 +237,8 @@
         "artifacts/datasets/fire_motion_prior/manifest.json"
       ],
       "claim": "Target-only versus real-source feature pretraining, same ACT and target control contract",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": []
     },
     {
       "shot_id": "S07_TRAINING",
@@ -212,7 +254,8 @@
         "artifacts/training/act-10-precision-001/loss.csv"
       ],
       "claim": "Representative actual target-only10-demo training receipt; source pretraining budget remains separate",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": []
     },
     {
       "shot_id": "S08_WALL",
@@ -227,7 +270,8 @@
         "artifacts/eval/media-wall-act-10/summary.json"
       ],
       "claim": "First eight fixed seeds repeated with frozen recovered10-demo checkpoint; all tile outcomes retained",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": []
     },
     {
       "shot_id": "S09_PAYOFF",
@@ -244,7 +288,12 @@
         "artifacts/eval/act-10-precision-heldout-001/summary.json"
       ],
       "claim": "Real source versus target-only ACT success, not proof that source pretraining improved performance",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": [
+        "real_hook",
+        "real_wrist",
+        "close"
+      ]
     },
     {
       "shot_id": "S10_RESULTS",
@@ -259,7 +308,8 @@
         "artifacts/eval/data_efficiency.json"
       ],
       "claim": "All six conditions and actual denominators, including negative/nonmonotonic results",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": []
     },
     {
       "shot_id": "S11_CLOSE",
@@ -274,7 +324,11 @@
         "artifacts/environment/gr00t_50_contract.json"
       ],
       "claim": "NEW_EMBODIMENT integration ready; GR00T model execution and fine-tuning deferred",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION"
+      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "asset_ids": [
+        "real_hook",
+        "close"
+      ]
     }
   ],
   "verification": {
@@ -283,7 +337,8 @@
     "native_desktop": "NOT_COMPLETED",
     "reason": "Computer Use app approval timed out",
     "source_clip_reproduction": "BYTE_IDENTICAL_INDEPENDENT_REENCODE",
-    "source_clip_visual": "Start/middle/end contact sheets opened for both real clips; native desktop not completed"
+    "source_clip_visual": "Start/middle/end contact sheets opened for both real clips; native desktop not completed",
+    "source_selection_note": "Contact-sheet inspection confirms the canonical wrist view makes peg/hole interaction clearer; right view provides context."
   },
   "credit": "FIRe public research data: bhe1004/FIRe-VLA-GR00T-PegInsert-Real; Apache-2.0; episode29. Project UR10e footage is simulation.",
   "license_reference": "references/FIRe-source-credit.md",
