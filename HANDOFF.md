@@ -102,7 +102,10 @@ open-loop diagnostic plot uses physical action bounds for honest scale compariso
 Native desktop review of the completed main/hero/poster is the remaining media gate.
 Files:media/output/main.mp4,hero.mp4,poster.png. Current file review and package hashes
 are in media/edit_manifest.json and artifacts/media/delivery_validation.json.
-Computer Use app approval previously timed out; do not substitute another transport
+Latest continuation verified live Computer Use app inventory, but reading the existing
+Windows Explorer window again returned "Computer Use app approval timed out". The
+helper is available; app approval remains the same blocker. Wait for owner availability
+to approve the app request before retrying. Do not substitute another transport
 or claim native review from FFmpeg/file inspection. No further training is required
 for the completed six-condition study. Keep the negative source-informed result.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;

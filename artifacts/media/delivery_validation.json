@@ -56,7 +56,14 @@
   },
   "native_desktop": {
     "status": "NOT_COMPLETED",
-    "reason": "Computer Use app approval timed out; no alternate transport used"
+    "reason": "Computer Use app approval timed out; no alternate transport used",
+    "latest_revalidation": {
+      "helper_inventory": "AVAILABLE",
+      "target": "existing Windows Explorer window",
+      "operation": "sky.get_window / sky.get_window_state",
+      "result": "Computer Use app approval timed out",
+      "next_action": "Owner must be present to approve the Computer Use app request before retrying; no more automated retries without changed state."
+    }
   },
   "regression": {
     "command": ".venv/Scripts/python.exe -m unittest discover -s tests -v",
