@@ -125,6 +125,7 @@ python scripts/local/fire.py --motion-prior
 .venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-target-new --backbone-weights imagenet --chunk-size 1 --backbone-lr 1e-5 --steps 5000 --sampling precision-balanced
 .venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-source-new --backbone-weights imagenet --chunk-size 1 --backbone-lr 1e-5 --steps 5000 --sampling precision-balanced --source-prior artifacts/datasets/fire_motion_prior/manifest.json --source-steps 1000
 python scripts/local/compare.py --recovered-run act-10-precision-heldout-001
+python scripts/local/compare.py --study-runs act-10-precision-heldout-001 act-fire-10-heldout-001
 ```
 
 Use `fire.py --download --motion-prior` when the pinned source cache is missing.
@@ -145,8 +146,9 @@ artifacts exist; the frozen seed pool alone is not execution evidence.
 
 Each output/run name must be new. The worker runs `.venv` ACT inference over a local
 stdio pipe; Isaac Sim stays in its own Python process. Every control step sends a
-fresh front RGB frame and measured target-relative pose, predicts a 16-step chunk,
-and executes its first action. Both policies use the same scene and declared bounds.
+fresh front RGB frame and measured target-relative pose, predicts the checkpoint-configured chunk,
+and executes its first action. The frozen study uses a one-step chunk (H=1,K=1)
+at15Hz; the historical checkpoint above uses H=16. Both policies use the same scene and declared bounds.
 Raw predictions and clipped commands are retained separately. `clipped_steps` counts
 any floating-point clipping, including tiny rounding excess at a bound.
 

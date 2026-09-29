@@ -51,6 +51,14 @@ UR10e simulation; FIRe and DROID were not training data for this checkpoint.
 
 ## Data-efficiency experiment
 
+FIRe-informed ACT first trains on measured pose transitions and wrist RGB from three
+real source episodes. A terminal-EEF transform normalizes motion to the target task
+bounds; it does not assume calibrated source units or replay Franka joints. Source
+features initialize target learning, while the original target action head and random
+state are restored before target training. [Transform and provenance](artifacts/datasets/fire_motion_prior/manifest.json)
+and [actual source training](artifacts/training/act-fire-10-001/source_pretraining.json)
+record the mechanism, budget and changed feature hashes.
+
 <!-- STUDY:START -->
 | Target demos | Target-only ACT | FIRe-informed ACT |
 |---|---|---|

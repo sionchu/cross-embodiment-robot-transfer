@@ -93,9 +93,12 @@ class GR00TPolicy:
         return decode_action(action)
 
 
-def preflight(dataset,upstream,checkpoint=None):
+def preflight(dataset,upstream,checkpoint=None,dataset_report=None):
     modalities,pins=load_contract(upstream)
-    evidence=json.loads((ROOT/'artifacts/datasets/validation.json').read_text())
+    dataset_report=dataset_report or ROOT/'artifacts/datasets/validation.json'
+    evidence=json.loads(dataset_report.read_text())
+    if evidence['status']!='PASS' or evidence['official_loader']!='PASS':
+        raise ValueError('DATASET_NOT_VALIDATED')
     for relative,digest in evidence['files_sha256'].items():
         if hashlib.sha256((dataset/relative).read_bytes()).hexdigest()!=digest:
             raise ValueError('DATASET_HASH_MISMATCH')
@@ -124,7 +127,8 @@ def preflight(dataset,upstream,checkpoint=None):
         'embodiment':'NEW_EMBODIMENT','observation_shapes':{'front':[1,1,480,640,3],'state':[1,1,6]},
         'official_observation_batching':'PASS','official_action_roundtrip':'PASS','decoded_chunk_shape':[16,6],
         'gr00t_commit':pins['upstream']['commit'],'base_model_reference':pins['models'][0],
-        'dataset_id':dataset.name,'dataset_sha256':json.loads((ROOT/'artifacts/datasets/validation.json').read_text())['dataset_sha256'],
+        'dataset_id':dataset.name,'dataset_sha256':evidence['dataset_sha256'],
+        'dataset_validation_report':dataset_report.resolve().relative_to(ROOT).as_posix(),
         'platform':sys.platform,'gpu':torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         'gpu_total_bytes':memory,'minimum_inference_bytes':pins['environment']['inference_min_vram_bytes'],
         'adapter_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
@@ -134,10 +138,11 @@ def preflight(dataset,upstream,checkpoint=None):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
+    parser.add_argument('--dataset-report',type=Path,default=ROOT/'artifacts/datasets/validation.json')
     parser.add_argument('--upstream',type=Path,default=ROOT/'.external/Isaac-GR00T')
     parser.add_argument('--checkpoint',type=Path)
     parser.add_argument('--report',type=Path,required=True)
     args=parser.parse_args()
-    report=preflight(args.dataset,args.upstream,args.checkpoint)
+    report=preflight(args.dataset,args.upstream,args.checkpoint,args.dataset_report)
     args.report.parent.mkdir(parents=True,exist_ok=True); write_json(args.report,report)
     print(json.dumps(report,indent=2))
