@@ -114,15 +114,16 @@ def plot(args):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    with (args.output/'open_loop.csv').open() as f: rows=[r for r in csv.DictReader(f) if r['episode']=='0']
-    fig,axes=plt.subplots(3,2,figsize=(12,8),layout='constrained')
-    for k,ax in zip(DIMS,axes.flat):
-        ax.plot([float(r['time_s']) for r in rows],[float(r['gt_'+k]) for r in rows],label='Dataset expert')
-        ax.plot([float(r['time_s']) for r in rows],[float(r['pred_'+k]) for r in rows],label='ACT first action')
-        limit=max(.003 if k in DIMS[:3] else .025, max(abs(float(r[key])) for r in rows for key in ['gt_'+k,'pred_'+k]))
-        ax.set(title=k+' ('+('m' if k in DIMS[:3] else 'rad')+')',xlabel='s',ylim=(-1.15*limit,1.15*limit))
-        ax.ticklabel_format(axis='y',style='plain',useOffset=False);ax.legend(fontsize=8)
-    fig.savefig(args.output/'open_loop.png',dpi=140);plt.close(fig)
+    if (args.output/'open_loop.csv').exists():
+        with (args.output/'open_loop.csv').open() as f: rows=[r for r in csv.DictReader(f) if r['episode']=='0']
+        fig,axes=plt.subplots(3,2,figsize=(12,8),layout='constrained')
+        for k,ax in zip(DIMS,axes.flat):
+            ax.plot([float(r['time_s']) for r in rows],[float(r['gt_'+k]) for r in rows],label='Dataset expert')
+            ax.plot([float(r['time_s']) for r in rows],[float(r['pred_'+k]) for r in rows],label='ACT first action')
+            limit=max(.003 if k in DIMS[:3] else .025, max(abs(float(r[key])) for r in rows for key in ['gt_'+k,'pred_'+k]))
+            ax.set(title=k+' ('+('m' if k in DIMS[:3] else 'rad')+')',xlabel='s',ylim=(-1.15*limit,1.15*limit))
+            ax.ticklabel_format(axis='y',style='plain',useOffset=False);ax.legend(fontsize=8)
+        fig.savefig(args.output/'open_loop.png',dpi=140);plt.close(fig)
     p=args.output/'closed_loop.csv'
     if p.exists():
         with p.open() as f: rows=list(csv.DictReader(f))

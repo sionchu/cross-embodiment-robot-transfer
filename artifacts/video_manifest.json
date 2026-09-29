@@ -24,7 +24,7 @@
     "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
   },
   {
-    "policy": "ACT",
+    "policy": "ACT baseline",
     "seed": 1000,
     "outcome": "COLLISION",
     "path": "artifacts/runtime/eval-act-10-002-part-00/1000.mp4",
@@ -36,12 +36,36 @@
     "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
   },
   {
-    "policy": "ACT",
+    "policy": "ACT baseline",
     "seed": 1010,
     "outcome": "COLLISION",
     "path": "artifacts/runtime/eval-act-10-002-part-01/1010.mp4",
     "sha256": "981a474dd359a80d47541658ece05ec0a404a0c18bc1803a22d18a23739e55a8",
     "frames": 38,
+    "fps": 15,
+    "width": 640,
+    "height": 480,
+    "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
+  },
+  {
+    "policy": "ACT recovered",
+    "seed": 1000,
+    "outcome": "COLLISION",
+    "path": "artifacts/runtime/eval-act-10-precision-heldout-001-part-00/1000.mp4",
+    "sha256": "0ae8f563c4540ef08efff7d1cb7890d2c31ee580ca1d9cebe832005e1d658471",
+    "frames": 58,
+    "fps": 15,
+    "width": 640,
+    "height": 480,
+    "source": "actual Isaac Sim front RGB; pre-action frames; unaltered 15 Hz playback"
+  },
+  {
+    "policy": "ACT recovered",
+    "seed": 1010,
+    "outcome": "COLLISION",
+    "path": "artifacts/runtime/eval-act-10-precision-heldout-001-part-01/1010.mp4",
+    "sha256": "8dc4ca0ae8fcb7b758875339ae72e849cabb1e4dfe7b2a3091514d410b52e0a3",
+    "frames": 55,
     "fps": 15,
     "width": 640,
     "height": 480,

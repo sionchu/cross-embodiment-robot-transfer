@@ -1,4 +1,5 @@
 policy,training_data,actual_training,closed_loop_evaluated,episodes,successes,success_rate,collision_rate,timeout_rate
 Expert,scripted,N/A,yes,20,20,1.0,0.0,0.0
-ACT,10 target demos,yes,yes,20,0,0.0,1.0,0.0
+ACT baseline,10 target demos,yes,yes,20,0,0.0,1.0,0.0
+ACT recovered,10 target demos,yes,yes,20,5,0.25,0.75,0.0
 GR00T N1.7,target-compatible,no,no,N/A,N/A,N/A,N/A,N/A

@@ -1,0 +1,113 @@
+{
+  "policy": "act",
+  "split": "held_out",
+  "seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "project_commit": "390acf224b9174da097a954fc3e8bc57aea9b962",
+  "source_hashes": {
+    "evaluate.py": "795fca9510bd6f5fff0b4788e3373143247406bc9e2220c1a39912c83d50bc34",
+    "policy_worker.py": "5f495c749f9267e256aff12d129de396eb2835c49fcb099d40eeb3b8a614ebbc",
+    "act.py": "36d32870e300dd04a5a9629bac84619aaf4a4a7e140fe9ea445071fc322ac7e6",
+    "insertion.py": "38e5614c61dd8ac865416ce91b025fe79261785275ed8cfaf1b91845b4322aec"
+  },
+  "environment_config_hash": "cbd594861705dbe2ff46329b0098c892b69e618e338fa9437fb20dcaafc2d947",
+  "environment_config": {
+    "physics_dt": 0.016666666666666666,
+    "control_substeps": 4,
+    "max_steps": 180,
+    "initial_joints_deg": [
+      -90,
+      -60,
+      -100,
+      -110,
+      90,
+      0
+    ],
+    "hole_origin_m": [
+      0.194,
+      0.371,
+      0.57
+    ],
+    "peg_tip_offset_m": 0.12,
+    "peg_length_m": 0.08,
+    "peg_half_width_m": 0.004,
+    "hole_half_width_m": 0.005,
+    "hole_length_m": 0.05,
+    "position_randomization_m": [
+      0.008,
+      0.008,
+      0.004
+    ],
+    "rotation_randomization_rad": [
+      0.015,
+      0.015,
+      0.04
+    ],
+    "translation_limit_m": 0.003,
+    "rotation_limit_rad": 0.025,
+    "min_depth_m": 0.025,
+    "max_depth_m": 0.035,
+    "lateral_tolerance_m": 0.0007,
+    "angular_tolerance_rad": 0.01,
+    "contact_force_limit_n": 1.0
+  },
+  "gr00t_commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+  "lerobot_commit": "eb7a54c6ff4983fc86075442bf4fa61503e7b5d1",
+  "dataset_id": "ur10e_10",
+  "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+  "model_checkpoint_id": "checkpoints/act-10-precision-001",
+  "checkpoint_files_sha256": {
+    "config.json": "575a3e3953fa1278fd6dcebce356bdda50af41b8df4ca7614815b7e2896af0ba",
+    "model.safetensors": "aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8",
+    "normalization.json": "3bcf493d2f77467a881178de851019db0d786dbaa29bce5c0c6aba14a75080c8"
+  },
+  "action_execution": "first action of a fresh configured ACT chunk each control step; per-axis clipping recorded",
+  "action_chunk_size": 1,
+  "gpu": "NVIDIA GeForce RTX 4070 Ti, 12282 MiB, 591.86",
+  "execution_status": "PASS",
+  "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.0/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd",
+  "stage": "complete",
+  "completed_episodes": 20,
+  "episodes": 20,
+  "successes": 5,
+  "success_rate": 0.25,
+  "success_wilson_95": [
+    0.11186170140766569,
+    0.468700877618744
+  ],
+  "outcomes": {
+    "COLLISION": 15,
+    "SUCCESS": 5
+  },
+  "collision_rate": 0.75,
+  "timeout_rate": 0.0,
+  "mean_lateral_error_m": 0.0020231132647405164,
+  "mean_depth_error_m": 0.019518375763619394,
+  "mean_orientation_error_rad": 0.0024225166159714566,
+  "mean_duration_s": 3.1566666666666667,
+  "mean_path_length_m": 0.13450398378443332,
+  "mean_inference_ms": 20.431890397962995,
+  "mean_clipped_steps": 8.65,
+  "process_isolation": "10 episodes per fresh simulator process",
+  "batches": 2
+}

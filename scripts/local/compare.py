@@ -15,8 +15,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--expert-run',default='expert-002')
     parser.add_argument('--act-run',default='act-10-002')
+    parser.add_argument('--recovered-run',help='Additional complete ACT run; preserve original baseline in the comparison.')
     args=parser.parse_args()
-    names=(args.expert_run,args.act_run)
+    names=[args.expert_run,args.act_run]+([args.recovered_run] if args.recovered_run else [])
+    labels=['Expert','ACT baseline']+(['ACT recovered'] if args.recovered_run else [])
     seeds=json.loads((ROOT/'configs/seeds.json').read_text())['held_out']
     runs=[]; episodes=[]
     for name in names:
@@ -47,17 +49,18 @@ def main():
                 raise ValueError('CLIPPING_COUNT_MISMATCH')
             np.testing.assert_allclose([t['timestamp'] for t in trace],np.arange(row['steps'])/15,atol=1e-9,rtol=0)
         runs.append(summary); episodes.append(rows)
-    if [r['policy'] for r in runs]!=['expert','act']: raise ValueError('POLICY_LABEL_MISMATCH')
-    for key in ('environment_config_hash','dataset_sha256','seeds'):
-        if runs[0][key]!=runs[1][key]: raise ValueError('COMPARISON_PROTOCOL_MISMATCH')
-    if runs[0]['source_hashes']['insertion.py']!=runs[1]['source_hashes']['insertion.py']:
-        raise ValueError('SIMULATOR_SOURCE_MISMATCH')
-    for a,b in zip(*episodes,strict=True):
-        np.testing.assert_allclose(a['initial_state'],b['initial_state'],atol=1e-9,rtol=0)
+    if [r['policy'] for r in runs]!=['expert']+['act']*(len(runs)-1): raise ValueError('POLICY_LABEL_MISMATCH')
+    for run,other_rows in zip(runs[1:],episodes[1:],strict=True):
+        for key in ('environment_config_hash','dataset_sha256','seeds'):
+            if runs[0][key]!=run[key]: raise ValueError('COMPARISON_PROTOCOL_MISMATCH')
+        if runs[0]['source_hashes']['insertion.py']!=run['source_hashes']['insertion.py']:
+            raise ValueError('SIMULATOR_SOURCE_MISMATCH')
+        for a,b in zip(episodes[0],other_rows,strict=True):
+            np.testing.assert_allclose(a['initial_state'],b['initial_state'],atol=1e-9,rtol=0)
     groot=json.loads((ROOT/'artifacts/environment/gr00t_local_contract.json').read_text())
     if groot['model_execution']!='NOT_RUN': raise ValueError('UPDATE_COMPARISON_FOR_EXECUTED_GR00T')
     records=[]
-    for label,run in zip(('Expert','ACT'),runs,strict=True):
+    for label,run in zip(labels,runs,strict=True):
         records.append({'policy':label,'training_data':'scripted' if label=='Expert' else '10 target demos',
             'actual_training':'N/A' if label=='Expert' else 'yes','closed_loop_evaluated':'yes',
             'episodes':run['episodes'],'successes':run['successes'],'success_rate':run['success_rate'],
@@ -71,9 +74,7 @@ def main():
     for row in records:
         success='N/A' if row['success_rate']=='N/A' else f"{row['successes']}/{row['episodes']} ({row['success_rate']:.0%})"
         table.append(f"| {row['policy']} | {row['training_data']} | {row['actual_training']} | {row['closed_loop_evaluated']} | {success} |")
-    table.extend(['',f"[Expert episodes](artifacts/eval/{args.expert_run}/episodes.jsonl) · "
-        f"[ACT episodes](artifacts/eval/{args.act_run}/episodes.jsonl) · "
-        f"[ACT checkpoint evidence](artifacts/training/{Path(runs[1]['model_checkpoint_id']).name}/summary.json)"])
+    table.extend(['',' · '.join(f'[{label} episodes](artifacts/eval/{name}/episodes.jsonl)' for label,name in zip(labels,names,strict=True))])
     readme=ROOT/'README.md' ; text=readme.read_text(encoding='utf-8')
     start='<!-- RESULTS:START -->'; end='<!-- RESULTS:END -->'
     if start not in text: raise ValueError('README_RESULT_MARKERS_MISSING')
@@ -85,11 +86,12 @@ def main():
     fig,ax=plt.subplots(figsize=(6.4,3.6),layout='constrained')
     rates=np.array([r['success_rate'] for r in runs])*100
     ci=np.array([r['success_wilson_95'] for r in runs])*100
-    ax.bar([0,1],rates,color=['#536b79','#bb7540'],width=.5)
-    ax.errorbar([0,1],rates,yerr=np.maximum(np.stack([rates-ci[:,0],ci[:,1]-rates]),0),fmt='none',ecolor='#202830',capsize=5)
-    ax.set(xticks=[0,1,2],xticklabels=['Expert','ACT','GR00T N1.7'],xlim=(-.5,2.5),ylim=(-5,110),ylabel='Insertion success (%)',
+    positions=np.arange(len(runs))
+    ax.bar(positions,rates,color=['#536b79','#bb7540','#368777'][:len(runs)],width=.5)
+    ax.errorbar(positions,rates,yerr=np.maximum(np.stack([rates-ci[:,0],ci[:,1]-rates]),0),fmt='none',ecolor='#202830',capsize=5)
+    ax.set(xticks=list(positions)+[len(runs)],xticklabels=labels+['GR00T N1.7'],xlim=(-.5,len(runs)+.5),ylim=(-5,110),ylabel='Insertion success (%)',
            title='UR10e simulation: 20 fixed held-out seeds')
-    ax.text(2,45,'N/A\nNot executed',ha='center',color='#64717b')
+    ax.text(len(runs),45,'N/A\nNot executed',ha='center',color='#64717b')
     ax.text(.02,.96,'95% Wilson intervals; 10 target training demos',transform=ax.transAxes,va='top',fontsize=8)
     ax.spines[['top','right']].set_visible(False)
     figures=ROOT/'artifacts/figures'; figures.mkdir(exist_ok=True)
@@ -102,7 +104,7 @@ def main():
             raise ValueError('FAILURE_IMAGE_HASH_MISMATCH')
         shutil.copyfile(source,figures/'act_first_failure.png')
     videos=[]
-    for label,rows in zip(('Expert','ACT'),episodes,strict=True):
+    for label,rows in zip(labels,episodes,strict=True):
         for row in rows:
             video=ROOT/row['raw_artifact_dir']/f"{row['seed']}.mp4"
             if not video.exists(): continue

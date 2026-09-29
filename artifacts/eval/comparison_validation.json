@@ -27,13 +27,15 @@
   ],
   "matplotlib": "3.11.1",
   "numpy": "2.2.6",
-  "source_sha256": "d23f318bde650561a12506ae9d705e534b9745d46eb89985b9f9960888eac930",
+  "source_sha256": "f810200ab545fb4078584e9ba7ac816f38eca772b104e14d062d32798ecc7095",
   "input_hash_encoding": "JSON parsed then sorted compact UTF-8; independent of CRLF/LF",
   "inputs_sha256": {
     "artifacts/eval/expert-002/summary.json": "c01f0527d45a87145566eb42ed24058b318271655b668099a7d078aa2f64d247",
     "artifacts/eval/expert-002/episodes.jsonl": "b124861b857de2cc7cd8f1e08083dac2f4aead211e38353dd8d775048a8a6005",
     "artifacts/eval/act-10-002/summary.json": "74ff97403ff52a349c326492e9c03820b6bda1ff19c35b02f871eda58af87c32",
-    "artifacts/eval/act-10-002/episodes.jsonl": "9018efd85d7d1bb842924ff0a8a932478d2d400cfe98275c539dd1eef7876411"
+    "artifacts/eval/act-10-002/episodes.jsonl": "9018efd85d7d1bb842924ff0a8a932478d2d400cfe98275c539dd1eef7876411",
+    "artifacts/eval/act-10-precision-heldout-001/summary.json": "1f2c759a60965b0762f28328db0c0decb1eaa7a18e3c39988e9811c48dc9fef9",
+    "artifacts/eval/act-10-precision-heldout-001/episodes.jsonl": "f906b3cf659c2f0c1a83008adb57312defc9ad6dcd1125de75601d0fab48aa40"
   },
   "first_failure_seed": 1000
 }

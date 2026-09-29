@@ -32,9 +32,9 @@ flowchart LR
   D --> G[GR00T N1.7 NEW_EMBODIMENT: validated contract]
 ```
 
-The current executable evidence covers the original 10-demo target-only pipeline and
-active debugging. One training-condition learned success is verified; held-out recovery
-and both-track 10/25/50 experiments remain unexecuted.
+The current executable evidence includes recovered 10-demo target-only learned control
+on the original fixed held-out protocol, with an independently repeated successful seed.
+The paired 10/25/50 source-informed study remains in progress.
 
 The official UR10e asset, deterministic reset, collision checks and actual front RGB
 capture are verified in [simulator evidence](artifacts/simulation/g1_smoke.json).
@@ -49,28 +49,27 @@ and [full loss history](artifacts/training/act-10-001/loss.csv) identify the dat
 model, environment and source hashes. Training data consists solely of project-generated
 UR10e simulation; FIRe and DROID were not training data for this checkpoint.
 
-## Closed-loop debugging baseline
+## Closed-loop recovery
 
-The owner has prioritized recovery of reproducible learned-policy success. The
-0/20 checkpoint is preserved as a baseline; final media assembly is gated on a
-real learned held-out success. [Diagnostic evidence](artifacts/diagnostics/act-baseline-001/classification.json)
-records the active investigation.
+The original zero-success ACT checkpoint is retained as debugging evidence. A controlled
+sequence restored ImageNet initialization, reduced backbone learning rate, used one-step
+replanning and balanced rare orientation and precision-correction samples. No target data,
+evaluation seed, task geometry, controller or success threshold changed.
 
-The table is generated from all fixed held-out episodes. Evaluation uses identical
-seeds, initial states, task tolerances and action bounds for both executed policies.
-ACT failed by collision throughout the completed evaluation. Lower training loss did
-not translate into successful insertion; these results do not establish transfer or
-successful held-out learned control for this checkpoint. Twenty episodes are a smoke evaluation, not a broad
-performance study.
+The table is generated from all fixed held-out episodes and verified raw traces. The
+[reproduction receipt](artifacts/diagnostics/heldout_recovery.json) links the first successful
+held-out seed and its independent repeat. Remaining collisions are retained in the denominator.
+These are target-only P0 smoke results; they do not yet measure cross-embodiment data efficiency.
 
 <!-- RESULTS:START -->
 | Policy | Training data | Actual training | Closed-loop evaluated | Success |
 |---|---|---|---|---|
 | Expert | scripted | N/A | yes | 20/20 (100%) |
-| ACT | 10 target demos | yes | yes | 0/20 (0%) |
+| ACT baseline | 10 target demos | yes | yes | 0/20 (0%) |
+| ACT recovered | 10 target demos | yes | yes | 5/20 (25%) |
 | GR00T N1.7 | target-compatible | no | no | N/A |
 
-[Expert episodes](artifacts/eval/expert-002/episodes.jsonl) · [ACT episodes](artifacts/eval/act-10-002/episodes.jsonl) · [ACT checkpoint evidence](artifacts/training/act-10-001/summary.json)
+[Expert episodes](artifacts/eval/expert-002/episodes.jsonl) · [ACT baseline episodes](artifacts/eval/act-10-002/episodes.jsonl) · [ACT recovered episodes](artifacts/eval/act-10-precision-heldout-001/episodes.jsonl)
 <!-- RESULTS:END -->
 
 [Generated comparison CSV](artifacts/eval/comparison.csv)
@@ -90,15 +89,14 @@ A controlled one-episode test changed only the ResNet18 initialization to offici
 ImageNet weights and achieved learned insertion on training seed 10. The
 [recovery receipt](artifacts/diagnostics/recovery.json) records identical data, optimizer,
 steps, task, controller and detector. This demonstrates pipeline sanity, not generalization.
-The subsequent ten-demo ImageNet models with prediction horizons 16 and 1 both failed the
-two fixed development seeds. Their records remain under
-[H16 development](artifacts/eval/act-10-imagenet-dev-001/summary.json) and
-[H1 development](artifacts/eval/act-10-h1-dev-001/summary.json). No evaluation seed was replaced.
+The recovered ten-demo checkpoint uses official LeRobot ACT, ImageNet ResNet18, H=1/K=1
+at15Hz,5000 target steps and a four-regime sampler. Its [training evidence](artifacts/training/act-10-precision-001/summary.json)
+and [fixed held-out evaluation](artifacts/eval/act-10-precision-heldout-001/summary.json)
+identify every version, action contract and checkpoint hash. Diagnostic failures remain
+versioned; the held-out checkpoint is frozen before the source-informed comparison.
 
-Before transfer claims, the source/target audit will compare task geometry, frames,
-orientation, approach and success definitions. Unknown source measurements remain unknown.
-Final video assembly waits for reproducible held-out learned success and the measured
-paired study; actual source footage and transforms are prepared first.
+The source/target audit is ANALOGOUS_TASK because source geometry and calibration remain
+unverified. Final media still requires the paired data-efficiency study and native inspection.
 
 ## GR00T integration status
 

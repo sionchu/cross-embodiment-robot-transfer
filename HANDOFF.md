@@ -34,13 +34,14 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
   task audit remains ANALOGOUS_TASK, with related-code dimensions explicitly unconfirmed.
 
 ## Current checkpoint
-Precision-balanced ACT completed5000 CUDA steps and strict reload. Development0/1:
-1/2 success. Seed0 SUCCESS in50 steps,0N contact,0.640mm lateral error; seed1 COLLISION.
-Checkpoint aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8
-is frozen for the complete held-out1000-1019 evaluation. No further tuning on those seeds.
-The prior attempt stalled during first Replicator render before actions; it is preserved
-as SIMULATOR_RESET_STALL with0 completed episodes, not a policy failure. Identical retry
-act-10-precision-dev-002 completed. No new data or task/controller/detector changes.
+Frozen precision-balanced ACT achieved5/20 held-out successes (25%),15 collisions on
+unchanged seeds1000-1019. First successful seed1005 independently repeated: SUCCESS,
+49 steps,0N contact,0.185mm final lateral error. Maximum repeated position difference
+was4.88e-6m; success reproduces, trajectory is not bit-exact. Actual video frames inspected.
+Checkpoint aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8.
+This is the frozen10-demo target-only baseline for the source-informed comparison.
+No data/controller/task/detector changes. All60 expert/original/recovered traces validated;
+README/CSV/plot generated from structured evidence. Native desktop verification still pending.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
 provenance is unresolved. No source-informed training or data-efficiency claim exists.
@@ -74,12 +75,12 @@ provenance is unresolved. No source-informed training or data-efficiency claim e
 
 ## Not executed
 Verified source-to-target learning bridge, matched-task changes, source-informed training,
-25/50 datasets, learned held-out success, data-efficiency curves, final video, native desktop
+25/50 datasets, data-efficiency curves, final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
 ## Blockers
-Source units/frame/tool geometry and dataset-to-code provenance need verification. ACT general
-learning remains unresolved. GR00T runtime requires supported compute and adapted checkpoint;
+Source units/frame/tool geometry and dataset-to-code provenance need verification. ACT achieved
+reproducible held-out success; broader robustness and source-informed comparison remain open. GR00T runtime requires supported compute and adapted checkpoint;
 that does not block local experiments. No real E0 PASS exists.
 
 ## Modified files
@@ -87,10 +88,11 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Evaluate the frozen act-10-precision-001 checkpoint on all20 existing held-out seeds.
-If any succeeds, repeat the first successful seed independently, retain all failures and
-verify actual images/traces. Then proceed to the source-informed10-demo comparison and
-nested25/50 experiments under the same frozen recipe and evaluation protocol.
+Implement source-informed ACT feature pretraining from actual FIRe pose increments with
+explicit task normalization and camera provenance. Preserve the frozen target recipe,
+normalization, architecture,5000 target steps and20 evaluation seeds. Source training
+budget must be separate. Do not treat uncalibrated source poses as physical UR10e commands
+or claim MATCHED_TASK. Then execute10-demo comparison before nested25/50 expansion.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. Local diagnostics continue.
 Source regeneration: python scripts/local/fire.py --download, then offline command without

@@ -1,0 +1,24 @@
+{
+  "status": "REPRODUCIBLE_LEARNED_SUCCESS",
+  "baseline": "artifacts/eval/act-10-002/summary.json",
+  "recovered_evaluation": "artifacts/eval/act-10-precision-heldout-001/summary.json",
+  "repeat": "artifacts/eval/act-10-precision-repeat-001/summary.json",
+  "held_out_successes": 5,
+  "held_out_episodes": 20,
+  "first_success_seed": 1005,
+  "repeat_success": true,
+  "same_checkpoint_data_task_initial_state_and_control": true,
+  "repeat_max_next_state_difference": [
+    4.876830481499995e-06,
+    4.593251213022499e-06,
+    1.5254383548268802e-06,
+    3.1769332743368517e-06,
+    2.229416756841787e-06,
+    2.5962527663674073e-06
+  ],
+  "trajectory_bit_exact": false,
+  "source_informed": false,
+  "selection_rule": "Repeat first successful episode in frozen evaluation order; do not alter20-seed aggregate",
+  "repeated_video": "artifacts/runtime/eval-act-10-precision-repeat-001/1005.mp4",
+  "repeated_video_sha256": "4321f3a6976c8ec7e93dee782f4c1c00862363550f6e5d090cb2895ee5d2c325"
+}
