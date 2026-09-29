@@ -42,5 +42,5 @@
   "task_equivalence": "ANALOGOUS_TASK",
   "interpretation": "target-data efficiency, not compute efficiency or a broad benchmark",
   "all_raw_traces_actions_terminal_outcomes_and_initial_states": "VERIFIED",
-  "source_sha256": "08abab6f57db3a1ed79ee7bed8f67e671e5c207bcb9e47df0a7eb90ab9bc2280"
+  "source_sha256": "d0cfbdd4e47202387d5c867760e9bae559fef5f2f3318046b061b818bc0fb506"
 }

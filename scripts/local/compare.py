@@ -11,7 +11,7 @@ from evaluate import aggregate, ROOT
 from insertion import CONFIG, terminal
 
 
-def verified_run(name):
+def verified_run(name, require_transitions=False):
     seeds=json.loads((ROOT/'configs/seeds.json').read_text())['held_out']
     folder=ROOT/'artifacts/eval'/name
     summary=json.loads((folder/'summary.json').read_text())
@@ -31,6 +31,17 @@ def verified_run(name):
         trace=json.loads(trace_file.read_text())
         if len(trace)!=row['steps']: raise ValueError('TRACE_LENGTH_MISMATCH')
         np.testing.assert_array_equal(trace[0]['state'],row['initial_state'])
+        detailed=all('next_state' in t and 'max_contact_n' in t and 'terminal' in t for t in trace)
+        if require_transitions and not detailed: raise ValueError('DETAILED_TRANSITIONS_REQUIRED')
+        if detailed:
+            np.testing.assert_array_equal(trace[-1]['next_state'],row['final_state'])
+            if trace[-1]['max_contact_n']!=row['max_contact_n']:
+                raise ValueError('CONTACT_SUMMARY_MISMATCH')
+            for i,t in enumerate(trace):
+                expected_terminal=terminal(t['next_state'],t['max_contact_n'],i+1)
+                if t['terminal']!=expected_terminal or (i<len(trace)-1 and expected_terminal is not None):
+                    raise ValueError('TRACE_TERMINAL_MISMATCH')
+                if i: np.testing.assert_array_equal(trace[i-1]['next_state'],t['state'])
         raw=np.asarray([t['raw_chunk'] for t in trace])
         expected_horizon=summary.get('action_chunk_size',16 if summary['policy']=='act' else 1)
         if raw.shape!=(row['steps'],expected_horizon,6) or not np.isfinite(raw).all():
@@ -49,7 +60,7 @@ def data_efficiency(names):
     records=[];reference=None;reference_config=None;reference_training=None
     controls=('steps','batch_size','training_seed','backbone_initialization')
     for name in names:
-        run,rows=verified_run(name)
+        run,rows=verified_run(name,require_transitions=True)
         if run['policy']!='act': raise ValueError('STUDY_REQUIRES_ACT')
         training_folder=ROOT/'artifacts/training'/Path(run['model_checkpoint_id']).name
         training=json.loads((training_folder/'summary.json').read_text())

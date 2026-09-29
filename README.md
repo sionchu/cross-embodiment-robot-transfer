@@ -13,7 +13,7 @@ closed-loop evaluation and a GR00T N1.7 NEW_EMBODIMENT integration path.
 The canonical real source is [FIRe Franka peg insertion](https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real),
 third-party public research data declaring Apache-2.0. [Actual source inspection](artifacts/datasets/fire_source.json) selected episode 29 wrist_view;
 [the task audit](artifacts/datasets/fire_task_audit.json) currently classifies the tasks as
-ANALOGOUS_TASK. Source-informed learning remains unexecuted; no data-efficiency result is claimed.
+ANALOGOUS_TASK. The first paired experiment found no improvement from the selected source pretraining mechanism; the 25/50-demo comparisons remain in progress.
 
 ![Actual FIRe episode 29 wrist-camera frame](artifacts/datasets/fire_real_source.png)
 
@@ -23,7 +23,7 @@ Real source: FIRe episode 29, wrist_view, frame 0. Third-party research data;
 ```mermaid
 flowchart LR
   F[Real FIRe Franka data] --> R[Relative EEF representation]
-  R -. source-informed learning: pending .-> B[Track B: source-informed ACT]
+  R -->|FIRe feature pretraining| B[Track B: source-informed ACT]
   D[Canonical UR10e target demos: 10 / 25 / 50] --> B
   D --> A[Track A: target-only ACT]
   A --> E[Same fixed-seed closed-loop UR10e evaluation]
