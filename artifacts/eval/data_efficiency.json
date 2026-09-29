@@ -1,0 +1,46 @@
+{
+  "status": "PARTIAL",
+  "records": [
+    {
+      "target_demos": 10,
+      "track": "target-only",
+      "evaluation_run": "act-10-precision-heldout-001",
+      "successes": 5,
+      "episodes": 20,
+      "success_rate": 0.25,
+      "wilson_low": 0.11186170140766569,
+      "wilson_high": 0.468700877618744,
+      "mean_lateral_error_m": 0.0020231132647405164,
+      "mean_orientation_error_rad": 0.0024225166159714566,
+      "target_steps": 5000,
+      "source_steps": 0,
+      "source_episodes": 0,
+      "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+      "checkpoint_sha256": "aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8",
+      "normalization_sha256": "3bcf493d2f77467a881178de851019db0d786dbaa29bce5c0c6aba14a75080c8"
+    },
+    {
+      "target_demos": 10,
+      "track": "source-informed",
+      "evaluation_run": "act-fire-10-heldout-001",
+      "successes": 0,
+      "episodes": 20,
+      "success_rate": 0.0,
+      "wilson_low": 0,
+      "wilson_high": 0.16112515805281938,
+      "mean_lateral_error_m": 0.013396734812435997,
+      "mean_orientation_error_rad": 0.021941116926098653,
+      "target_steps": 5000,
+      "source_steps": 1000,
+      "source_episodes": 3,
+      "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+      "checkpoint_sha256": "a88e8a261257776edf8ea1c91d86f3080ce63f1a833643e0e118ac1e34bbedda",
+      "normalization_sha256": "3bcf493d2f77467a881178de851019db0d786dbaa29bce5c0c6aba14a75080c8"
+    }
+  ],
+  "protocol": "same task/controller/detector; fixed20 seeds; one training seed;5000 target steps; source extra1000 steps reported separately",
+  "task_equivalence": "ANALOGOUS_TASK",
+  "interpretation": "target-data efficiency, not compute efficiency or a broad benchmark",
+  "all_raw_traces_actions_terminal_outcomes_and_initial_states": "VERIFIED",
+  "source_sha256": "08abab6f57db3a1ed79ee7bed8f67e671e5c207bcb9e47df0a7eb90ab9bc2280"
+}

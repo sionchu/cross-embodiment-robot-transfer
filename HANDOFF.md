@@ -43,12 +43,14 @@ This is the frozen10-demo target-only baseline for the source-informed compariso
 Source-informed act-fire-10-001 completed1000 FIRe plus5000 target steps and strict reload;
 checkpoint a88e8a261257776edf8ea1c91d86f3080ce63f1a833643e0e118ac1e34bbedda.
 Target config/data/normalization/sampling/budget exactly match the baseline; source feature
-hashes changed and target head/RNG restoration passed. Its closed-loop evaluation is next.
+hashes changed and target head/RNG restoration passed. Its fixed held-out evaluation completed: 0/20, all collisions; target-only remains 5/20.
+The first paired comparison is preserved in artifacts/eval/data_efficiency.json (PARTIAL).
+No held-out tuning follows this negative result; both frozen recipes continue at25/50.
 No data/controller/task/detector changes. All60 expert/original/recovered traces validated;
 README/CSV/plot generated from structured evidence. Native desktop verification still pending.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
-provenance is unresolved. No source-informed evaluation or data-efficiency improvement claim exists.
+provenance is unresolved. Actual source-informed evaluation exists; no data-efficiency improvement is observed at10 demos.
 
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
@@ -78,7 +80,7 @@ provenance is unresolved. No source-informed evaluation or data-efficiency impro
 - artifacts/environment/gr00t_local_contract.json: integration PASS, model/target checkpoint NOT_RUN.
 
 ## Not executed
-Calibrated matched-task changes and source-informed closed-loop comparison,
+Calibrated matched-task changes,
 25/50 datasets, data-efficiency curves, final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
@@ -92,8 +94,7 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Finish actual checkpoint audit, then evaluate act-fire-10-001 on all20 unchanged seeds;
-report either outcome without tuning on held-out results. Only then generate25 nested demos
+Generate25 nested demos after preserving the completed10-demo comparison
 (first10 reused plus seeds20-34), validate and execute both frozen recipes, followed by50.
 The additional seed pool was committed in f98f854 before generation. Generalized export
 reproduces original archived10-demo dataset bytes with pandas3.0.5/PyArrow25.0.1; ML writer

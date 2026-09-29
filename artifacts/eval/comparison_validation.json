@@ -27,7 +27,7 @@
   ],
   "matplotlib": "3.11.1",
   "numpy": "2.2.6",
-  "source_sha256": "f810200ab545fb4078584e9ba7ac816f38eca772b104e14d062d32798ecc7095",
+  "source_sha256": "08abab6f57db3a1ed79ee7bed8f67e671e5c207bcb9e47df0a7eb90ab9bc2280",
   "input_hash_encoding": "JSON parsed then sorted compact UTF-8; independent of CRLF/LF",
   "inputs_sha256": {
     "artifacts/eval/expert-002/summary.json": "c01f0527d45a87145566eb42ed24058b318271655b668099a7d078aa2f64d247",

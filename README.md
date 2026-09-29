@@ -49,6 +49,21 @@ and [full loss history](artifacts/training/act-10-001/loss.csv) identify the dat
 model, environment and source hashes. Training data consists solely of project-generated
 UR10e simulation; FIRe and DROID were not training data for this checkpoint.
 
+## Data-efficiency experiment
+
+<!-- STUDY:START -->
+| Target demos | Target-only ACT | FIRe-informed ACT |
+|---|---|---|
+| 10 | 5/20 (25%) | 0/20 (0%) |
+
+Both tracks use 5000 target updates. FIRe-informed adds 3 real source episodes and 1000 source updates.
+Remaining target-data sizes: 25, 50.
+
+[Structured evidence](artifacts/eval/data_efficiency.json) · [Measured CSV](artifacts/eval/data_efficiency.csv)
+
+![Measured target-data efficiency](artifacts/figures/data_efficiency.png)
+<!-- STUDY:END -->
+
 ## Closed-loop recovery
 
 The original zero-success ACT checkpoint is retained as debugging evidence. A controlled
