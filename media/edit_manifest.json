@@ -23,11 +23,11 @@
       1006,
       1007
     ],
-    "wall_selection": "First eight protocol seeds, fixed before50-demo evaluation and retained unchanged for the final target-only checkpoint",
+    "wall_selection": "First eight fixed protocol seeds1000-1007, selected before50-demo evaluation; use their actual primary evaluation recordings without a replacement run.",
     "shown_policy": "target-only ACT; do not label successful footage source-informed",
     "primary_evaluation": "artifacts/eval/act-50-heldout-001",
     "training_run": "artifacts/training/act-50-001",
-    "wall_evaluation": "artifacts/eval/media-wall-act-50",
+    "wall_evaluation": "artifacts/eval/act-50-heldout-001",
     "checkpoint_selection": "Final50-demo target-only condition. Media checkpoint updated after its complete20/20 evaluation; previously fixed capture seeds are unchanged. No experiment, seed or denominator was altered."
   },
   "assembly_gate": {
@@ -89,20 +89,28 @@
       "modifications": "frame trim and H.264 re-encoding; no speed or geometry changes"
     },
     "hero": {
-      "receipt": "artifacts/media/media-hero-expert-1000.json",
-      "truth_status": "AWAITING_CAPTURE"
+      "receipt": "artifacts/media/media-hero-expert-1000-002.json",
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-hero-expert-1000-002/hero.mp4",
+      "sha256": "7ea3ac756af692e30aa6b20e4bb3595f93822fc9f3df90332ccca7b8f951c167"
     },
     "matched": {
       "receipt": "artifacts/media/media-matched-act-1005.json",
-      "truth_status": "AWAITING_CAPTURE"
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-matched-act-1005/matched_source.mp4",
+      "sha256": "2075667e059e66e4e41f3503bd1417e241e62434d9a0e862d5aa2d99a836d3c8"
     },
     "close": {
       "receipt": "artifacts/media/media-close-act-1005.json",
-      "truth_status": "AWAITING_CAPTURE"
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-close-act-1005/close_insertion.mp4",
+      "sha256": "594520c8af1cf094532654b188a44e9834aa8e3e94426251b65dfab3110038d4"
     },
     "evaluation": {
       "receipt": "artifacts/media/media-evaluation-act-1005.json",
-      "truth_status": "AWAITING_CAPTURE"
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-evaluation-act-1005/evaluation.mp4",
+      "sha256": "5336f0fc618504f19e69cd8c5e6655f0cef427c67da323b58f94d4b2acdca5ba"
     },
     "real_hook": {
       "source_type": "PUBLIC_REAL_DATA",
@@ -145,11 +153,14 @@
         "artifacts/datasets/fire_source.json"
       ],
       "claim": "Actual FIRe episode29 synchronized dataset wrist/right views; wrist is the main task view",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
         "real_hook",
         "real_right"
-      ]
+      ],
+      "evidence_sha256": {
+        "artifacts/datasets/fire_source.json": "297b7146f4f928790ccd14e8293baf662519bc087a52de132e497468c4f5d5b3"
+      }
     },
     {
       "shot_id": "S02_SOURCE",
@@ -164,10 +175,13 @@
         "artifacts/datasets/fire_source.json"
       ],
       "claim": "Actual FIRe episode29 wrist camera, original cadence",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
         "real_wrist"
-      ]
+      ],
+      "evidence_sha256": {
+        "artifacts/datasets/fire_source.json": "297b7146f4f928790ccd14e8293baf662519bc087a52de132e497468c4f5d5b3"
+      }
     },
     {
       "shot_id": "S03_BRIDGE",
@@ -184,11 +198,15 @@
         "artifacts/training/act-fire-10-001/source_pretraining.json"
       ],
       "claim": "Measured source motion normalized to task bounds informs ACT feature pretraining; not joint replay or calibrated image projection",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
         "real_wrist",
         "matched"
-      ]
+      ],
+      "evidence_sha256": {
+        "artifacts/datasets/fire_motion_prior/manifest.json": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d",
+        "artifacts/training/act-fire-10-001/source_pretraining.json": "4486e25f8f395272c262d7c6f5405b3f4dfc6728f149c4381294143883f81b91"
+      }
     },
     {
       "shot_id": "S04_ECOSYSTEM",
@@ -203,8 +221,11 @@
         "references/source_manifest.json"
       ],
       "claim": "Official GR00T ecosystem with distinct pretrain/posttrain categories; not project-trained robots",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
-      "asset_ids": []
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "references/source_manifest.json": "fbc9f9afdefe2bcdb773d853867ff79bcd1922d8129101103c75daf025b36616"
+      }
     },
     {
       "shot_id": "S05_TARGET",
@@ -220,10 +241,14 @@
         "artifacts/datasets/fire_task_audit.json"
       ],
       "claim": "Official UR10e asset, analogous insertion task; expert control is labeled",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
         "hero"
-      ]
+      ],
+      "evidence_sha256": {
+        "artifacts/simulation/g1_smoke.json": "d9b27b126c4f6438da264e7f4f21ba3d09a52dfd9898a6e640dc08848cf24202",
+        "artifacts/datasets/fire_task_audit.json": "2d475303f8dc9cead5dabbcbf48ef18debcb5fb6ffc7e2a7bd787ca2c5098c0e"
+      }
     },
     {
       "shot_id": "S06_PIPELINE",
@@ -241,8 +266,14 @@
         "artifacts/datasets/fire_motion_prior/manifest.json"
       ],
       "claim": "Target-only versus real-source feature pretraining, same ACT and target control contract",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
-      "asset_ids": []
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/datasets/validation.json": "93f77daca95ad71819344a8e11dbba89d6d4c7acef7f5a2fd22e1f4591fb47e3",
+        "artifacts/datasets/ur10e_25.json": "b9e474f56268a8fd913e397244486782e2c0f58e7b37ee2a31d42da8658359a9",
+        "artifacts/datasets/ur10e_50.json": "5e7eaac7dcddc7a06f143e518db9f8de901125eda4c0cd26d277a4a99dc4db73",
+        "artifacts/datasets/fire_motion_prior/manifest.json": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d"
+      }
     },
     {
       "shot_id": "S07_TRAINING",
@@ -258,8 +289,12 @@
         "artifacts/training/act-50-001/loss.csv"
       ],
       "claim": "Actual final50-demo target-only training receipt; source pretraining budget remains separate",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
-      "asset_ids": []
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/training/act-50-001/summary.json": "e7c5bbc8f83a5178f788eb500d4397b381917ef58d07a11ece951424e8975d41",
+        "artifacts/training/act-50-001/loss.csv": "94a526acd65d92eae8031b7fde932af2f7da99bd4bfdf4649df76c7589b6c92f"
+      }
     },
     {
       "shot_id": "S08_WALL",
@@ -271,11 +306,14 @@
         "PROJECT_SIM_LEARNED"
       ],
       "evidence_refs": [
-        "artifacts/eval/media-wall-act-50/summary.json"
+        "artifacts/eval/act-50-heldout-001/summary.json"
       ],
       "claim": "First eight previously fixed seeds repeated with final50-demo target-only checkpoint; all tile outcomes retained",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
-      "asset_ids": []
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/eval/act-50-heldout-001/summary.json": "b13ac17922d5243d0a094389fed6e67a3ba5c23c9ade3be17f3dff146b8a4bb8"
+      }
     },
     {
       "shot_id": "S09_PAYOFF",
@@ -291,12 +329,15 @@
         "artifacts/eval/act-50-heldout-001/summary.json"
       ],
       "claim": "Real source versus final target-only ACT success, not proof that source pretraining improved performance",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
         "real_hook",
         "real_wrist",
         "close"
-      ]
+      ],
+      "evidence_sha256": {
+        "artifacts/eval/act-50-heldout-001/summary.json": "b13ac17922d5243d0a094389fed6e67a3ba5c23c9ade3be17f3dff146b8a4bb8"
+      }
     },
     {
       "shot_id": "S10_RESULTS",
@@ -311,8 +352,11 @@
         "artifacts/eval/data_efficiency.json"
       ],
       "claim": "All six conditions and actual denominators, including negative/nonmonotonic results",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
-      "asset_ids": []
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/eval/data_efficiency.json": "903815f948c2707e83762ffaa4d603c8c43525649da09abd43cc245657c95a04"
+      }
     },
     {
       "shot_id": "S11_CLOSE",
@@ -327,15 +371,18 @@
         "artifacts/environment/gr00t_50_contract.json"
       ],
       "claim": "NEW_EMBODIMENT integration ready; GR00T model execution and fine-tuning deferred",
-      "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
+      "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
         "real_hook",
         "close"
-      ]
+      ],
+      "evidence_sha256": {
+        "artifacts/environment/gr00t_50_contract.json": "8bcfba7de69ce5ae3df385def80a54a7f42f946742b373459d61c8838378e9f5"
+      }
     }
   ],
   "verification": {
-    "assembly": "NOT_RUN",
+    "assembly": "FORMAT_AND_EVIDENCE_CHECKS_PASS",
     "file_visual": "NOT_RUN",
     "native_desktop": "NOT_COMPLETED",
     "reason": "Computer Use app approval timed out",
@@ -346,8 +393,21 @@
   "credit": "FIRe public research data: bhe1004/FIRe-VLA-GR00T-PegInsert-Real; Apache-2.0; episode29. Project UR10e footage is simulation.",
   "license_reference": "references/FIRe-source-credit.md",
   "source_preparation": {
-    "script_sha256": "96d974246c2afd374386bf30360f76f23af0368fadc6bf413d020dc7e2c65214",
+    "script_sha256": "3e975e7171afee99df5d08d7255483e8d0446b94bcf4ceeb9fe641afb56a33b4",
     "ffmpeg": "ffmpeg version 8.0-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
     "licensing": "references/FIRe-source-credit.md and references/FIRe-Apache-2.0.txt"
+  },
+  "wall_phase_rules": "Derived geometric labels, not internal ACT states: terminal from trace; depth<-35mm APPROACH; outside pose tolerance ALIGN; aligned above hole APPROACH; aligned positive depth INSERT.",
+  "output": {
+    "path": "media/output/main.mp4",
+    "sha256": "74346458fe72610be88fc33a3ac6d98d453ac6cffbc1042d494a767e3def2686",
+    "probe": {
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "30/1",
+      "nb_read_frames": "1950"
+    },
+    "script_sha256": "9d271e3aed42ca84d52c8e2bcce48f7e44e2e900307b7bbebaa769f98508d332",
+    "playback": "15Hz recorded footage frame-duplicated to30fps; static terminal holds; no audio"
   }
 }

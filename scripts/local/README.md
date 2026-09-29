@@ -271,3 +271,37 @@ See `artifacts/datasets/fire_task_audit.json` for the current ANALOGOUS_TASK cla
 The terminal-EEF frame is derived, not a measured hole frame; no source command or metric
 unit assumption enters ACT training. Native desktop inspection remains incomplete after
 an app-approval timeout. Attribution is in `references/FIRe-source-credit.md`.
+
+
+## Evidence-linked media
+
+`media/edit_manifest.json` owns shot timing, source selection, captions, claims and
+artifact references. `media/cameras.json` owns the four deterministic capture views.
+`media/capture.py` runs the canonical evaluator with one additional RGB camera;
+it checks zero-time capture invariance and saves video before Kit shuts down.
+Expert and learned footage have separate receipts under `artifacts/media`.
+
+Run captures sequentially after training/evaluation. Use fresh output names and update
+only the matching receipt references in the existing edit manifest. The original
+20-seed experiments remain the metric source; repeated footage never replaces them.
+The evaluation wall uses the first eight actual recordings from the primary50-demo
+evaluation with --record-all; it needs no additional simulation.
+
+```powershell
+python media/build.py --prepare-source
+& C:\isaacsim\python.bat media/capture.py --view HERO --policy expert --seed 1000 --output artifacts/eval/media-hero-reproduction
+& C:\isaacsim\python.bat media/capture.py --view MATCHED_SOURCE --policy act --checkpoint checkpoints/act-50-001 --seed 1005 --output artifacts/eval/media-matched-reproduction
+& C:\isaacsim\python.bat media/capture.py --view CLOSE_INSERTION --policy act --checkpoint checkpoints/act-50-001 --seed 1005 --output artifacts/eval/media-close-reproduction
+& C:\isaacsim\python.bat media/capture.py --view EVALUATION --policy act --checkpoint checkpoints/act-50-001 --seed 1005 --output artifacts/eval/media-evaluation-reproduction
+python media/build.py --preview
+python media/build.py --render
+```
+
+Rendering requires all six verified conditions and successful learned footage. It
+checks artifact hashes and generates a 65-second 1920x1080/30fps silent main cut,
+SRT captions, shot list and resolved edit manifest under ignored `media/output`.
+Source clips retain their original 15fps motion; duplication to30fps changes no
+speed. Trajectories are derived from actual source poses in the documented normalized
+frame, not camera-calibrated image overlays. Wall phases are geometry-derived labels,
+not hidden policy states. Keep the source credit and Apache license with exported media.
+File visual review, full video decode and native desktop inspection are separate gates.

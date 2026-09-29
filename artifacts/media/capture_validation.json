@@ -1,0 +1,58 @@
+{
+  "status": "CAPTURE_HASH_DECODE_AND_REPEATED_SUCCESS_VERIFIED",
+  "checks": [
+    {
+      "receipt": "artifacts/media/media-close-act-1005.json",
+      "video_sha256": "594520c8af1cf094532654b188a44e9834aa8e3e94426251b65dfab3110038d4",
+      "probe": {
+        "width": 1920,
+        "height": 1080,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "50"
+      },
+      "outcome": "SUCCESS",
+      "lateral_error_m": 0.00022187396908099206,
+      "native_desktop": "NOT_COMPLETED"
+    },
+    {
+      "receipt": "artifacts/media/media-evaluation-act-1005.json",
+      "video_sha256": "5336f0fc618504f19e69cd8c5e6655f0cef427c67da323b58f94d4b2acdca5ba",
+      "probe": {
+        "width": 640,
+        "height": 480,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "50"
+      },
+      "outcome": "SUCCESS",
+      "lateral_error_m": 0.00023227602812567305,
+      "native_desktop": "NOT_COMPLETED"
+    },
+    {
+      "receipt": "artifacts/media/media-hero-expert-1000-002.json",
+      "video_sha256": "7ea3ac756af692e30aa6b20e4bb3595f93822fc9f3df90332ccca7b8f951c167",
+      "probe": {
+        "width": 1920,
+        "height": 1080,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "50"
+      },
+      "outcome": "SUCCESS",
+      "lateral_error_m": 0.00011715169584393224,
+      "native_desktop": "NOT_COMPLETED"
+    },
+    {
+      "receipt": "artifacts/media/media-matched-act-1005.json",
+      "video_sha256": "2075667e059e66e4e41f3503bd1417e241e62434d9a0e862d5aa2d99a836d3c8",
+      "probe": {
+        "width": 1920,
+        "height": 1080,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "50"
+      },
+      "outcome": "SUCCESS",
+      "lateral_error_m": 0.00022441808071709652,
+      "native_desktop": "NOT_COMPLETED"
+    }
+  ],
+  "first_hero_capture": "Canonical episode succeeded; post-close custom media serialization did not execute. Preserved separately, corrected before-close callback and reran."
+}

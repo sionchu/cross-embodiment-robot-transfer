@@ -1,0 +1,86 @@
+{
+  "source_type": "PROJECT_SIM_LEARNED",
+  "evaluation": "artifacts/eval/media-close-act-1005",
+  "seed": 1005,
+  "outcome": "SUCCESS",
+  "checkpoint_sha256": {
+    "config.json": "575a3e3953fa1278fd6dcebce356bdda50af41b8df4ca7614815b7e2896af0ba",
+    "model.safetensors": "e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa",
+    "normalization.json": "ef032a399697a50b2e2fab6e66c1542c7db7e0d5d0f3a723905c14e2c3b0766c"
+  },
+  "environment_config_hash": "cbd594861705dbe2ff46329b0098c892b69e618e338fa9437fb20dcaafc2d947",
+  "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.0/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd",
+  "camera": {
+    "role": "CLOSE_INSERTION",
+    "specification": {
+      "position_from_hole_m": [
+        0.22,
+        0.22,
+        0.19
+      ],
+      "look_at_from_hole_m": [
+        0,
+        0,
+        0.005
+      ],
+      "focal_length_mm": 50.0,
+      "resolution": [
+        1920,
+        1080
+      ]
+    },
+    "position_world_m": [
+      0.40731550676908634,
+      0.5978889926782176,
+      0.758298272226942
+    ],
+    "look_at_world_m": [
+      0.18731550676908632,
+      0.37788899267821763,
+      0.5732982722269421
+    ],
+    "world_transform_matrix_row_major": [
+      [
+        -0.7071067811865475,
+        0.7071067811865477,
+        -3.330669186671288e-16,
+        0.0
+      ],
+      [
+        -0.36139294125238947,
+        -0.3613929412523889,
+        0.8595291059794861,
+        0.0
+      ],
+      [
+        0.6077788594653053,
+        0.6077788594653053,
+        0.5110867988650319,
+        0.0
+      ],
+      [
+        0.40731550676908634,
+        0.5978889926782176,
+        0.758298272226942,
+        1.0
+      ]
+    ],
+    "prim_path": "/CLOSE_INSERTION",
+    "world_up_axis": "Z",
+    "world_unit": "m"
+  },
+  "frame_range": [
+    0,
+    50
+  ],
+  "fps": 15,
+  "sampling": "one pre-action frame per control step plus final terminal frame; unaltered speed",
+  "physics_and_state_invariance_checked_every_capture": true,
+  "policy_camera_unchanged": true,
+  "video": "media/output/sim/media-close-act-1005/close_insertion.mp4",
+  "video_sha256": "594520c8af1cf094532654b188a44e9834aa8e3e94426251b65dfab3110038d4",
+  "source_sha256": "df0cd5b172593919c1c31e4f9cfae63e6fa2232d202f175675c1e87f536fb9e5",
+  "camera_config_sha256": "d768cacda087a8d625a461d76e93fab724084db671e1d0efbea466b7a0fea901",
+  "primary_evaluation_replacement": false,
+  "native_desktop_verification": "NOT_COMPLETED"
+}

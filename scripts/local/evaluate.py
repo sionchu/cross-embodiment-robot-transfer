@@ -72,7 +72,7 @@ def aggregate(rows):
            ('lateral_error_m','depth_error_m','orientation_error_rad','duration_s','path_length_m','inference_ms','clipped_steps')}}
 
 
-def main(env_factory=InsertionEnv):
+def main(env_factory=InsertionEnv, on_complete=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--policy',choices=['expert','act','replay'],required=True)
     parser.add_argument('--split',choices=['train','development','held_out'],required=True)
@@ -218,7 +218,9 @@ def main(env_factory=InsertionEnv):
                 rows.append(row); results.write(json.dumps(row,allow_nan=False)+'\n'); results.flush()
                 print('EVALUATED',json.dumps(row),flush=True)
         context.update(aggregate(rows)); context['execution_status']='PASS'; context['stage']='complete'
+        if on_complete is not None: on_complete(context, rows)
     except Exception as exc:
+        context['execution_status']='FAIL'
         context['error']=type(exc).__name__+': '+str(exc)
         raise
     finally:

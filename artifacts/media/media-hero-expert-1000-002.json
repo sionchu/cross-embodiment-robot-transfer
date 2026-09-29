@@ -1,0 +1,82 @@
+{
+  "source_type": "PROJECT_SIM_EXPERT",
+  "evaluation": "artifacts/eval/media-hero-expert-1000-002",
+  "seed": 1000,
+  "outcome": "SUCCESS",
+  "checkpoint_sha256": null,
+  "environment_config_hash": "cbd594861705dbe2ff46329b0098c892b69e618e338fa9437fb20dcaafc2d947",
+  "asset": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/6.0/Isaac/Robots/UniversalRobots/ur10e/ur10e.usd",
+  "camera": {
+    "role": "HERO",
+    "specification": {
+      "position_m": [
+        1.5,
+        1.7,
+        1.45
+      ],
+      "look_at_m": [
+        0.05,
+        0.2,
+        0.55
+      ],
+      "focal_length_mm": 28.0,
+      "resolution": [
+        1920,
+        1080
+      ]
+    },
+    "position_world_m": [
+      1.5,
+      1.7,
+      1.45
+    ],
+    "look_at_world_m": [
+      0.05,
+      0.2,
+      0.55
+    ],
+    "world_transform_matrix_row_major": [
+      [
+        -0.7189883958033998,
+        0.6950220764120042,
+        -2.775557704837786e-16,
+        0.0
+      ],
+      [
+        -0.27530307493191697,
+        -0.2847963006108955,
+        0.9182043803486126,
+        0.0
+      ],
+      [
+        0.6381723150004903,
+        0.6601782944465039,
+        0.39610695008876107,
+        0.0
+      ],
+      [
+        1.5,
+        1.7,
+        1.45,
+        1.0
+      ]
+    ],
+    "prim_path": "/HERO",
+    "world_up_axis": "Z",
+    "world_unit": "m"
+  },
+  "frame_range": [
+    0,
+    50
+  ],
+  "fps": 15,
+  "sampling": "one pre-action frame per control step plus final terminal frame; unaltered speed",
+  "physics_and_state_invariance_checked_every_capture": true,
+  "policy_camera_unchanged": true,
+  "video": "media/output/sim/media-hero-expert-1000-002/hero.mp4",
+  "video_sha256": "7ea3ac756af692e30aa6b20e4bb3595f93822fc9f3df90332ccca7b8f951c167",
+  "source_sha256": "df0cd5b172593919c1c31e4f9cfae63e6fa2232d202f175675c1e87f536fb9e5",
+  "camera_config_sha256": "d768cacda087a8d625a461d76e93fab724084db671e1d0efbea466b7a0fea901",
+  "primary_evaluation_replacement": false,
+  "native_desktop_verification": "NOT_COMPLETED"
+}

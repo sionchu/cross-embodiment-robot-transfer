@@ -1,0 +1,72 @@
+{
+  "HERO": {
+    "position_m": [
+      1.5,
+      1.7,
+      1.45
+    ],
+    "look_at_m": [
+      0.05,
+      0.2,
+      0.55
+    ],
+    "focal_length_mm": 28.0,
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "MATCHED_SOURCE": {
+    "position_from_hole_m": [
+      0.2,
+      0.1,
+      0.25
+    ],
+    "look_at_from_hole_m": [
+      0,
+      0,
+      0.005
+    ],
+    "focal_length_mm": 35.0,
+    "resolution": [
+      1920,
+      1080
+    ],
+    "alignment": "Visual composition only; source camera calibration unavailable"
+  },
+  "CLOSE_INSERTION": {
+    "position_from_hole_m": [
+      0.22,
+      0.22,
+      0.19
+    ],
+    "look_at_from_hole_m": [
+      0,
+      0,
+      0.005
+    ],
+    "focal_length_mm": 50.0,
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "EVALUATION": {
+    "position_m": [
+      1.5,
+      1.7,
+      1.45
+    ],
+    "look_at_m": [
+      0.05,
+      0.2,
+      0.55
+    ],
+    "focal_length_mm": 35.0,
+    "resolution": [
+      640,
+      480
+    ],
+    "existing_policy_camera": true
+  }
+}
