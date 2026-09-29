@@ -34,14 +34,13 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
   task audit remains ANALOGOUS_TASK, with related-code dimensions explicitly unconfirmed.
 
 ## Current checkpoint
-Phase-balanced ACT development0/1 initially aligned then drifted into collisions (1.80/
-2.18mm). Lowering main LR alone to1e-5 did not help: act-10-lr-dev-001 was0/2 (3.10/
-4.44mm). The learning-rate hypothesis is not supported as a correction. Actual labels
-contain23 rotation,85 saturated lateral,17 unsaturated lateral and362 settled frames;
-fine corrections received only5.56% probability in the three-phase sampler.
-act-10-precision-001 is ACTIVE: only sampling changes from three to four equal-mass
-regimes, giving measured fine corrections25%. Same5000 steps, all10 demos, mainLR1e-4,
-backboneLR1e-5, ImageNet/H1. No new held-out results, data or task changes.
+Precision-balanced ACT completed5000 CUDA steps and strict reload. Development0/1:
+1/2 success. Seed0 SUCCESS in50 steps,0N contact,0.640mm lateral error; seed1 COLLISION.
+Checkpoint aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8
+is frozen for the complete held-out1000-1019 evaluation. No further tuning on those seeds.
+The prior attempt stalled during first Replicator render before actions; it is preserved
+as SIMULATOR_RESET_STALL with0 completed episodes, not a policy failure. Identical retry
+act-10-precision-dev-002 completed. No new data or task/controller/detector changes.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
 provenance is unresolved. No source-informed training or data-efficiency claim exists.
@@ -88,11 +87,10 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Finish act-10-precision-001, audit predictions and evaluate unchanged development0/1.
-If successful, evaluate all20 fixed held-out seeds and repeat a successful seed independently.
-Otherwise inspect actual divergence without detector changes or seed selection. Latest
-35-test regression passed in9.716s before precision sampler; actual sampler configuration
-and probabilities are stored by the running experiment. E0 fixture outputs are mocked.
+Evaluate the frozen act-10-precision-001 checkpoint on all20 existing held-out seeds.
+If any succeeds, repeat the first successful seed independently, retain all failures and
+verify actual images/traces. Then proceed to the source-informed10-demo comparison and
+nested25/50 experiments under the same frozen recipe and evaluation protocol.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. Local diagnostics continue.
 Source regeneration: python scripts/local/fire.py --download, then offline command without
