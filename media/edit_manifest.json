@@ -9,10 +9,10 @@
     "audio": "none; must be understandable muted"
   },
   "selection": {
-    "learned_checkpoint": "checkpoints/act-10-precision-001",
-    "checkpoint_sha256": "aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8",
+    "learned_checkpoint": "checkpoints/act-50-001",
+    "checkpoint_sha256": "e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa",
     "success_seed": 1005,
-    "success_selection": "first successful seed in original fixed20-seed recovery; independently reproduced before this study",
+    "success_selection": "Keep previously chosen seed1005; now independently capture the final50-demo checkpoint on that same condition",
     "wall_seeds": [
       1000,
       1001,
@@ -23,8 +23,12 @@
       1006,
       1007
     ],
-    "wall_selection": "first eight protocol seeds, frozen before50-demo evaluation; no outcome-based replacement",
-    "shown_policy": "target-only ACT; do not label successful footage source-informed"
+    "wall_selection": "First eight protocol seeds, fixed before50-demo evaluation and retained unchanged for the final target-only checkpoint",
+    "shown_policy": "target-only ACT; do not label successful footage source-informed",
+    "primary_evaluation": "artifacts/eval/act-50-heldout-001",
+    "training_run": "artifacts/training/act-50-001",
+    "wall_evaluation": "artifacts/eval/media-wall-act-50",
+    "checkpoint_selection": "Final50-demo target-only condition. Media checkpoint updated after its complete20/20 evaluation; previously fixed capture seeds are unchanged. No experiment, seed or denominator was altered."
   },
   "assembly_gate": {
     "complete_six_condition_study": true,
@@ -250,10 +254,10 @@
         "PROJECT_TRAINING"
       ],
       "evidence_refs": [
-        "artifacts/training/act-10-precision-001/summary.json",
-        "artifacts/training/act-10-precision-001/loss.csv"
+        "artifacts/training/act-50-001/summary.json",
+        "artifacts/training/act-50-001/loss.csv"
       ],
-      "claim": "Representative actual target-only10-demo training receipt; source pretraining budget remains separate",
+      "claim": "Actual final50-demo target-only training receipt; source pretraining budget remains separate",
       "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
       "asset_ids": []
     },
@@ -267,9 +271,9 @@
         "PROJECT_SIM_LEARNED"
       ],
       "evidence_refs": [
-        "artifacts/eval/media-wall-act-10/summary.json"
+        "artifacts/eval/media-wall-act-50/summary.json"
       ],
-      "claim": "First eight fixed seeds repeated with frozen recovered10-demo checkpoint; all tile outcomes retained",
+      "claim": "First eight previously fixed seeds repeated with final50-demo target-only checkpoint; all tile outcomes retained",
       "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
       "asset_ids": []
     },
@@ -284,10 +288,9 @@
         "PROJECT_SIM_LEARNED"
       ],
       "evidence_refs": [
-        "artifacts/diagnostics/heldout_recovery.json",
-        "artifacts/eval/act-10-precision-heldout-001/summary.json"
+        "artifacts/eval/act-50-heldout-001/summary.json"
       ],
-      "claim": "Real source versus target-only ACT success, not proof that source pretraining improved performance",
+      "claim": "Real source versus final target-only ACT success, not proof that source pretraining improved performance",
       "truth_status": "REQUIRES_FINAL_ASSET_VALIDATION",
       "asset_ids": [
         "real_hook",

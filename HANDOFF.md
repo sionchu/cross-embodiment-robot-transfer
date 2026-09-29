@@ -34,23 +34,21 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
   task audit remains ANALOGOUS_TASK, with related-code dimensions explicitly unconfirmed.
 
 ## Current checkpoint
-Frozen precision-balanced ACT achieved5/20 held-out successes (25%),15 collisions on
-unchanged seeds1000-1019. First successful seed1005 independently repeated: SUCCESS,
-49 steps,0N contact,0.185mm final lateral error. Maximum repeated position difference
-was4.88e-6m; success reproduces, trajectory is not bit-exact. Actual video frames inspected.
-Checkpoint aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8.
-This is the frozen10-demo target-only baseline for the source-informed comparison.
-Source-informed act-fire-10-001 completed1000 FIRe plus5000 target steps and strict reload;
-checkpoint a88e8a261257776edf8ea1c91d86f3080ce63f1a833643e0e118ac1e34bbedda.
-Target config/data/normalization/sampling/budget exactly match the baseline; source feature
-hashes changed and target head/RNG restoration passed. Its fixed held-out evaluation completed: 0/20, all collisions; target-only remains 5/20.
-The first paired comparison is preserved in artifacts/eval/data_efficiency.json (PARTIAL).
-No held-out tuning follows this negative result; both frozen recipes continue at25/50.
-No data/controller/task/detector changes. All60 expert/original/recovered traces validated;
-README/CSV/plot generated from structured evidence. Native desktop verification still pending.
-FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
-trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
-provenance is unresolved. Actual source-informed evaluation exists; no data-efficiency improvement is observed at10 demos.
+The final50-demo target-only ACT completed20/20 fixed held-out successes, with unchanged
+task/controller/detector/seeds and verified raw transition hashes/terminal predicates.
+Checkpoint e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa.
+All six training conditions completed. The final source-informed50-demo evaluation is
+running (act-fire-50-heldout-001); do not tune from held-out outcomes.
+Paired measured results so far:10 demos target-only5/20 vs source-informed0/20;
+25 demos0/20 vs0/20. Preserve the original0/20 debugging baseline and every failed run.
+The50-demo dataset has2441 frames; original25 episodes are byte-identical prefixes.
+Both50-demo checkpoints passed actual2441-frame action audits and representative input
+train/adapter tensor equality, plus strict checkpoint reload.
+Native desktop verification remains incomplete after app approval timeout. Source footage,
+actual data and encoded trim contact sheets have been inspected through file tools.
+Media manifest retains fixed capture seeds1000-1007 and1005; it now selects the final50-demo
+target-only checkpoint, explicitly documented without changing any experiment or denominator.
+Capture cameras and renderer are implemented but runtime/media validation are still pending.
 
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
@@ -81,7 +79,7 @@ provenance is unresolved. Actual source-informed evaluation exists; no data-effi
 
 ## Not executed
 Calibrated matched-task changes,
-50-demo training/evaluation, complete data-efficiency curves, final video, native desktop
+Final source-informed50-demo evaluation, complete data-efficiency curves, final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
 ## Blockers
