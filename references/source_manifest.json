@@ -78,5 +78,52 @@
       "license": "GPLv3 binary build; downloaded locally, not redistributed"
     },
     "note": "Separate Windows data/ACT environment; does not change the pinned official Linux E0 environment."
+  },
+  "ecosystem_visual_context": {
+    "upstream_commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+    "label": "GR00T ecosystem; these are not robots trained by this project",
+    "sources": {
+      "README.md": {
+        "url": "https://github.com/NVIDIA/Isaac-GR00T/blob/51d4c89f72fda44cbf77285c6a8114b52676b8a1/README.md",
+        "sha256": "fde39f9c7a96eefef85aabe565c9d9174aed0a53703c841e7df60c2a8b86c6e0"
+      },
+      "gr00t/data/embodiment_tags.py": {
+        "url": "https://github.com/NVIDIA/Isaac-GR00T/blob/51d4c89f72fda44cbf77285c6a8114b52676b8a1/gr00t/data/embodiment_tags.py",
+        "sha256": "cd390a0839d3164b2ca74d2fa71c424d60641282e07d5ac48e4625857a9384ef"
+      }
+    },
+    "items": [
+      {
+        "label": "DROID / Franka",
+        "category": "base pretrain embodiment",
+        "tag": "OXE_DROID_RELATIVE_EEF_RELATIVE_JOINT"
+      },
+      {
+        "label": "G1",
+        "category": "base pretrain embodiment",
+        "tag": "REAL_G1"
+      },
+      {
+        "label": "R1 Pro Sharpa",
+        "category": "base pretrain embodiment",
+        "tag": "REAL_R1_PRO_SHARPA"
+      },
+      {
+        "label": "Google Robot",
+        "category": "ecosystem posttrain embodiment; adapted checkpoint required",
+        "tag": "SIMPLER_ENV_GOOGLE"
+      },
+      {
+        "label": "WidowX",
+        "category": "ecosystem posttrain embodiment; adapted checkpoint required",
+        "tag": "SIMPLER_ENV_WIDOWX"
+      },
+      {
+        "label": "Human video",
+        "category": "EgoScale pretraining described by pinned official README",
+        "tag": null
+      }
+    ],
+    "project_robot_training": "ACT on target UR10e simulation; FIRe observed-motion feature pretraining; GR00T target model not trained"
   }
 }
