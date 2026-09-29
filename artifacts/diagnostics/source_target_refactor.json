@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "check": "target-only first2 optimization steps exactly reproduce frozen precision-balanced run",
+  "reference": "artifacts/training/act-10-precision-001/loss.csv",
+  "executed": "artifacts/runtime/act-target-refactor-check/loss.csv",
+  "identical_fields": [
+    "step",
+    "loss",
+    "l1_loss",
+    "kld_loss",
+    "grad_norm"
+  ],
+  "rows": [
+    {
+      "step": "1",
+      "loss": "68.86262512207031",
+      "l1_loss": "0.9534347057342529",
+      "kld_loss": "6.790918827056885",
+      "grad_norm": "1158.082275390625"
+    },
+    {
+      "step": "2",
+      "loss": "63.98154067993164",
+      "l1_loss": "1.6852823495864868",
+      "kld_loss": "6.229625701904297",
+      "grad_norm": "1170.33935546875"
+    }
+  ]
+}

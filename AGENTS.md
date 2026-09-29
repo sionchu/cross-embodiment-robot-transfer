@@ -395,7 +395,21 @@ policy/evaluation contract, plus the same UR10e target demonstrations.
 Implement both tracks before GR00T fine-tuning. The source must demonstrably influence
 learning; visualization or concatenation alone does not establish transfer. Record
 source lineage, transform, objective/parameters affected and checkpoint provenance.
-Choose the smallest technically valid mechanism after inspecting source semantics.
+Selected mechanism: FIRe pose-motion feature pretraining of the same maintained ACT.
+Use pinned inspected episodes0/14/29 and actual wrist RGB. The terminal-EEF transform
+is uniformly length-normalized to target task/action bounds; orientation-log magnitude
+is normalized to the target angular span, then left-composed deltas are recomputed.
+These are observed kinematic transitions, not verified source commands or calibrated
+UR10e demonstrations. Source task status remains ANALOGOUS_TASK.
+
+Freeze source pretraining at1000 steps on381 transitions. Use source action statistics
+and unchanged target state statistics. Restore the exact original target action head
+before target training because output normalization differs; retain learned backbone,
+state and transformer features. Restore target RNG and start a fresh target optimizer.
+Record feature hashes before/after, head restoration, source budget and final checkpoint.
+The frozen target recipe is ImageNet ACT,H1/K1,15Hz,5000 steps,batch8,mainLR1e-4,
+backboneLR1e-5,precision-balanced sampling,seed20260929. Apply it to both tracks at
+all sizes. Source extra compute/data is reported separately; no compute-efficiency claim.
 
 Run both tracks at 10, 25 and 50 target demonstrations. Freeze architecture, task,
 controller, detector, observation/action contract and evaluation seeds for paired

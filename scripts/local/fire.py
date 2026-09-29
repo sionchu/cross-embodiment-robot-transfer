@@ -108,6 +108,83 @@ def relative_trajectory(state):
     return position, local_rot, dpos, drot, {"position_max_error_recorded_units": float(p_error), "rotation_max_error_rad": float(r_error)}
 
 
+
+def motion_prior_arrays(source_states, task):
+    """Task-normalized measured motion; not calibrated source commands or hole poses.
+
+    Uniform translation scaling cancels the unknown recorded length unit. Rotation
+    log magnitude is reduced to the target's initial angular span. Recompute LEFT
+    deltas after retargeting; no clipping, joint replay or fabricated terminal action.
+    """
+    trajectories = [relative_trajectory(state) for state in source_states]
+    radius = max(np.linalg.norm(p, axis=1).max() for p, *_ in trajectories)
+    peak_delta = max(np.abs(dp).max() for _, _, dp, _, _ in trajectories)
+    if radius <= 0 or peak_delta <= 0:
+        raise ValueError("SOURCE_TRANSLATION_REQUIRED")
+    position_scale = min(2 * task['hole_length_m'] / radius,
+                         task['translation_limit_m'] / peak_delta) * (1 - 1e-8)
+    angle = max(rot.magnitude().max() for _, rot, *_ in trajectories)
+    rotation_scale = min(1., np.linalg.norm(task['rotation_randomization_rad']) / angle) if angle else 1.
+    goal = np.array([0., 0., (task['min_depth_m'] + task['max_depth_m']) / 2])
+    results = []
+    for pos, rot, *_ in trajectories:
+        mapped_pos = pos * position_scale + goal
+        mapped_rot = Rotation.from_rotvec(rot.as_rotvec() * rotation_scale)
+        action = np.column_stack([np.diff(mapped_pos, axis=0),
+            (mapped_rot[1:] * mapped_rot[:-1].inv()).as_rotvec()])
+        limits = np.array([task['translation_limit_m']] * 3 + [task['rotation_limit_rad']] * 3)
+        if not np.isfinite(action).all() or np.any(np.abs(action) > limits + 1e-10):
+            raise ValueError("RETARGETED_MOTION_EXCEEDS_ACTION_BOUNDS")
+        state = np.column_stack([mapped_pos, mapped_rot.as_rotvec()])
+        np.testing.assert_allclose(state[-1], np.r_[goal, np.zeros(3)], atol=1e-10)
+        results.append((state, action))
+    return results, {'position_scale_m_per_recorded_unit': float(position_scale),
+        'rotation_log_scale': float(rotation_scale), 'target_goal_position_m': goal.tolist(),
+        'maximum_position_span_m': 2 * task['hole_length_m'],
+        'formula': 'p_target = s_p R_final^-1(p-p_final) + goal; R_target = Exp(s_r Log(R_final^-1 R))',
+        'action': '[p_target[t+1]-p_target[t], Log(R_target[t+1] R_target[t]^-1)]',
+        'timing_hz': 15, 'clipping': False, 'interpolation': False,
+        'meaning': 'scaled observed EEF motion prior; NOT measured source commands, calibrated hole coordinates or successful UR10e demonstrations',
+        'source_length_unit': 'unverified; normalization is invariant to a uniform change of recorded length unit'}
+
+
+def build_motion_prior(task, download=False):
+    _, files = acquire(download)
+    source = [np.stack(pd.read_parquet(CACHE / f'data/chunk-000/episode_{e:06d}.parquet')['observation.state']) for e in EPISODES]
+    mapped, transform = motion_prior_arrays(source, task)
+    folder = ROOT / 'artifacts/datasets/fire_motion_prior'
+    folder.mkdir(parents=True, exist_ok=True)
+    state_columns = ['x', 'y', 'z', 'rx', 'ry', 'rz']
+    action_columns = ['dx', 'dy', 'dz', 'dRx', 'dRy', 'dRz']
+    episodes = []
+    for episode, (state, action) in zip(EPISODES, mapped, strict=True):
+        columns = {'source_frame': np.arange(len(state)), 'time_s': np.arange(len(state))/15}
+        columns.update({key: state[:, i] for i, key in enumerate(state_columns)})
+        columns.update({key: np.r_[action[:, i], np.nan] for i, key in enumerate(action_columns)})
+        path = folder / f'episode_{episode:06d}.csv'
+        pd.DataFrame(columns).to_csv(path, index=False, lineterminator='\n')
+        video = f'videos/chunk-000/observation.images.wrist_view/episode_{episode:06d}.mp4'
+        episodes.append({'episode': episode, 'frames': len(state), 'supervised_transitions': len(action),
+            'trajectory': path.relative_to(ROOT).as_posix(), 'sha256': sha(path),
+            'camera': 'wrist_view', 'source_video': video, 'source_video_sha256': sha(CACHE / video),
+            'source_frame_range_half_open': [0, len(state)], 'source_parquet': f'data/chunk-000/episode_{episode:06d}.parquet'})
+    from dataset import stats
+    import scipy
+    report = {'dataset': DATASET, 'revision': REVISION, 'license': 'Apache-2.0',
+        'versions': {'numpy': np.__version__, 'pandas': pd.__version__, 'scipy': scipy.__version__},
+        'source_type': 'DERIVED_PUBLIC_REAL_POSE_PRIOR',
+        'source_files': [f for f in files if f['source_file'].startswith('data/') or '.wrist_view/' in f['source_file']],
+        'state_columns': state_columns, 'action_columns': action_columns,
+        'episodes': episodes, 'transform': transform, 'target_task': task,
+        'task_equivalence': 'ANALOGOUS_TASK', 'source_commands_used': False,
+        'action_statistics': stats(np.concatenate([a for _, a in mapped])),
+        'last_action': 'absent; final pose retained for visualization, excluded from supervised transitions',
+        'script_sha256': sha(Path(__file__)), 'policy_training': 'NOT_RUN by this generator',
+        'credit': 'references/FIRe-source-credit.md'}
+    dump(folder / 'manifest.json', report)
+    return report
+
+
 def frame(path, index):
     encoded = subprocess.check_output(["ffmpeg", "-v", "error", "-i", str(path), "-vf",
         f"select=eq(n\\,{index})", "-frames:v", "1", "-f", "image2pipe", "-vcodec", "png", "-"])
@@ -117,7 +194,13 @@ def frame(path, index):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--download", action="store_true")
+    parser.add_argument('--motion-prior', action='store_true', help='Generate bounded task-normalized measured pose transitions.')
     args = parser.parse_args()
+    if args.motion_prior:
+        from insertion import CONFIG
+        report = build_motion_prior(CONFIG, args.download)
+        print(json.dumps({'episodes': len(report['episodes']), 'transform': report['transform']}))
+        return
     hub, files = acquire(args.download)
     info = json.loads((CACHE / "meta/info.json").read_text(encoding="utf-8"))
     candidates = []

@@ -25,9 +25,9 @@ IMAGE_MEAN=torch.tensor([.485,.456,.406])[:,None,None]
 IMAGE_STD=torch.tensor([.229,.224,.225])[:,None,None]
 
 
-def image_tensor(rgb):
+def image_tensor(rgb, expected_shape=(480,640,3)):
     rgb=np.asarray(rgb)
-    if rgb.shape!=(480,640,3) or rgb.dtype!=np.uint8:
+    if rgb.shape!=expected_shape or rgb.dtype!=np.uint8:
         raise ValueError('INVALID_RGB')
     resized=np.array(Image.fromarray(rgb).resize(IMAGE_SIZE,Image.Resampling.BILINEAR))
     return (torch.from_numpy(resized).permute(2,0,1).float()/255-IMAGE_MEAN)/IMAGE_STD
@@ -66,6 +66,110 @@ class CanonicalDataset(torch.utils.data.Dataset):
         ids=ids.clamp(max=self.ends[index]-1)
         return {'observation.state':self.states[index],VIDEO:self.images[index],
                 'action':self.actions[ids],'action_is_pad':pad}
+
+
+class SourceMotionDataset(CanonicalDataset):
+    """Actual FIRe RGB plus derived pose transitions; source-only feature objective."""
+    def __init__(self, manifest, target_statistics, horizon):
+        from fire import CACHE, DATASET, REVISION
+        from insertion import CONFIG
+        self.manifest=json.loads(manifest.read_text(encoding='utf-8'))
+        if (self.manifest['dataset']!=DATASET or self.manifest['revision']!=REVISION
+                or self.manifest['target_task']!=CONFIG):
+            raise ValueError('SOURCE_PRIOR_PROVENANCE_MISMATCH')
+        self.horizon=horizon
+        self.statistics={'observation.state':target_statistics['observation.state'],
+                         'action':self.manifest['action_statistics']}
+        self.states=[];self.actions=[];self.images=[];self.ends=[]
+        for episode in self.manifest['episodes']:
+            path=ROOT/episode['trajectory'];video=CACHE/episode['source_video']
+            if (hashlib.sha256(path.read_bytes()).hexdigest()!=episode['sha256']
+                    or hashlib.sha256(video.read_bytes()).hexdigest()!=episode['source_video_sha256']):
+                raise ValueError('SOURCE_PRIOR_HASH_MISMATCH')
+            frame=pd.read_csv(path)
+            if len(frame)!=episode['frames'] or not frame[self.manifest['action_columns']].iloc[-1].isna().all():
+                raise ValueError('SOURCE_PRIOR_TERMINAL_MISMATCH')
+            states=frame[self.manifest['state_columns']].to_numpy(dtype=np.float32)[:-1]
+            actions=frame[self.manifest['action_columns']].to_numpy(dtype=np.float32)[:-1]
+            if not np.isfinite(states).all() or not np.isfinite(actions).all():
+                raise ValueError('NONFINITE_SOURCE_PRIOR')
+            with av.open(str(video)) as container:
+                images=[image_tensor(f.to_ndarray(format='rgb24'),(256,256,3)) for f in container.decode(video=0)]
+            if len(images)!=len(frame): raise ValueError('SOURCE_RGB_POSE_LENGTH_MISMATCH')
+            self.states.extend(states);self.actions.extend(actions);self.images.extend(images[:-1])
+            self.ends.extend([len(self.states)]*len(states))
+        self.states=self.normalize(torch.tensor(np.asarray(self.states)),'observation.state')
+        self.actions=self.normalize(torch.tensor(np.asarray(self.actions)),'action')
+
+
+def optimize(model, loader, steps, path, phase='target'):
+    optimizer=torch.optim.AdamW(model.get_optim_params(),lr=model.config.optimizer_lr,
+                                weight_decay=model.config.optimizer_weight_decay)
+    torch.cuda.reset_peak_memory_stats();start=time.perf_counter();losses=[]
+    iterator=iter(loader)
+    with path.open('w',newline='') as stream:
+        writer=csv.DictWriter(stream,fieldnames=['step','loss','l1_loss','kld_loss','grad_norm'])
+        writer.writeheader()
+        for step in range(1,steps+1):
+            try: batch=next(iterator)
+            except StopIteration: iterator=iter(loader);batch=next(iterator)
+            batch={k:v.cuda() for k,v in batch.items()}
+            model.train();optimizer.zero_grad(set_to_none=True)
+            loss,metrics=model(batch)
+            if not torch.isfinite(loss): raise RuntimeError('NONFINITE_LOSS')
+            loss.backward()
+            norm=torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
+            optimizer.step()
+            value=float(loss.detach());losses.append(value)
+            writer.writerow({'step':step,'loss':value,**metrics,'grad_norm':float(norm)})
+            if step==1 or step%50==0:
+                stream.flush();print(json.dumps({'phase':phase,'step':step,'loss':value,'elapsed_s':time.perf_counter()-start}),flush=True)
+    torch.cuda.synchronize()
+    return losses,time.perf_counter()-start,batch
+
+
+def source_pretrain(model, target_data, args):
+    """Transfer learned features, not the source-normalized output head.
+
+    Target z commands have near-zero variance. Reusing a source-normalized action
+    head would change its physical meaning. Restore the exact original target head
+    and target RNG before the identical target objective/optimizer/sampling begins.
+    """
+    data=SourceMotionDataset(args.source_prior,target_data.statistics,model.config.chunk_size)
+    cpu_rng=torch.get_rng_state();cuda_rng=torch.cuda.get_rng_state_all()
+    head={k:v.detach().clone() for k,v in model.model.action_head.state_dict().items()}
+    def feature_hash():
+        h=hashlib.sha256()
+        for name,value in model.state_dict().items():
+            if name.startswith('model.action_head.'): continue
+            h.update(name.encode());h.update(value.detach().cpu().contiguous().numpy().tobytes())
+        return h.hexdigest()
+    before=feature_hash()
+    loader=torch.utils.data.DataLoader(data,batch_size=args.batch_size,shuffle=True,num_workers=0,
+        generator=torch.Generator().manual_seed(args.seed+1))
+    loss,elapsed,_=optimize(model,loader,args.source_steps,args.output/'source_loss.csv','source_prior')
+    after=feature_hash()
+    if before==after: raise RuntimeError('SOURCE_FEATURES_DID_NOT_CHANGE')
+    model.model.action_head.load_state_dict(head,strict=True)
+    for k,v in model.model.action_head.state_dict().items():
+        if not torch.equal(v,head[k]): raise RuntimeError('TARGET_HEAD_RESET_MISMATCH')
+    torch.set_rng_state(cpu_rng);torch.cuda.set_rng_state_all(cuda_rng)
+    if not torch.equal(torch.get_rng_state(),cpu_rng) or any(not torch.equal(a,b) for a,b in zip(torch.cuda.get_rng_state_all(),cuda_rng,strict=True)):
+        raise RuntimeError('TARGET_RNG_RESTORE_MISMATCH')
+    report={'manifest':args.source_prior.relative_to(ROOT).as_posix(),
+        'manifest_sha256':hashlib.sha256(args.source_prior.read_bytes()).hexdigest(),
+        'mechanism':'source pose-motion ACT feature pretraining; reset source action head to exact original target head',
+        'source_episodes':[e['episode'] for e in data.manifest['episodes']],
+        'source_transitions':len(data),'steps':args.source_steps,'batch_size':args.batch_size,
+        'elapsed_s':elapsed,'first_loss':loss[0],'last_loss':loss[-1],
+        'source_action_statistics':data.statistics['action'],'state_normalization':'unchanged target training statistics',
+        'image':'actual FIRe wrist RGB256x256 -> bilinear320x240 -> CHW/ImageNet normalization; no crop',
+        'features_before_sha256':before,'features_after_sha256':after,
+        'target_action_head_restored_exactly':True,'target_rng_restored':True,
+        'target_optimizer':'fresh AdamW; source optimizer discarded',
+        'source_commands_used':False,'source_physical_unit_calibration':False}
+    write_json(args.output/'source_pretraining.json',report)
+    return report
 
 
 class ACTPolicy:
@@ -168,8 +272,6 @@ def train(args):
             'replacement':True,'sampler_seed':args.seed,'target_data_unchanged':True})
     loader=torch.utils.data.DataLoader(training_data,batch_size=args.batch_size,shuffle=sampler is None,sampler=sampler,num_workers=0,
                                        generator=torch.Generator().manual_seed(args.seed))
-    optimizer=torch.optim.AdamW(model.get_optim_params(),lr=config.optimizer_lr,
-                                weight_decay=config.optimizer_weight_decay)
     tracked=next(p for p in model.parameters() if p.requires_grad)
     before=tracked.detach().clone()
     context={'project_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
@@ -185,29 +287,13 @@ def train(args):
         'backbone_initialization':args.backbone_weights,
         'device':torch.cuda.get_device_name(0),'device_total_bytes':torch.cuda.get_device_properties(0).total_memory,
         'packages':{k:importlib.metadata.version(k) for k in ('torch','torchvision','lerobot','av','numpy')},
-        'checkpoint':checkpoint.relative_to(ROOT).as_posix(),'resume':False}
+        'checkpoint':checkpoint.relative_to(ROOT).as_posix(),'resume':False,
+        'track':'source-informed' if args.source_prior else 'target-only',
+        'source_prior':None if not args.source_prior else {'manifest':args.source_prior.relative_to(ROOT).as_posix(),'steps':args.source_steps,'target_steps_separate':args.steps}}
     write_json(args.output/'run.json',context)
     config.save_pretrained(args.output)
-    torch.cuda.reset_peak_memory_stats(); start=time.perf_counter(); losses=[]
-    iterator=iter(loader)
-    with (args.output/'loss.csv').open('w',newline='') as stream:
-        writer=csv.DictWriter(stream,fieldnames=['step','loss','l1_loss','kld_loss','grad_norm'])
-        writer.writeheader()
-        for step in range(1,args.steps+1):
-            try: batch=next(iterator)
-            except StopIteration: iterator=iter(loader); batch=next(iterator)
-            batch={k:v.cuda() for k,v in batch.items()}
-            model.train(); optimizer.zero_grad(set_to_none=True)
-            loss,metrics=model(batch)
-            if not torch.isfinite(loss): raise RuntimeError('NONFINITE_LOSS')
-            loss.backward()
-            norm=torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
-            optimizer.step()
-            value=float(loss.detach()); losses.append(value)
-            writer.writerow({'step':step,'loss':value,**metrics,'grad_norm':float(norm)})
-            if step==1 or step%50==0:
-                stream.flush(); print(json.dumps({'step':step,'loss':value,'elapsed_s':time.perf_counter()-start}),flush=True)
-    torch.cuda.synchronize(); elapsed=time.perf_counter()-start
+    source_report=source_pretrain(model,data,args) if args.source_prior else None
+    losses,elapsed,batch=optimize(model,loader,args.steps,args.output/'loss.csv')
     changed=float((tracked.detach()-before).abs().max())
     if changed<=0: raise RuntimeError('WEIGHTS_DID_NOT_CHANGE')
     model.save_pretrained(checkpoint)
@@ -219,7 +305,7 @@ def train(args):
     actual=reloaded.predict_action_chunk(probe).cpu()
     if not torch.allclose(expected,actual,atol=1e-6,rtol=0) or not torch.isfinite(actual).all():
         raise RuntimeError('CHECKPOINT_RELOAD_MISMATCH')
-    summary={**context,'status':'PASS','elapsed_s':elapsed,'first_loss':losses[0],
+    summary={**context,'source_pretraining':source_report,'status':'PASS','elapsed_s':elapsed,'first_loss':losses[0],
         'last_loss':losses[-1],'first_50_mean_loss':float(np.mean(losses[:50])),
         'last_50_mean_loss':float(np.mean(losses[-50:])),
         'peak_allocated_bytes':torch.cuda.max_memory_allocated(),'tracked_parameter_max_change':changed,
@@ -239,9 +325,14 @@ if __name__=='__main__':
     parser.add_argument('--backbone-lr',type=float,default=1e-4,help='Explicit controlled backbone optimizer rate; historical default preserved.')
     parser.add_argument('--backbone-weights',choices=['none','imagenet'],default='none')
     parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
+    parser.add_argument('--source-prior',type=Path,help='Pinned FIRe motion-prior manifest for source-informed feature initialization.')
+    parser.add_argument('--source-steps',type=int,default=1000)
     parser.add_argument('--steps',type=int,default=1000)
     parser.add_argument('--batch-size',type=int,default=8)
     parser.add_argument('--seed',type=int,default=20260929)
     args=parser.parse_args()
     if min(args.steps,args.batch_size,args.chunk_size)<1 or min(args.backbone_lr,args.lr)<=0: parser.error('steps, batch-size and chunk-size must be positive')
+    if args.source_prior:
+        args.source_prior=args.source_prior.resolve()
+        if args.source_steps<1: parser.error('source-steps must be positive')
     train(args)

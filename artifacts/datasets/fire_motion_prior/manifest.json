@@ -1,0 +1,231 @@
+{
+  "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+  "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+  "license": "Apache-2.0",
+  "versions": {
+    "numpy": "2.2.6",
+    "pandas": "3.0.5",
+    "scipy": "1.18.1"
+  },
+  "source_type": "DERIVED_PUBLIC_REAL_POSE_PRIOR",
+  "source_files": [
+    {
+      "source_file": "data/chunk-000/episode_000000.parquet",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/data/chunk-000/episode_000000.parquet",
+      "sha256": "938a1992c233508df32f6ae226bd17f32af20304cc58e188073844647c9b0982",
+      "bytes": 20246,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000000.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.wrist_view/episode_000000.mp4",
+      "sha256": "43249ebf36501067cb5ad567f9bc2ae775c4dac22f0e5872c7ba59ff5a30d47f",
+      "bytes": 160272,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "data/chunk-000/episode_000014.parquet",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/data/chunk-000/episode_000014.parquet",
+      "sha256": "842b6ffa1b034e6b600bc0df20b00a3d921be5561756222005102101496ad245",
+      "bytes": 20316,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000014.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.wrist_view/episode_000014.mp4",
+      "sha256": "4c1926ab52f3ea152c919425141ab5fa31fc2c0765d74aa948ed80b2efadc6da",
+      "bytes": 157267,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "data/chunk-000/episode_000029.parquet",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/data/chunk-000/episode_000029.parquet",
+      "sha256": "2d72ecfcc5880d37354f5714e57c6368166128910f496462369cf6fc86c292b8",
+      "bytes": 20193,
+      "pinned_upstream_hash_verified": true
+    },
+    {
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "url": "https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real/resolve/ad5e895d53254caa61b7535e10a8a7790536451e/videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
+      "bytes": 155664,
+      "pinned_upstream_hash_verified": true
+    }
+  ],
+  "state_columns": [
+    "x",
+    "y",
+    "z",
+    "rx",
+    "ry",
+    "rz"
+  ],
+  "action_columns": [
+    "dx",
+    "dy",
+    "dz",
+    "dRx",
+    "dRy",
+    "dRz"
+  ],
+  "episodes": [
+    {
+      "episode": 0,
+      "frames": 128,
+      "supervised_transitions": 127,
+      "trajectory": "artifacts/datasets/fire_motion_prior/episode_000000.csv",
+      "sha256": "a87c5e8968d4d2017ab09d4a4717a0864cfbb5fbfd1fcc7d9195b5e61fb12552",
+      "camera": "wrist_view",
+      "source_video": "videos/chunk-000/observation.images.wrist_view/episode_000000.mp4",
+      "source_video_sha256": "43249ebf36501067cb5ad567f9bc2ae775c4dac22f0e5872c7ba59ff5a30d47f",
+      "source_frame_range_half_open": [
+        0,
+        128
+      ],
+      "source_parquet": "data/chunk-000/episode_000000.parquet"
+    },
+    {
+      "episode": 14,
+      "frames": 128,
+      "supervised_transitions": 127,
+      "trajectory": "artifacts/datasets/fire_motion_prior/episode_000014.csv",
+      "sha256": "086724942dc4ced011d32e865c6cfa5978d8fe46833d6aeaaeaf1ad0d2ab1985",
+      "camera": "wrist_view",
+      "source_video": "videos/chunk-000/observation.images.wrist_view/episode_000014.mp4",
+      "source_video_sha256": "4c1926ab52f3ea152c919425141ab5fa31fc2c0765d74aa948ed80b2efadc6da",
+      "source_frame_range_half_open": [
+        0,
+        128
+      ],
+      "source_parquet": "data/chunk-000/episode_000014.parquet"
+    },
+    {
+      "episode": 29,
+      "frames": 128,
+      "supervised_transitions": 127,
+      "trajectory": "artifacts/datasets/fire_motion_prior/episode_000029.csv",
+      "sha256": "0b706f55d4430f2930b74e78f39bbcf0fa508e3cbad4a536f84db45c281355d0",
+      "camera": "wrist_view",
+      "source_video": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "source_video_sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
+      "source_frame_range_half_open": [
+        0,
+        128
+      ],
+      "source_parquet": "data/chunk-000/episode_000029.parquet"
+    }
+  ],
+  "transform": {
+    "position_scale_m_per_recorded_unit": 0.9209683003285776,
+    "rotation_log_scale": 0.07982555732079903,
+    "target_goal_position_m": [
+      0.0,
+      0.0,
+      0.030000000000000002
+    ],
+    "maximum_position_span_m": 0.1,
+    "formula": "p_target = s_p R_final^-1(p-p_final) + goal; R_target = Exp(s_r Log(R_final^-1 R))",
+    "action": "[p_target[t+1]-p_target[t], Log(R_target[t+1] R_target[t]^-1)]",
+    "timing_hz": 15,
+    "clipping": false,
+    "interpolation": false,
+    "meaning": "scaled observed EEF motion prior; NOT measured source commands, calibrated hole coordinates or successful UR10e demonstrations",
+    "source_length_unit": "unverified; normalization is invariant to a uniform change of recorded length unit"
+  },
+  "target_task": {
+    "physics_dt": 0.016666666666666666,
+    "control_substeps": 4,
+    "max_steps": 180,
+    "initial_joints_deg": [
+      -90,
+      -60,
+      -100,
+      -110,
+      90,
+      0
+    ],
+    "hole_origin_m": [
+      0.194,
+      0.371,
+      0.57
+    ],
+    "peg_tip_offset_m": 0.12,
+    "peg_length_m": 0.08,
+    "peg_half_width_m": 0.004,
+    "hole_half_width_m": 0.005,
+    "hole_length_m": 0.05,
+    "position_randomization_m": [
+      0.008,
+      0.008,
+      0.004
+    ],
+    "rotation_randomization_rad": [
+      0.015,
+      0.015,
+      0.04
+    ],
+    "translation_limit_m": 0.003,
+    "rotation_limit_rad": 0.025,
+    "min_depth_m": 0.025,
+    "max_depth_m": 0.035,
+    "lateral_tolerance_m": 0.0007,
+    "angular_tolerance_rad": 0.01,
+    "contact_force_limit_n": 1.0
+  },
+  "task_equivalence": "ANALOGOUS_TASK",
+  "source_commands_used": false,
+  "action_statistics": {
+    "mean": [
+      2.1659236153936945e-05,
+      -0.00010204036516370252,
+      0.00021508678037207574,
+      -8.265200790447125e-08,
+      -6.383771960827289e-06,
+      0.00023301143664866686
+    ],
+    "std": [
+      0.00020600490097422153,
+      0.00035467397538013756,
+      0.0006126808002591133,
+      1.4175653632264584e-05,
+      3.2104187994264066e-05,
+      0.00047612679190933704
+    ],
+    "min": [
+      -0.0005116055253893137,
+      -0.0016331562073901296,
+      -0.0002345315006095916,
+      -7.078378257574514e-05,
+      -0.00021837028907611966,
+      -0.0009091873653233051
+    ],
+    "max": [
+      0.0016688356408849359,
+      0.0007417982560582459,
+      0.003000000026077032,
+      5.645904457196593e-05,
+      0.00015508255455642939,
+      0.0007505692774429917
+    ],
+    "q01": [
+      -0.00032625204767100513,
+      -0.001485123997554183,
+      -0.00018851421191357076,
+      -5.620343654300086e-05,
+      -0.00015798522508703172,
+      -0.0007136270287446678
+    ],
+    "q99": [
+      0.0010954671306535602,
+      0.0001415632723364979,
+      0.002657066099345684,
+      4.2220573959639296e-05,
+      6.434273382183164e-05,
+      0.0007278295233845711
+    ]
+  },
+  "last_action": "absent; final pose retained for visualization, excluded from supervised transitions",
+  "script_sha256": "e7eae79e712be80c411b7586d6d3b31370389047b584c53567876f2294e920f5",
+  "policy_training": "NOT_RUN by this generator",
+  "credit": "references/FIRe-source-credit.md"
+}

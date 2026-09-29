@@ -88,11 +88,14 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Implement source-informed ACT feature pretraining from actual FIRe pose increments with
-explicit task normalization and camera provenance. Preserve the frozen target recipe,
-normalization, architecture,5000 target steps and20 evaluation seeds. Source training
-budget must be separate. Do not treat uncalibrated source poses as physical UR10e commands
-or claim MATCHED_TASK. Then execute10-demo comparison before nested25/50 expansion.
+Source prior generator and ACT feature warm-start are implemented;36 tests pass, including
+unit/world-frame invariance and noncommuting rotation composition. The target-only
+2-step refactor replay exactly matched every frozen loss/gradient row. Actual source
+tensors are finite381x6 state/action and3x240x320 RGB. Next execute1000
+source steps plus5000 target steps for act-fire-10-001, preserving target RNG/head/optimizer
+semantics. Source prior:3 real episodes,381 pose transitions,actual wrist RGB; separate source
+normalization and head reset avoid changing physical action meaning. No source-informed
+training/result exists yet. Then fixed20 evaluation before nested25/50 expansion.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. Local diagnostics continue.
 Source regeneration: python scripts/local/fire.py --download, then offline command without
