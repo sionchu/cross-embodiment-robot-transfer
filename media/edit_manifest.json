@@ -47,7 +47,16 @@
       "source_file": "videos/chunk-000/observation.images.right_view/episode_000029.mp4",
       "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.right_view/episode_000029.mp4",
       "sha256": "41911597336b87ca90f8094a1048e233b6b94925fa2fd054d8e29eef57840e42",
-      "truth_status": "SOURCE_VERIFIED"
+      "truth_status": "CLIP_VERIFIED",
+      "clip": "media/output/source/real_franka_e29_right_f000-059.mp4",
+      "clip_sha256": "3e7f6685a8fb51f591813a9383ff3bb4463230155fc2916b6e4f479b73db45e7",
+      "clip_probe": {
+        "width": 256,
+        "height": 256,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "60"
+      },
+      "modifications": "frame trim and H.264 re-encoding; no speed or geometry changes"
     },
     "real_wrist": {
       "source_type": "PUBLIC_REAL_DATA",
@@ -64,7 +73,16 @@
       "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
       "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
       "sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
-      "truth_status": "SOURCE_VERIFIED"
+      "truth_status": "CLIP_VERIFIED",
+      "clip": "media/output/source/real_franka_e29_wrist_f060-119.mp4",
+      "clip_sha256": "22da061cf05698db4f733ebc9debe7579a8742fe14d1828fe91e03070d53534b",
+      "clip_probe": {
+        "width": 256,
+        "height": 256,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "60"
+      },
+      "modifications": "frame trim and H.264 re-encoding; no speed or geometry changes"
     },
     "hero": {
       "receipt": "artifacts/media/media-hero-expert-1000.json",
@@ -263,8 +281,15 @@
     "assembly": "NOT_RUN",
     "file_visual": "NOT_RUN",
     "native_desktop": "NOT_COMPLETED",
-    "reason": "Computer Use app approval timed out"
+    "reason": "Computer Use app approval timed out",
+    "source_clip_reproduction": "BYTE_IDENTICAL_INDEPENDENT_REENCODE",
+    "source_clip_visual": "Start/middle/end contact sheets opened for both real clips; native desktop not completed"
   },
   "credit": "FIRe public research data: bhe1004/FIRe-VLA-GR00T-PegInsert-Real; Apache-2.0; episode29. Project UR10e footage is simulation.",
-  "license_reference": "references/FIRe-source-credit.md"
+  "license_reference": "references/FIRe-source-credit.md",
+  "source_preparation": {
+    "script_sha256": "96d974246c2afd374386bf30360f76f23af0368fadc6bf413d020dc7e2c65214",
+    "ffmpeg": "ffmpeg version 8.0-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+    "licensing": "references/FIRe-source-credit.md and references/FIRe-Apache-2.0.txt"
+  }
 }
