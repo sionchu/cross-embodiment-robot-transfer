@@ -1,0 +1,14 @@
+{
+  "training_config_changes": {
+    "optimizer_lr": [
+      0.0001,
+      1e-05
+    ]
+  },
+  "outcome": "0/2 development collisions; lowering learning rate did not recover success",
+  "control_run": "act-10-phase-balanced-001",
+  "candidate_run": "act-10-lr-001",
+  "new_data": false,
+  "task_changed": false,
+  "next_hypothesis": "Only17/487 frames have non-saturated lateral correction above0.3mm; equal mass across rotation/coarse/fine/settled tests correction underweighting."
+}

@@ -146,11 +146,19 @@ def train(args):
         else:
             lateral=(torch.linalg.vector_norm(physical[:,:2],dim=1)>.0003)&~critical
             groups=[critical,lateral,~(critical|lateral)]
+            names=['rotation','lateral_alignment','settled']
+            if args.sampling=='precision-balanced':
+                task=json.loads((args.dataset/'meta/provenance.json').read_text())['generator']['config']
+                bound=task['translation_limit_m']
+                fine=lateral&(physical[:,:2].abs().amax(dim=1)<bound-1e-8)
+                groups=[critical,lateral&~fine,fine,~(critical|lateral)]
+                names=['rotation','saturated_lateral','unsaturated_lateral','settled']
+                sampling['unsaturated_action_upper_bound_m']=bound-1e-8
             counts=[int(mask.sum()) for mask in groups]
             if min(counts)<1: raise ValueError('ALL_PHASE_SAMPLING_GROUPS_REQUIRED')
             weights=torch.zeros(len(indices),dtype=torch.double)
-            for mask,n in zip(groups,counts): weights[mask]=1/(3*n)
-            sampling.update({'phase_order':['rotation','lateral_alignment','settled'],
+            for mask,n in zip(groups,counts): weights[mask]=1/(len(groups)*n)
+            sampling.update({'phase_order':names,
                 'phase_counts':counts,'phase_probability_mass':[float(weights[m].sum()) for m in groups],
                 'lateral_action_threshold_m':.0003})
         sampler=torch.utils.data.WeightedRandomSampler(weights,len(indices),replacement=True,
@@ -226,7 +234,7 @@ if __name__=='__main__':
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--chunk-size',type=int,default=16)
-    parser.add_argument('--sampling',choices=['uniform','orientation-balanced','phase-balanced'],default='uniform')
+    parser.add_argument('--sampling',choices=['uniform','orientation-balanced','phase-balanced','precision-balanced'],default='uniform')
     parser.add_argument('--lr',type=float,default=1e-4,help='Main ACT optimizer rate; historical default preserved.')
     parser.add_argument('--backbone-lr',type=float,default=1e-4,help='Explicit controlled backbone optimizer rate; historical default preserved.')
     parser.add_argument('--backbone-weights',choices=['none','imagenet'],default='none')
