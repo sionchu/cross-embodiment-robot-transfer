@@ -66,6 +66,12 @@ class DatasetCorruptionChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'TRAIN_EVAL_OVERLAP'):
             data.validate(self.root)
 
+    def test_replaced_evaluation_seeds(self):
+        path=self.root/'meta/provenance.json';value=json.loads(path.read_text())
+        value['splits']['held_out'][0]=9999;data.write_json(path,value)
+        with self.assertRaisesRegex(ValueError,'EVAL_PROTOCOL_MISMATCH'):
+            data.validate(self.root)
+
     def test_short_video(self):
         video=self.root/'videos/chunk-000/observation.images.front/episode_000000.mp4'
         short=self.root/'short.mp4'

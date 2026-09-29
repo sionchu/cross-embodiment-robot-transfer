@@ -12,6 +12,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+import pyarrow.parquet as pq
 
 ROOT=Path(__file__).resolve().parents[2]
 TASK='Insert the fixed square peg into the receptacle.'
@@ -80,18 +81,36 @@ def check_rows(df, episode, offset, bounds):
 
 
 def export(raw, destination):
-    result=json.loads((raw/'result.json').read_text())
-    splits=json.loads((ROOT/'configs/seeds.json').read_text())
-    episodes=result['episodes']
-    if result['status']!='PASS' or len(episodes)!=10 or [e['seed'] for e in episodes]!=splits['train']:
-        raise ValueError('TEN_ORDERED_TRAIN_EPISODES_REQUIRED')
+    raw_dirs=[folder.resolve() for folder in ([raw] if isinstance(raw,Path) else raw)]
+    runs=[json.loads((folder/'result.json').read_text()) for folder in raw_dirs]
+    frozen=json.loads(subprocess.check_output(['git','show','HEAD:configs/seeds.json'],cwd=ROOT))
+    if frozen!=json.loads((ROOT/'configs/seeds.json').read_text()):
+        raise ValueError('SEEDS_NOT_COMMITTED')
+    entries=[(folder,i,e) for folder,run in zip(raw_dirs,runs,strict=True) for i,e in enumerate(run['episodes'])]
+    episodes=[e for _,_,e in entries]
+    count=len(episodes)
+    pool=frozen.get('train_pool',frozen['train'])
+    if count not in frozen.get('target_data_sizes',[10]) or [e['seed'] for e in episodes]!=pool[:count]:
+        raise ValueError('ORDERED_NESTED_TRAIN_EPISODES_REQUIRED')
+    for run in runs:
+        if run['status']!='PASS': raise ValueError('UNSUCCESSFUL_GENERATION_RUN')
+        for key in ('config','asset','script_sha256'):
+            if run[key]!=runs[0][key]: raise ValueError('GENERATOR_PROTOCOL_MISMATCH')
+    result=runs[0] if len(runs)==1 else {
+        'status':'PASS','config':runs[0]['config'],'asset':runs[0]['asset'],
+        'script_sha256':runs[0]['script_sha256'],'episodes':episodes,
+        'source_runs':[{'path':folder.relative_to(ROOT).as_posix(),
+            'result_sha256':hashlib.sha256((folder/'result.json').read_bytes()).hexdigest(),
+            **{key:run[key] for key in ('project_commit','environment','isaac_sim_version','gpu')}}
+            for folder,run in zip(raw_dirs,runs,strict=True)]}
+    splits={'train':pool[:count],'development':frozen['development'],'held_out':frozen['held_out'],'rule':frozen['rule']}
     destination.mkdir(parents=True,exist_ok=False)
     meta=destination/'meta'; meta.mkdir()
     data=destination/'data/chunk-000'; data.mkdir(parents=True)
     videos=destination/f'videos/chunk-000/{VIDEO}'; videos.mkdir(parents=True)
     episode_meta=[]; episode_stats=[]; all_states=[]; all_actions=[]; offset=0
-    for i,episode in enumerate(episodes):
-        trace=json.loads((raw/f'{i:02d}_trace.json').read_text())
+    for i,(source,source_index,episode) in enumerate(entries):
+        trace=json.loads((source/f'{source_index:02d}_trace.json').read_text())
         n=len(trace)
         if episode['outcome']!='SUCCESS' or episode['recorded_frames']!=n or n!=episode['steps']:
             raise ValueError('UNSUCCESSFUL_OR_UNRECORDED_EPISODE')
@@ -111,7 +130,7 @@ def export(raw, destination):
                          'next.done':np.arange(n)==n-1,
                          'next.reward':(np.arange(n)==n-1).astype(np.float32)})
         df.to_parquet(data/f'episode_{i:06d}.parquet',index=False)
-        shutil.copyfile(raw/f'{i:02d}_front.mp4',videos/f'episode_{i:06d}.mp4')
+        shutil.copyfile(source/f'{source_index:02d}_front.mp4',videos/f'episode_{i:06d}.mp4')
         episode_meta.append({'episode_index':i,'tasks':[TASK],'length':n,'seed':episode['seed'],
                              'success':True,'expert':'measured_jacobian_scripted',
                              'final_state':episode['final_state'],'max_contact_n':episode['max_contact_n']})
@@ -125,9 +144,9 @@ def export(raw, destination):
     for key in ['frame_index','episode_index','index','task_index','annotation.human.task_description']:
         features[key]=scalar('int64')
     features.update({'timestamp':scalar('float32'),'next.reward':scalar('float32'),'next.done':scalar('bool')})
-    info={'codebase_version':'v2.1','robot_type':'ur10e_fixed_peg','fps':15,'total_episodes':10,
-          'total_frames':offset,'total_tasks':1,'total_videos':10,'total_chunks':1,'chunks_size':1000,
-          'splits':{'train':'0:10'},'data_path':'data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet',
+    info={'codebase_version':'v2.1','robot_type':'ur10e_fixed_peg','fps':15,'total_episodes':count,
+          'total_frames':offset,'total_tasks':1,'total_videos':count,'total_chunks':1,'chunks_size':1000,
+          'splits':{'train':f'0:{count}'},'data_path':'data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet',
           'video_path':'videos/chunk-{episode_chunk:03d}/{video_key}/episode_{episode_index:06d}.mp4','features':features}
     write_json(meta/'info.json',info); write_json(meta/'modality.json',MODALITY)
     write_json(meta/'stats.json',{'observation.state':stats(all_states),'action':stats(all_actions)})
@@ -148,7 +167,9 @@ def validate(root, upstream=None, ffmpeg_bin=None):
     episodes=jsonl(root/'meta/episodes.jsonl')
     if modality!=MODALITY:
         raise ValueError('MODALITY_MISMATCH')
-    if info['codebase_version']!='v2.1' or info['fps']!=15 or info['total_episodes']!=10 or len(episodes)!=10:
+    frozen=json.loads(subprocess.check_output(['git','show','HEAD:configs/seeds.json'],cwd=ROOT))
+    count=len(episodes)
+    if info['codebase_version']!='v2.1' or info['fps']!=15 or count not in frozen.get('target_data_sizes',[10]) or info['total_episodes']!=count:
         raise ValueError('INVALID_DATASET_METADATA')
     for key in ['observation.state','action']:
         if info['features'][key]['shape']!=[6] or info['features'][key]['dtype']!='float32':
@@ -160,15 +181,20 @@ def validate(root, upstream=None, ffmpeg_bin=None):
     splits=provenance['splits']
     if set(splits['train']) & (set(splits['held_out'])|set(splits['development'])):
         raise ValueError('TRAIN_EVAL_OVERLAP')
-    if [e['seed'] for e in episodes]!=splits['train'] or len(set(splits['train']))!=10:
+    if [e['seed'] for e in episodes]!=splits['train'] or len(set(splits['train']))!=count or splits['train']!=frozen.get('train_pool',frozen['train'])[:count]:
         raise ValueError('SEED_MISMATCH')
+    if any(splits[k]!=frozen[k] for k in ('development','held_out')):
+        raise ValueError('EVAL_PROTOCOL_MISMATCH')
     c=provenance['generator']['config']; bounds=[c['translation_limit_m']]*3+[c['rotation_limit_rad']]*3
-    total=0; states=[]; actions=[]; video_frames=[]
+    total=0; states=[]; actions=[]; video_frames=[]; writers=[]
     for i,e in enumerate(episodes):
         if e['episode_index']!=i or not e['success'] or e['tasks']!=[TASK]:
             raise ValueError('INVALID_EPISODE_METADATA')
         df=pd.read_parquet(root/info['data_path'].format(episode_chunk=0,episode_index=i))
         state,action=check_rows(df,e,total,bounds)
+        metadata=pq.read_metadata(root/info['data_path'].format(episode_chunk=0,episode_index=i))
+        writer={'created_by':metadata.created_by,'pandas_version':json.loads(metadata.metadata.get(b'pandas',b'{}')).get('pandas_version')}
+        if writer not in writers: writers.append(writer)
         path=root/info['video_path'].format(episode_chunk=0,episode_index=i,video_key=VIDEO)
         video=video_metadata(path); stream=video['streams'][0]
         times=np.array([float(f['best_effort_timestamp_time']) for f in video['frames']])
@@ -186,7 +212,7 @@ def validate(root, upstream=None, ffmpeg_bin=None):
             if not np.allclose(value,saved[key][stat],atol=1e-8):
                 raise ValueError('STATS_MISMATCH')
     report={'status':'PASS','episodes':len(episodes),'frames':total,'video_frames':video_frames,
-            'train_seeds':splits['train'],'held_out_seeds':splits['held_out'],'official_loader':'NOT_RUN',
+            'train_seeds':splits['train'],'held_out_seeds':splits['held_out'],'official_loader':'NOT_RUN','parquet_writers':writers,
             'episode_results':episodes,
             'generator_source_sha256':provenance['generator']['script_sha256'],
             'validator_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
@@ -236,7 +262,7 @@ def validate(root, upstream=None, ffmpeg_bin=None):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--raw',type=Path,help='Export this recorded run first; destination must be new.')
+    parser.add_argument('--raw',type=Path,nargs='+',help='Export this recorded run first; destination must be new.')
     parser.add_argument('--dataset',type=Path,required=True)
     parser.add_argument('--upstream',type=Path)
     parser.add_argument('--ffmpeg-bin',type=Path,help='Windows shared FFmpeg DLL directory; defaults to the pinned local setup.')

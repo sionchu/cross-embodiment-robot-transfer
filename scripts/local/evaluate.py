@@ -119,13 +119,16 @@ def main():
     raw=ROOT/'artifacts/runtime'/('eval-'+args.output.name); raw.mkdir(parents=True,exist_ok=False)
     config_hash=hashlib.sha256(json.dumps(CONFIG,sort_keys=True).encode()).hexdigest()
     pins=json.loads((ROOT/'references/source_manifest.json').read_text())
-    data=json.loads((ROOT/'artifacts/datasets/validation.json').read_text())
+    training=json.loads((ROOT/'artifacts/training'/args.checkpoint.name/'summary.json').read_text()) if args.policy=='act' else None
+    dataset_report=ROOT/(training.get('dataset_validation_report','artifacts/datasets/validation.json') if training else 'artifacts/datasets/validation.json')
+    data=json.loads(dataset_report.read_text())
     context={'policy':args.policy,'split':args.split,'seeds':seeds,
         'project_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         'source_hashes':{p:sha(ROOT/'scripts/local'/p) for p in ('evaluate.py','policy_worker.py','act.py','insertion.py')},
         'environment_config_hash':config_hash,'environment_config':CONFIG,
         'gr00t_commit':pins['upstream']['commit'],'lerobot_commit':pins['local']['lerobot']['commit'],
-        'dataset_id':'ur10e_10','dataset_sha256':data['dataset_sha256'],
+        'dataset_id':training['dataset_id'] if training else 'ur10e_10','dataset_sha256':data['dataset_sha256'],
+        'dataset_validation_report':dataset_report.relative_to(ROOT).as_posix(),
         'model_checkpoint_id':None,'checkpoint_files_sha256':None,
         'action_execution':'first action of a fresh configured ACT chunk each control step; per-axis clipping recorded',
         'action_chunk_size':1,
@@ -135,7 +138,6 @@ def main():
     write_json(args.output/'summary.json',context)
     try:
         if args.policy=='act':
-            training=json.loads((ROOT/'artifacts/training'/args.checkpoint.name/'summary.json').read_text())
             if training['status']!='PASS' or training['dataset_sha256']!=data['dataset_sha256']:
                 raise ValueError('TRAINING_EVIDENCE_MISMATCH')
             for name,digest in training['checkpoint_files_sha256'].items():

@@ -1,0 +1,15 @@
+{
+  "status": "BYTE_IDENTICAL_ARCHIVED_RAW_REGENERATION",
+  "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+  "files_verified": 27,
+  "writer_versions": [
+    {
+      "created_by": "parquet-cpp-arrow version 25.0.1",
+      "pandas_version": "3.0.5"
+    }
+  ],
+  "exporter_sha256": "46d7906838cb092a383235855a126dc40b69abbcb983253485c6b753b8b86d2d",
+  "command": "python scripts/local/dataset.py --raw artifacts/runtime/demos-01 --dataset artifacts/runtime/dataset-writer-reproduction --report artifacts/runtime/dataset-writer-reproduction.json",
+  "canonical_dataset_modified": false,
+  "note": "ML reader PyArrow21/pandas2.3.3 exports numerically equal data with different Parquet bytes; original writer is PyArrow25.0.1/pandas3.0.5."
+}

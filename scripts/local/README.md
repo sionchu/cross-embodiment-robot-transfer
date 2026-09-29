@@ -55,9 +55,15 @@ handle. Isaac Sim and the Linux E0 dependency pins remain separate.
 
 ```powershell
 & C:\isaacsim\python.bat scripts/local/insertion.py --seeds 10 11 12 13 14 15 16 17 18 19 --record --output artifacts/runtime/demos-new
-.venv/Scripts/python.exe scripts/local/dataset.py --raw artifacts/runtime/demos-new --dataset datasets/ur10e_10 --upstream .external/Isaac-GR00T --report artifacts/datasets/validation.json
+python scripts/local/dataset.py --raw artifacts/runtime/demos-new --dataset datasets/ur10e_10 --report artifacts/datasets/validation.json
+.venv/Scripts/python.exe scripts/local/dataset.py --dataset datasets/ur10e_10 --upstream .external/Isaac-GR00T --report artifacts/datasets/validation.json
 .venv/Scripts/python.exe -m unittest discover -s tests -v
 ```
+
+The original dataset writer uses NumPy2.2.6,pandas3.0.5,PyArrow25.0.1. The isolated
+ML reader uses its separate pinned versions. Rebuilding the archived raw run with the
+original writer reproduces its exact dataset hash; other writer versions can preserve
+all values while changing Parquet bytes. Validation records actual writer metadata.
 
 Both output directories must be new. To validate an existing dataset, omit `--raw`.
 The recorded run produced 10 successful episodes and 487 synchronized frames. The
@@ -103,6 +109,31 @@ and requires a strict reload to reproduce a finite action chunk. Training PASS d
 not imply closed-loop task success. `ACTPolicy.predict` returns physical task-frame
 deltas; the simulator applies its declared action limits and must record clipping.
 
+
+## Frozen data-efficiency recipe
+
+The recovered target-only recipe and source-informed comparison use the same ACT config,
+5000 target updates and original fixed20 held-out seeds. Extra FIRe pretraining is reported
+separately:3 public episodes,381 measured transitions,1000 source updates. Source feature
+pretraining uses its own action statistics; the exact original target action head and RNG
+are restored before a fresh target optimizer starts. No calibrated source-command replay
+is claimed. See `artifacts/datasets/fire_motion_prior/manifest.json` and each run's
+`source_pretraining.json` for the actual transform, feature hashes and source budget.
+
+```powershell
+python scripts/local/fire.py --motion-prior
+.venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-target-new --backbone-weights imagenet --chunk-size 1 --backbone-lr 1e-5 --steps 5000 --sampling precision-balanced
+.venv/Scripts/python.exe scripts/local/act.py --output artifacts/training/act-source-new --backbone-weights imagenet --chunk-size 1 --backbone-lr 1e-5 --steps 5000 --sampling precision-balanced --source-prior artifacts/datasets/fire_motion_prior/manifest.json --source-steps 1000
+python scripts/local/compare.py --recovered-run act-10-precision-heldout-001
+```
+
+Use `fire.py --download --motion-prior` when the pinned source cache is missing.
+For25/50, retain the nested prefixes in `configs/seeds.json`, record at most10 episodes
+per simulator process, pass ordered raw run directories to `dataset.py --raw`, then
+validate with the official reader. Training accepts `--dataset` and `--dataset-report`;
+evaluation resolves dataset provenance from the checkpoint's actual training record.
+Additional demonstrations and paired results are only complete when their actual
+artifacts exist; the frozen seed pool alone is not execution evidence.
 
 ## Checkpoint closed-loop evaluation
 

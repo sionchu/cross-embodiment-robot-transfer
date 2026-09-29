@@ -40,11 +40,15 @@ unchanged seeds1000-1019. First successful seed1005 independently repeated: SUCC
 was4.88e-6m; success reproduces, trajectory is not bit-exact. Actual video frames inspected.
 Checkpoint aaa14a74ba4c9a072b2d1935056bc4b01afbb3d22a5e404bebf3b61e880025e8.
 This is the frozen10-demo target-only baseline for the source-informed comparison.
+Source-informed act-fire-10-001 completed1000 FIRe plus5000 target steps and strict reload;
+checkpoint a88e8a261257776edf8ea1c91d86f3080ce63f1a833643e0e118ac1e34bbedda.
+Target config/data/normalization/sampling/budget exactly match the baseline; source feature
+hashes changed and target head/RNG restoration passed. Its closed-loop evaluation is next.
 No data/controller/task/detector changes. All60 expert/original/recovered traces validated;
 README/CSV/plot generated from structured evidence. Native desktop verification still pending.
 FIRe candidate frames inspected; episode29 wrist selected, pinned hashes and derived
 trajectories stored. Tasks remain ANALOGOUS_TASK because physical source geometry/frame
-provenance is unresolved. No source-informed training or data-efficiency claim exists.
+provenance is unresolved. No source-informed evaluation or data-efficiency improvement claim exists.
 
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
@@ -74,7 +78,7 @@ provenance is unresolved. No source-informed training or data-efficiency claim e
 - artifacts/environment/gr00t_local_contract.json: integration PASS, model/target checkpoint NOT_RUN.
 
 ## Not executed
-Verified source-to-target learning bridge, matched-task changes, source-informed training,
+Calibrated matched-task changes and source-informed closed-loop comparison,
 25/50 datasets, data-efficiency curves, final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
@@ -88,14 +92,13 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Source prior generator and ACT feature warm-start are implemented;36 tests pass, including
-unit/world-frame invariance and noncommuting rotation composition. The target-only
-2-step refactor replay exactly matched every frozen loss/gradient row. Actual source
-tensors are finite381x6 state/action and3x240x320 RGB. Next execute1000
-source steps plus5000 target steps for act-fire-10-001, preserving target RNG/head/optimizer
-semantics. Source prior:3 real episodes,381 pose transitions,actual wrist RGB; separate source
-normalization and head reset avoid changing physical action meaning. No source-informed
-training/result exists yet. Then fixed20 evaluation before nested25/50 expansion.
+Finish actual checkpoint audit, then evaluate act-fire-10-001 on all20 unchanged seeds;
+report either outcome without tuning on held-out results. Only then generate25 nested demos
+(first10 reused plus seeds20-34), validate and execute both frozen recipes, followed by50.
+The additional seed pool was committed in f98f854 before generation. Generalized export
+reproduces original archived10-demo dataset bytes with pandas3.0.5/PyArrow25.0.1; ML writer
+versions produce different bytes with identical values. Dataset identity now follows each
+training run into evaluation.37 tests passed; extra data generation remains NOT_RUN.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. Local diagnostics continue.
 Source regeneration: python scripts/local/fire.py --download, then offline command without

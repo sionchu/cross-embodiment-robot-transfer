@@ -211,7 +211,7 @@ def train(args):
     if installed['vcs_info']['commit_id']!=pins['local']['lerobot']['commit']:
         raise ValueError('LEROBOT_PIN_MISMATCH')
     evidence=validate(args.dataset)
-    recorded=json.loads((ROOT/'artifacts/datasets/validation.json').read_text())
+    recorded=json.loads(args.dataset_report.read_text())
     if evidence['dataset_sha256']!=recorded['dataset_sha256'] or recorded['official_loader']!='PASS':
         raise ValueError('DATASET_EVIDENCE_MISMATCH')
     # Seed list must already be versioned; learned evaluation cannot define it later.
@@ -279,6 +279,7 @@ def train(args):
         'dependency_lock_sha256':hashlib.sha256((ROOT/'scripts/local/requirements.lock.txt').read_bytes()).hexdigest(),
         'gr00t_commit':pins['upstream']['commit'],'lerobot_commit':pins['local']['lerobot']['commit'],
         'dataset_id':args.dataset.name,'dataset_sha256':evidence['dataset_sha256'],
+        'dataset_validation_report':args.dataset_report.resolve().relative_to(ROOT).as_posix(),
         'train_seeds':[evidence['train_seeds'][i] for i in selected],
         'training_episode_indices':selected,'training_frames':len(indices),'sampling':sampling,
         'normalization_source':'full canonical training dataset; unchanged for subset sanity',
@@ -319,6 +320,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dataset',type=Path,default=ROOT/'datasets/ur10e_10')
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--dataset-report',type=Path,default=ROOT/'artifacts/datasets/validation.json')
     parser.add_argument('--chunk-size',type=int,default=16)
     parser.add_argument('--sampling',choices=['uniform','orientation-balanced','phase-balanced','precision-balanced'],default='uniform')
     parser.add_argument('--lr',type=float,default=1e-4,help='Main ACT optimizer rate; historical default preserved.')
