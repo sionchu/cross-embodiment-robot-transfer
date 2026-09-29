@@ -13,7 +13,7 @@ closed-loop evaluation and a GR00T N1.7 NEW_EMBODIMENT integration path.
 The canonical real source is [FIRe Franka peg insertion](https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real),
 third-party public research data declaring Apache-2.0. [Actual source inspection](artifacts/datasets/fire_source.json) selected episode 29 wrist_view;
 [the task audit](artifacts/datasets/fire_task_audit.json) currently classifies the tasks as
-ANALOGOUS_TASK. The first paired experiment found no improvement from the selected source pretraining mechanism; the 25/50-demo comparisons remain in progress.
+ANALOGOUS_TASK. The completed 10/25/50-demo comparison found no improvement from this source pretraining mechanism. Target-only reached 20/20 at 50 demos; source-informed reached 0/20 at each size. This single-training-seed study does not establish a general limit on real-source learning.
 
 ![Actual FIRe episode 29 wrist-camera frame](artifacts/datasets/fire_real_source.png)
 
@@ -34,7 +34,7 @@ flowchart LR
 
 The current executable evidence includes recovered 10-demo target-only learned control
 on the original fixed held-out protocol, with an independently repeated successful seed.
-The paired 10/25/50 source-informed study remains in progress.
+The complete paired study and measured, non-monotonic learning curve are below.
 
 The official UR10e asset, deterministic reset, collision checks and actual front RGB
 capture are verified in [simulator evidence](artifacts/simulation/g1_smoke.json).
@@ -64,9 +64,10 @@ record the mechanism, budget and changed feature hashes.
 |---|---|---|
 | 10 | 5/20 (25%) | 0/20 (0%) |
 | 25 | 0/20 (0%) | 0/20 (0%) |
+| 50 | 20/20 (100%) | 0/20 (0%) |
 
 Both tracks use 5000 target updates. FIRe-informed adds 3 real source episodes and 1000 source updates.
-Remaining target-data sizes: 50.
+All three paired target-data sizes were executed.
 
 [Structured evidence](artifacts/eval/data_efficiency.json) · [Measured CSV](artifacts/eval/data_efficiency.csv)
 

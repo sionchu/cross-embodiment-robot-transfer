@@ -37,8 +37,9 @@ training/rollout/evaluation/video receipts and reproducible claim-linked media.
 The final50-demo target-only ACT completed20/20 fixed held-out successes, with unchanged
 task/controller/detector/seeds and verified raw transition hashes/terminal predicates.
 Checkpoint e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa.
-All six training conditions completed. The final source-informed50-demo evaluation is
-running (act-fire-50-heldout-001); do not tune from held-out outcomes.
+All six training/evaluation conditions completed and verified. Final source-informed50
+is0/20; no source-data benefit was observed for this recipe. The canonical six-condition
+comparison is COMPLETE; original seeds, controller and detector remain unchanged.
 Paired measured results so far:10 demos target-only5/20 vs source-informed0/20;
 25 demos0/20 vs0/20. Preserve the original0/20 debugging baseline and every failed run.
 The50-demo dataset has2441 frames; original25 episodes are byte-identical prefixes.
@@ -79,7 +80,7 @@ Capture cameras and renderer are implemented but runtime/media validation are st
 
 ## Not executed
 Calibrated matched-task changes,
-Final source-informed50-demo evaluation, complete data-efficiency curves, final video, native desktop
+Final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
 ## Blockers
@@ -92,22 +93,10 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-The25-demo nested dataset is generated and official-reader validated (artifacts/datasets/ur10e_25.json).
-All15 added expert episodes succeeded; first10 parquet/video files are byte-identical.
-Both frozen25-demo recipes completed and strict reload/tensor audits passed for all1223 frames.
-Target-only checkpoint8cdde69f871115887cc76c98b9982b1d3d9f023632f67de924c1549136068e0a;
-source-informed checkpointeff568cd0adcb52d4fd6d4da9e2bd422c5be091ae9be78139ee43fc14957d549.
-Both unchanged20-seed evaluations completed: target-only0/20 and source-informed0/20, all collisions.
-The10/25 paired plot is regenerated from actual evidence. The50-demo dataset is now
-generated and official-reader validated; first25 parquet/video files are byte-identical.
-Run both frozen50-demo recipes and complete their20-seed evaluations next.
-Both evaluations use --record-all, saving existing policy RGB without extra physics steps.
-The additional seed pool was committed in f98f854 before generation. Generalized export
-reproduces original archived10-demo dataset bytes with pandas3.0.5/PyArrow25.0.1; ML writer
-versions produce different bytes with identical values. Dataset identity now follows each
-training run into evaluation.37 tests passed; extra data generation remains NOT_RUN.
+Complete reproducible media captures and render the canonical65s cut, then hero/poster.
+The first HERO expert run succeeded, but Kit exited before post-close video serialization.
+Capture persistence now runs before SimulationApp.close; retry with a new receipt ID.
+Inspect actual rendered frames; native desktop verification remains NOT_COMPLETED after
+Computer Use app approval timed out. Keep all original experiments and failed media receipts.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
-no workaround was used. Local diagnostics continue.
-Source regeneration: python scripts/local/fire.py --download, then offline command without
---download. Offline clip SHA reproduced; two transform tests and full35-test suite passed.
-Native desktop source inspection is NOT_COMPLETED: Computer Use app approval timed out.
+no workaround was used. GR00T actual model execution remains COMPUTE_DEFERRED.

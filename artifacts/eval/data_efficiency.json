@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL",
+  "status": "COMPLETE",
   "records": [
     {
       "target_demos": 10,
@@ -72,11 +72,47 @@
       "dataset_sha256": "1bc66478af2ef76f24de4be967e093658c91ff71a8f9b49361f12e3b67346bb9",
       "checkpoint_sha256": "eff568cd0adcb52d4fd6d4da9e2bd422c5be091ae9be78139ee43fc14957d549",
       "normalization_sha256": "1a6a7bfbc1546030d15fef95c45f9b7cc099e8f4e4d1b30696d9cf4688d9aede"
+    },
+    {
+      "target_demos": 50,
+      "track": "target-only",
+      "evaluation_run": "act-50-heldout-001",
+      "successes": 20,
+      "episodes": 20,
+      "success_rate": 1.0,
+      "wilson_low": 0.8388748419471806,
+      "wilson_high": 1,
+      "mean_lateral_error_m": 0.0004360122646090054,
+      "mean_orientation_error_rad": 0.003161815135128937,
+      "target_steps": 5000,
+      "source_steps": 0,
+      "source_episodes": 0,
+      "dataset_sha256": "10af25da233a2b9aa1ffe707ac142a21b8462ff385ad35f93745ff5ce0fdcd1d",
+      "checkpoint_sha256": "e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa",
+      "normalization_sha256": "ef032a399697a50b2e2fab6e66c1542c7db7e0d5d0f3a723905c14e2c3b0766c"
+    },
+    {
+      "target_demos": 50,
+      "track": "source-informed",
+      "evaluation_run": "act-fire-50-heldout-001",
+      "successes": 0,
+      "episodes": 20,
+      "success_rate": 0.0,
+      "wilson_low": 0,
+      "wilson_high": 0.16112515805281938,
+      "mean_lateral_error_m": 0.295744132614493,
+      "mean_orientation_error_rad": 0.038114621257159795,
+      "target_steps": 5000,
+      "source_steps": 1000,
+      "source_episodes": 3,
+      "dataset_sha256": "10af25da233a2b9aa1ffe707ac142a21b8462ff385ad35f93745ff5ce0fdcd1d",
+      "checkpoint_sha256": "b344d21bf538e787c3329146f7897f21ffa19a39253d3da1c437c6bc35f6098c",
+      "normalization_sha256": "ef032a399697a50b2e2fab6e66c1542c7db7e0d5d0f3a723905c14e2c3b0766c"
     }
   ],
   "protocol": "same task/controller/detector; fixed20 seeds; one training seed;5000 target steps; source extra1000 steps reported separately",
   "task_equivalence": "ANALOGOUS_TASK",
   "interpretation": "target-data efficiency, not compute efficiency or a broad benchmark",
   "all_raw_traces_actions_terminal_outcomes_and_initial_states": "VERIFIED",
-  "source_sha256": "d0cfbdd4e47202387d5c867760e9bae559fef5f2f3318046b061b818bc0fb506"
+  "source_sha256": "acc5615045c87fa4d5d363e12318c09f9ebef5d6bdd0b92d93bd54b9a1f7826f"
 }

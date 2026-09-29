@@ -125,7 +125,7 @@ def data_efficiency(names):
     ax.set(xticks=[10,25,50],xlim=(5,55),ylim=(-5,105),xlabel='Target demonstrations',ylabel='Closed-loop success (%)',
         title='UR10e target-data efficiency / fixed 20 held-out seeds')
     ax.legend(fontsize=9);ax.spines[['top','right']].set_visible(False)
-    ax.text(.02,.97,'95% Wilson intervals; one training seed',transform=ax.transAxes,va='top',fontsize=8)
+    ax.text(.02,.76,'95% Wilson intervals; one training seed',transform=ax.transAxes,va='top',fontsize=8)
     fig.savefig(ROOT/'artifacts/figures/data_efficiency.png',dpi=160);plt.close(fig)
     table=['| Target demos | Target-only ACT | FIRe-informed ACT |','|---|---|---|']
     for n in sizes:
