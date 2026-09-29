@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "original": "ur10e_10",
+  "expanded": "ur10e_25",
+  "first_10_parquet_and_video_byte_identical": {
+    "data/chunk-000/episode_000000.parquet": "cc49584a13839ae9383d3944ef90ff3a6245eac4959c24bf0f15103d6c31d691",
+    "data/chunk-000/episode_000001.parquet": "9e10f88548e57a7d78488eb0bfc6fdb5f22d762f6efd6a3aef512489797a894b",
+    "data/chunk-000/episode_000002.parquet": "46a8541d3171d4a6535dc1c9c9962f52aab4f080c774031b7c737d26ea76a2c3",
+    "data/chunk-000/episode_000003.parquet": "671854bda1cda69fa19613baed46e2d0749127d24884c7ae6c1601b480cfbf98",
+    "data/chunk-000/episode_000004.parquet": "76fa22142399cdc3c28eda994911c9882bcbe95b00bd2e88caa72ff2c5a17d1b",
+    "data/chunk-000/episode_000005.parquet": "8041c63764e3c59cf9be1356608e7ca709004befb70a3fd840602604ce6490df",
+    "data/chunk-000/episode_000006.parquet": "fea85bf2b15f8ce66e73efbf8346da7076e004f123c6e21b58a48997af040510",
+    "data/chunk-000/episode_000007.parquet": "11c7d493929080e9301e2f820bb611ff4fd39345f5f9b38b3491e7f5831be284",
+    "data/chunk-000/episode_000008.parquet": "cf41267581bcfc079e4122e5cea29b29ebec0b4c8f70a597608977dfc2f99b3a",
+    "data/chunk-000/episode_000009.parquet": "915c0ad7c76200873538c7d75d6cbdfb8bc19f574d5ad3387aa98b83327cd518",
+    "videos/chunk-000/observation.images.front/episode_000000.mp4": "e655fe6f970afcc2181be313142adcde1f4b1d2fd629048b7b4df09814c1e8b9",
+    "videos/chunk-000/observation.images.front/episode_000001.mp4": "c0906d269e54f67309ce24b35964b11bc3c4691444411ea43d788eed2ef0c4ef",
+    "videos/chunk-000/observation.images.front/episode_000002.mp4": "8eaf74cb2ed6dcbd0d5dd3424c3fdfc60d18f8b7b9900dda41b3221dd58ef1a4",
+    "videos/chunk-000/observation.images.front/episode_000003.mp4": "2af85fd53ce4475785f3e535193601f3fd8745714006324905b400e8d0f86988",
+    "videos/chunk-000/observation.images.front/episode_000004.mp4": "bac73bd7d6af3225e94bf075abd66b00207002edfc9bf391f95ce79657dfcc20",
+    "videos/chunk-000/observation.images.front/episode_000005.mp4": "00f3e9ae37c1da7c961587c1bf655a68cdc84dba2c74f05b06177b08d6cfc0db",
+    "videos/chunk-000/observation.images.front/episode_000006.mp4": "87fbb08acb32b63d3251cbff0b3708a306419124aeb8726f95b57993ef2b66cc",
+    "videos/chunk-000/observation.images.front/episode_000007.mp4": "da1d73b81fea3c800d1cfaa74d7d9b89ae5047f27f072eb5bdc3767631c1445c",
+    "videos/chunk-000/observation.images.front/episode_000008.mp4": "e7cf66b8e32709360059acc260ad3686297058da5390d24568e43faac9aebfaa",
+    "videos/chunk-000/observation.images.front/episode_000009.mp4": "8203b9a96b738bdfa0294d8856a66842672079ab9ff6d235e65d1b50b6dd5c13"
+  }
+}

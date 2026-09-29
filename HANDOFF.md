@@ -81,7 +81,7 @@ provenance is unresolved. Actual source-informed evaluation exists; no data-effi
 
 ## Not executed
 Calibrated matched-task changes,
-25/50 datasets, data-efficiency curves, final video, native desktop
+25/50 training and evaluation, complete data-efficiency curves, final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
 ## Blockers
@@ -94,8 +94,9 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Generate25 nested demos after preserving the completed10-demo comparison
-(first10 reused plus seeds20-34), validate and execute both frozen recipes, followed by50.
+The25-demo nested dataset is generated and official-reader validated (artifacts/datasets/ur10e_25.json).
+All15 added expert episodes succeeded; first10 parquet/video files are byte-identical.
+Run both frozen25-demo recipes/evaluations, then generate and compare50.
 The additional seed pool was committed in f98f854 before generation. Generalized export
 reproduces original archived10-demo dataset bytes with pandas3.0.5/PyArrow25.0.1; ML writer
 versions produce different bytes with identical values. Dataset identity now follows each
