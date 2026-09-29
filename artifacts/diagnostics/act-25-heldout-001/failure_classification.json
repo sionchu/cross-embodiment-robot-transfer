@@ -1,0 +1,150 @@
+{
+  "evaluation": "artifacts/eval/act-25-heldout-001",
+  "classification": "H",
+  "description": "Approximate approach/alignment learned; alignment is lost before successful insertion. Mechanistic cause of the residual action bias is not established by this audit.",
+  "evidence": "artifacts/diagnostics/act-25-heldout-001/rollout_audit.json",
+  "episodes": [
+    {
+      "seed": 1000,
+      "first_aligned_step": 11,
+      "minimum_lateral_m": 8.790466140162358e-05,
+      "final_lateral_m": 0.0015583017762465878,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1001,
+      "first_aligned_step": 14,
+      "minimum_lateral_m": 1.180079381085654e-05,
+      "final_lateral_m": 0.0020542933017945793,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1002,
+      "first_aligned_step": 9,
+      "minimum_lateral_m": 3.4656039778665254e-05,
+      "final_lateral_m": 0.0019052253865656462,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1003,
+      "first_aligned_step": 7,
+      "minimum_lateral_m": 2.9361029799770716e-05,
+      "final_lateral_m": 0.002187233301358955,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1004,
+      "first_aligned_step": 7,
+      "minimum_lateral_m": 6.954928046301317e-05,
+      "final_lateral_m": 0.0022094767800858485,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1005,
+      "first_aligned_step": 18,
+      "minimum_lateral_m": 0.0003490713755532271,
+      "final_lateral_m": 0.0012462326833559776,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1006,
+      "first_aligned_step": 11,
+      "minimum_lateral_m": 5.8193280588985786e-05,
+      "final_lateral_m": 0.0013890160603213008,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1007,
+      "first_aligned_step": 20,
+      "minimum_lateral_m": 0.00037075833190820573,
+      "final_lateral_m": 0.0012380043043783366,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1008,
+      "first_aligned_step": 15,
+      "minimum_lateral_m": 0.00025593675046467766,
+      "final_lateral_m": 0.0015741754759239007,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1009,
+      "first_aligned_step": 15,
+      "minimum_lateral_m": 0.00010746679244827083,
+      "final_lateral_m": 0.0015695306386902062,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1010,
+      "first_aligned_step": 9,
+      "minimum_lateral_m": 0.0001876770530130462,
+      "final_lateral_m": 0.0019552274627948948,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1011,
+      "first_aligned_step": 14,
+      "minimum_lateral_m": 0.00012262864990049006,
+      "final_lateral_m": 0.0014638469244259978,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1012,
+      "first_aligned_step": 17,
+      "minimum_lateral_m": 0.0002039510660451059,
+      "final_lateral_m": 0.0014787068611937188,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1013,
+      "first_aligned_step": 12,
+      "minimum_lateral_m": 0.0003454120084409726,
+      "final_lateral_m": 0.0021899318569115174,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1014,
+      "first_aligned_step": 10,
+      "minimum_lateral_m": 7.778051798673452e-05,
+      "final_lateral_m": 0.0018482116899224098,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1015,
+      "first_aligned_step": 12,
+      "minimum_lateral_m": 0.00013108743669878033,
+      "final_lateral_m": 0.0014734091409708428,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1016,
+      "first_aligned_step": 9,
+      "minimum_lateral_m": 6.741888309614144e-05,
+      "final_lateral_m": 0.0018228242179227085,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1017,
+      "first_aligned_step": 12,
+      "minimum_lateral_m": 4.033589777367504e-05,
+      "final_lateral_m": 0.0015599073694003824,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1018,
+      "first_aligned_step": 10,
+      "minimum_lateral_m": 4.1740958868617994e-05,
+      "final_lateral_m": 0.0019306519892275467,
+      "outcome": "COLLISION"
+    },
+    {
+      "seed": 1019,
+      "first_aligned_step": 8,
+      "minimum_lateral_m": 0.00010741910681474834,
+      "final_lateral_m": 0.0022305382029577624,
+      "outcome": "COLLISION"
+    }
+  ],
+  "protocol_changed": false,
+  "held_out_tuning": false
+}
