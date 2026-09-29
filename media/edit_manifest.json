@@ -191,7 +191,8 @@
       "caption": "RELATIVE EEF MOTION",
       "source_types": [
         "PUBLIC_REAL_DATA",
-        "ARCHITECTURE_GRAPHIC"
+        "ARCHITECTURE_GRAPHIC",
+        "PROJECT_SIM_EXPERT"
       ],
       "evidence_refs": [
         "artifacts/datasets/fire_motion_prior/manifest.json",
@@ -201,12 +202,13 @@
       "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
         "real_wrist",
-        "matched"
+        "hero"
       ],
       "evidence_sha256": {
         "artifacts/datasets/fire_motion_prior/manifest.json": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d",
         "artifacts/training/act-fire-10-001/source_pretraining.json": "4486e25f8f395272c262d7c6f5405b3f4dfc6728f149c4381294143883f81b91"
-      }
+      },
+      "transition_note": "Actual source-derived trajectory persists; target scene revealed from a held expert initial frame, not learned control or calibrated path replay."
     },
     {
       "shot_id": "S04_ECOSYSTEM",
@@ -365,6 +367,8 @@
       "mode": "close",
       "caption": "GR00T N1.7 × UR10e",
       "source_types": [
+        "PUBLIC_REAL_DATA",
+        "PROJECT_SIM_LEARNED",
         "ARCHITECTURE_GRAPHIC"
       ],
       "evidence_refs": [
@@ -373,7 +377,7 @@
       "claim": "NEW_EMBODIMENT integration ready; GR00T model execution and fine-tuning deferred",
       "truth_status": "ARTIFACTS_VERIFIED",
       "asset_ids": [
-        "real_hook",
+        "real_wrist",
         "close"
       ],
       "evidence_sha256": {
@@ -396,7 +400,8 @@
       42,
       64
     ],
-    "main_file_review_sha256": "179ced3af9d1214c36f1cbc92bc2b226af417d2a23c320940355f6ed96a1b51c"
+    "main_file_review_sha256": "179ced3af9d1214c36f1cbc92bc2b226af417d2a23c320940355f6ed96a1b51c",
+    "media_milestone": "AWAITING_NATIVE_DESKTOP_REVIEW"
   },
   "credit": "FIRe public research data: bhe1004/FIRe-VLA-GR00T-PegInsert-Real; Apache-2.0; episode29. Project UR10e footage is simulation.",
   "license_reference": "references/FIRe-source-credit.md",
@@ -423,5 +428,341 @@
     "sha256": "74346458fe72610be88fc33a3ac6d98d453ac6cffbc1042d494a767e3def2686",
     "full_decode": "PASS",
     "visual_changes": "Show full UR10e in trajectory reveal; add actual replanning cadence and final real/simulation labels."
+  },
+  "derivatives": {
+    "hero": {
+      "path": "media/output/hero.mp4",
+      "sha256": "6def55ba8cafb211da9f438ba9ccb972c3b82872399938fad1ea907aead0352c",
+      "probe": {
+        "width": 1920,
+        "height": 1080,
+        "r_frame_rate": "30/1",
+        "nb_read_frames": "360"
+      },
+      "segments": [
+        {
+          "shot": "S01_REAL",
+          "duration_s": 3
+        },
+        {
+          "shot": "S03_BRIDGE",
+          "duration_s": 4,
+          "abstract_animation_rate": 2
+        },
+        {
+          "shot": "S09_PAYOFF",
+          "duration_s": 5
+        }
+      ],
+      "recorded_motion_speed": "unchanged"
+    },
+    "poster": {
+      "path": "media/output/poster.png",
+      "sha256": "ffa2b51de3ca0a4dad790a994fbc63f1832ed9673d569870a87931981d1425e5",
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    "script_sha256": "aafd8d0f5c780959d2f1964495e27c52b5d12784d453dc06bedd257446600f56",
+    "visual_review": "POSTER_AND_ENCODED_HERO_FRAMES_REVIEWED",
+    "reviewed_hero_frames_s": [
+      0,
+      6,
+      11
+    ]
+  },
+  "package": {
+    "root": "media/output",
+    "files": [
+      {
+        "path": "captions/main.srt",
+        "sha256": "d9e3a4d39463a402c660c72691f76fd158bfbda752aa6ae534a51fe377ee4daf",
+        "bytes": 627
+      },
+      {
+        "path": "credits/FIRe-Apache-2.0.txt",
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "bytes": 11358
+      },
+      {
+        "path": "credits/FIRe-source-credit.md",
+        "sha256": "4a5bd5b3f21a82543feeb04879025e25fc4f74d39fa5300b60f1bbaf08709aec",
+        "bytes": 1581
+      },
+      {
+        "path": "evidence/artifacts/datasets/fire_motion_prior/manifest.json",
+        "sha256": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d",
+        "bytes": 8028
+      },
+      {
+        "path": "evidence/artifacts/datasets/fire_source.json",
+        "sha256": "297b7146f4f928790ccd14e8293baf662519bc087a52de132e497468c4f5d5b3",
+        "bytes": 17075
+      },
+      {
+        "path": "evidence/artifacts/datasets/fire_task_audit.json",
+        "sha256": "2d475303f8dc9cead5dabbcbf48ef18debcb5fb6ffc7e2a7bd787ca2c5098c0e",
+        "bytes": 6374
+      },
+      {
+        "path": "evidence/artifacts/eval/data_efficiency.json",
+        "sha256": "903815f948c2707e83762ffaa4d603c8c43525649da09abd43cc245657c95a04",
+        "bytes": 5021
+      },
+      {
+        "path": "evidence/artifacts/training/act-50-001/loss.csv",
+        "sha256": "94a526acd65d92eae8031b7fde932af2f7da99bd4bfdf4649df76c7589b6c92f",
+        "bytes": 420625
+      },
+      {
+        "path": "evidence/artifacts/training/act-50-001/summary.json",
+        "sha256": "e7c5bbc8f83a5178f788eb500d4397b381917ef58d07a11ece951424e8975d41",
+        "bytes": 3896
+      },
+      {
+        "path": "hero.mp4",
+        "sha256": "6def55ba8cafb211da9f438ba9ccb972c3b82872399938fad1ea907aead0352c",
+        "bytes": 1735576
+      },
+      {
+        "path": "main.mp4",
+        "sha256": "179ced3af9d1214c36f1cbc92bc2b226af417d2a23c320940355f6ed96a1b51c",
+        "bytes": 4148449
+      },
+      {
+        "path": "overlays/architecture.png",
+        "sha256": "f7b63fe7fb6940c24ecfbab914ff25910b39554c1a067e0d77800a2e80966d80",
+        "bytes": 80903
+      },
+      {
+        "path": "overlays/evaluation.png",
+        "sha256": "15ce0611388e4a6e9f3a20cd3680212e244c94c99cec2f1eb2aa82f945563504",
+        "bytes": 155701
+      },
+      {
+        "path": "overlays/source_trajectory.png",
+        "sha256": "08bd19a63a85658467e005e672402f0785264c2a15efe8ae6c8088674e238b80",
+        "bytes": 47754
+      },
+      {
+        "path": "overlays/task_space_transition.mp4",
+        "sha256": "74877dc309add0a62a37d080b5df51349fbe65dae259863a61142b1135ad6b02",
+        "bytes": 449702
+      },
+      {
+        "path": "overlays/training_loss.png",
+        "sha256": "4b7fc4287c7f6a587a237106dc493b40ba622807406c2e98d2499e4ef807b834",
+        "bytes": 118165
+      },
+      {
+        "path": "poster.png",
+        "sha256": "ffa2b51de3ca0a4dad790a994fbc63f1832ed9673d569870a87931981d1425e5",
+        "bytes": 329135
+      },
+      {
+        "path": "shot_list.csv",
+        "sha256": "741441c450778966a3fc3abbdb796b2a866d33875e29feefbebfcabebf37c1e9",
+        "bytes": 2190
+      },
+      {
+        "path": "sim/media-close-act-1005/close_insertion.mp4",
+        "sha256": "594520c8af1cf094532654b188a44e9834aa8e3e94426251b65dfab3110038d4",
+        "bytes": 591152
+      },
+      {
+        "path": "sim/media-close-act-1005/end.png",
+        "sha256": "1256f2c25d7b40607efaed71882b196345434a77faf0af2f2864efa43bd06cdf",
+        "bytes": 817266
+      },
+      {
+        "path": "sim/media-close-act-1005/middle.png",
+        "sha256": "bf1ba3d147f143ac25d0d021ff6719ea151194fcf134095941b75d5022904b7e",
+        "bytes": 719345
+      },
+      {
+        "path": "sim/media-close-act-1005/start.png",
+        "sha256": "70e54b0e78ed41b0938f3bfab15a0b1ef81697887e0e14cff548409c4eda4bd2",
+        "bytes": 616758
+      },
+      {
+        "path": "sim/media-evaluation-act-1005/end.png",
+        "sha256": "961244122c4cfe4972f96280b60e218598b74da1fa1741883d5b858fa0aacd22",
+        "bytes": 94736
+      },
+      {
+        "path": "sim/media-evaluation-act-1005/evaluation.mp4",
+        "sha256": "5336f0fc618504f19e69cd8c5e6655f0cef427c67da323b58f94d4b2acdca5ba",
+        "bytes": 110211
+      },
+      {
+        "path": "sim/media-evaluation-act-1005/middle.png",
+        "sha256": "71894f062a40364e629b87e0b8a56b77acd72a9c38aae83830c2115aad312368",
+        "bytes": 93408
+      },
+      {
+        "path": "sim/media-evaluation-act-1005/start.png",
+        "sha256": "0d0dac35a6adecf10f694d0f7ee8549e0c7e564dd75329cc36fd73e6e31fcfc7",
+        "bytes": 89559
+      },
+      {
+        "path": "sim/media-hero-expert-1000-002/end.png",
+        "sha256": "79be74a0e09706513085a152c988d7893999794fc8f543d1c4f776425dc87e77",
+        "bytes": 406595
+      },
+      {
+        "path": "sim/media-hero-expert-1000-002/hero.mp4",
+        "sha256": "7ea3ac756af692e30aa6b20e4bb3595f93822fc9f3df90332ccca7b8f951c167",
+        "bytes": 340545
+      },
+      {
+        "path": "sim/media-hero-expert-1000-002/middle.png",
+        "sha256": "cc5e38ca5f7dbfcdbd93c85076505226c22a6f3315fdd16ac4421b969d2fe98e",
+        "bytes": 401361
+      },
+      {
+        "path": "sim/media-hero-expert-1000-002/start.png",
+        "sha256": "e894b9658d89b042053a451fc06c99118c367f51e6a17e99bd8ca5816671e013",
+        "bytes": 387748
+      },
+      {
+        "path": "sim/media-matched-act-1005/end.png",
+        "sha256": "d4617f10d88435df746cf88ffd52ca2325d6b4556fdc8034cbacdbf7f68193ec",
+        "bytes": 900581
+      },
+      {
+        "path": "sim/media-matched-act-1005/matched_source.mp4",
+        "sha256": "2075667e059e66e4e41f3503bd1417e241e62434d9a0e862d5aa2d99a836d3c8",
+        "bytes": 560331
+      },
+      {
+        "path": "sim/media-matched-act-1005/middle.png",
+        "sha256": "dfcdebeec44b0adf45eee6cca4cfad86e87cafae840a22e501db4fa414dfa3fc",
+        "bytes": 797574
+      },
+      {
+        "path": "sim/media-matched-act-1005/start.png",
+        "sha256": "7616d824e56bf8fb93c23733e8e08686e6ea7bead76941e626e01b2decf4e422",
+        "bytes": 695983
+      },
+      {
+        "path": "sim/wall/1000.mp4",
+        "sha256": "60177ba0c59d6156faadf86ff38452fa5a8da2dea7bec17bb941350c707450a2",
+        "bytes": 107730
+      },
+      {
+        "path": "sim/wall/1000_end.png",
+        "sha256": "f6d7178ec838a7e51ff8f51c0b5d2a66246310ced525458a6c7d7cb208ceca3d",
+        "bytes": 93804
+      },
+      {
+        "path": "sim/wall/1001.mp4",
+        "sha256": "e65fea04ead0f7ac68adee2364fd47d6c6c5032b428cc18dce565b8165ddf900",
+        "bytes": 107498
+      },
+      {
+        "path": "sim/wall/1001_end.png",
+        "sha256": "f61e02eb97469ffce212865d5bd9727f916ea2a54a4b0b2ba1a88217524a0f9b",
+        "bytes": 93195
+      },
+      {
+        "path": "sim/wall/1002.mp4",
+        "sha256": "cde2bd59d51cee5a135556eb0099c2b230c6a7168e19cc994c4c45643f2e95bd",
+        "bytes": 105587
+      },
+      {
+        "path": "sim/wall/1002_end.png",
+        "sha256": "25fdb03f6fb64ad6fb96f9bdbe954292e3f635f4cf32875913f418af31759562",
+        "bytes": 93637
+      },
+      {
+        "path": "sim/wall/1003.mp4",
+        "sha256": "f14cbad5345179aced02638e29d1f16d95a1a9de63f21af91fd3646357e98c65",
+        "bytes": 106266
+      },
+      {
+        "path": "sim/wall/1003_end.png",
+        "sha256": "eb24ea03bd59638d8dce04e07ada13674620420f86e882b16a0f5b1dc57433b2",
+        "bytes": 95341
+      },
+      {
+        "path": "sim/wall/1004.mp4",
+        "sha256": "5fe3b6987658247b0c073828bd142d47a1e413ed5a0b7bfe0779b41c966376a2",
+        "bytes": 109564
+      },
+      {
+        "path": "sim/wall/1004_end.png",
+        "sha256": "6e5050c3d76694820fe9c5f0725b292c36b090493e0b89244ccaa0293161f3a7",
+        "bytes": 94314
+      },
+      {
+        "path": "sim/wall/1005.mp4",
+        "sha256": "5164bb2da27d3412686574e08a8753cbca6240c0e1e8f09fbb83ffe63d00ced8",
+        "bytes": 107901
+      },
+      {
+        "path": "sim/wall/1005_end.png",
+        "sha256": "7b073af1d209df5879125f527fbd52b4656c2a0ecad67d7831d91a3493741401",
+        "bytes": 95244
+      },
+      {
+        "path": "sim/wall/1006.mp4",
+        "sha256": "d0adeb6a9eff8aceecae9d7f22e731514ac4e3cb1b5cfe15b84bfcfe90b19260",
+        "bytes": 107814
+      },
+      {
+        "path": "sim/wall/1006_end.png",
+        "sha256": "16f8d15baaa22854f34879d6bf25724593f046cd1fabe4990a2824e3ce2b8a53",
+        "bytes": 94165
+      },
+      {
+        "path": "sim/wall/1007.mp4",
+        "sha256": "ff9804f314445b561425323b9b1133ae42f173c0e27dfece92063018c361b4ed",
+        "bytes": 107361
+      },
+      {
+        "path": "sim/wall/1007_end.png",
+        "sha256": "d08656d36746d6c1ac4c2064e827bbb71c9f1c6b2b349d376e41f9e73e16e6b3",
+        "bytes": 95457
+      },
+      {
+        "path": "source/real_franka_e29_right_f000-059.mp4",
+        "sha256": "3e7f6685a8fb51f591813a9383ff3bb4463230155fc2916b6e4f479b73db45e7",
+        "bytes": 68384
+      },
+      {
+        "path": "source/real_franka_e29_right_f000-059_contact.png",
+        "sha256": "64ff63f4504d234c8cb3d8100304b9cce4e301e7aa8ef5e332ae87169264c2f9",
+        "bytes": 64652
+      },
+      {
+        "path": "source/real_franka_e29_wrist_f000-059.mp4",
+        "sha256": "2744c6f0091982f87f3befab6853c1189e6d8778f16ff9b704df10b5cb316cfb",
+        "bytes": 105257
+      },
+      {
+        "path": "source/real_franka_e29_wrist_f000-059_contact.png",
+        "sha256": "368d7046fd5445fa7286f752860f986e40f7ac4db7b5dcd0458c01ee66dd6cca",
+        "bytes": 130903
+      },
+      {
+        "path": "source/real_franka_e29_wrist_f000-111.mp4",
+        "sha256": "449a06240757a05886819c78b7eb3a68f0b8060ab09791d1f7457efeba970b32",
+        "bytes": 195728
+      },
+      {
+        "path": "source/real_franka_e29_wrist_f060-119.mp4",
+        "sha256": "22da061cf05698db4f733ebc9debe7579a8742fe14d1828fe91e03070d53534b",
+        "bytes": 103940
+      },
+      {
+        "path": "source/real_franka_e29_wrist_f060-119_contact.png",
+        "sha256": "663b85d67afaa1e431483f58e386aee9a372267b207ee053f6158c9049626915",
+        "bytes": 135311
+      }
+    ],
+    "heavy_files_in_git": false,
+    "regeneration": "scripts/local/README.md; media/build.py; media/capture.py",
+    "native_desktop_verification": "NOT_COMPLETED"
   }
 }

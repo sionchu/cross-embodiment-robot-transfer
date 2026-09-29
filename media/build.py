@@ -339,6 +339,88 @@ class Renderer:
         (self.out/'edit_manifest.json').write_bytes(MANIFEST.read_bytes())
         print(json.dumps(self.m['output'],indent=2))
 
+    def derivatives(self):
+        main=self.out/'main.mp4'
+        if self.m['verification'].get('main_file_review_sha256')!=sha(main):
+            raise ValueError('REVIEW_CURRENT_MAIN_CUT_FIRST')
+        hero=self.out/'hero.mp4';poster=self.out/'poster.png'
+        if hero.exists() or poster.exists(): raise FileExistsError('Preserve existing derivatives before rebuilding')
+        # Recorded clips retain real time. Only the abstract trajectory animation
+        # occupies four seconds here instead of eight in the main cut.
+        process=subprocess.Popen(['ffmpeg','-v','error','-f','rawvideo','-pix_fmt','rgb24','-s','1920x1080','-r','30',
+            '-i','pipe:0','-an','-c:v','libx264','-preset','fast','-threads','4','-crf','19','-pix_fmt','yuv420p',
+            '-movflags','+faststart',str(hero)],stdin=subprocess.PIPE)
+        try:
+            for i in range(360):
+                t=i/30
+                shot,u=(self.m['shots'][0],t) if t<3 else (self.m['shots'][2],(t-3)*2) if t<7 else (self.m['shots'][8],t-7)
+                c=self.frame(shot,u)
+                ImageDraw.Draw(c).rectangle((0,1003,1920,1080),fill=BG)
+                text(c,(76,1015),'SOURCE: REAL FIRe DATA     |     TARGET: ISAAC SIM     |     GR00T N1.7: INTEGRATION READY',25,TEAL,True)
+                process.stdin.write(c.tobytes())
+            process.stdin.close()
+            if process.wait()!=0: raise RuntimeError('HERO_ENCODER_FAILED')
+        except BaseException:
+            if process.poll() is None: process.terminate();process.wait()
+            raise
+        c=Image.new('RGB',(1920,1080),BG)
+        text(c,(78,47),'GR00T N1.7 × UR10e',76,WHITE,True)
+        text(c,(82,148),'Real-World Cross-Embodiment Robot Learning',38,TEAL)
+        text(c,(100,245),'REAL FRANKA / FIRe SOURCE',30,TEAL,True)
+        text(c,(1070,245),'SIMULATION / LEARNED UR10e',30,TEAL,True)
+        paste_fit(c,self.source_full(2),(80,310,710,585))
+        paste_fit(c,self.videos['evaluation'].at(10),(1040,310,790,585))
+        text(c,(825,460),'ΔEEF',50,TEAL,True);text(c,(850,530),'→',78,TEAL,True)
+        text(c,(90,930),f'Target-only ACT · {self.target_demos} demos · held-out {self.primary["successes"]}/{self.primary["episodes"]}',36,WHITE,True)
+        text(c,(90,1000),'GR00T NEW_EMBODIMENT integration ready · measured 10 / 25 / 50 comparison',28,MUTED)
+        c.save(poster)
+        info=probe(hero)
+        if (int(info['nb_read_frames']),info['r_frame_rate'])!=(360,'30/1'): raise ValueError('HERO_FORMAT_MISMATCH')
+        subprocess.run(['ffmpeg','-v','error','-xerror','-i',str(hero),'-f','null','-'],check=True)
+        self.m['derivatives']={'hero':{'path':hero.relative_to(ROOT).as_posix(),'sha256':sha(hero),'probe':info,
+            'segments':[{'shot':'S01_REAL','duration_s':3},{'shot':'S03_BRIDGE','duration_s':4,'abstract_animation_rate':2},
+                {'shot':'S09_PAYOFF','duration_s':5}],'recorded_motion_speed':'unchanged'},
+            'poster':{'path':poster.relative_to(ROOT).as_posix(),'sha256':sha(poster),'size':[1920,1080]},
+            'script_sha256':sha(Path(__file__)),'visual_review':'NOT_RUN'}
+        credits=self.out/'credits';credits.mkdir(exist_ok=True)
+        for name in ('FIRe-source-credit.md','FIRe-Apache-2.0.txt'):
+            (credits/name).write_bytes((ROOT/'references'/name).read_bytes())
+        MANIFEST.write_text(json.dumps(self.m,indent=2,ensure_ascii=False)+'\n',encoding='utf-8',newline='\n')
+        (self.out/'edit_manifest.json').write_bytes(MANIFEST.read_bytes())
+        print(json.dumps(self.m['derivatives'],indent=2))
+
+    def package(self):
+        if self.m['verification'].get('main_file_review_sha256')!=sha(self.out/'main.mp4'):
+            raise ValueError('REVIEW_CURRENT_MAIN_CUT_FIRST')
+        folder=self.out/'sim/wall';folder.mkdir(exist_ok=True)
+        for row in self.wall_rows:
+            for source in (ROOT/row['video']['path'],ROOT/row['raw_artifact_dir']/f"{row['seed']}_end.png"):
+                (folder/source.name).write_bytes(source.read_bytes())
+        for mode,name in [('bridge','source_trajectory'),('pipeline','architecture'),('results','evaluation')]:
+            shot=next(s for s in self.m['shots'] if s['mode']==mode)
+            self.frame(shot,(shot['end_s']-shot['start_s'])/2).save(self.overlays/f'{name}.png')
+        transition=self.overlays/'task_space_transition.mp4'
+        if not transition.exists():
+            subprocess.run(['ffmpeg','-v','error','-ss','8','-i',str(self.out/'main.mp4'),'-t','8','-an',
+                '-c:v','libx264','-threads','1','-crf','19','-pix_fmt','yuv420p',str(transition)],check=True)
+        evidence=self.out/'evidence';evidence.mkdir(exist_ok=True)
+        refs=['artifacts/eval/data_efficiency.json','artifacts/datasets/fire_source.json',
+            'artifacts/datasets/fire_task_audit.json','artifacts/datasets/fire_motion_prior/manifest.json',
+            self.m['selection']['training_run']+'/summary.json',self.m['selection']['training_run']+'/loss.csv']
+        for ref in refs:
+            destination=evidence/ref;destination.parent.mkdir(parents=True,exist_ok=True)
+            destination.write_bytes((ROOT/ref).read_bytes())
+        files=[]
+        for f in sorted(self.out.rglob('*')):
+            if not f.is_file() or 'review' in f.relative_to(self.out).parts or f.name=='edit_manifest.json': continue
+            files.append({'path':f.relative_to(self.out).as_posix(),'sha256':sha(f),'bytes':f.stat().st_size})
+        self.m['package']={'root':'media/output','files':files,'heavy_files_in_git':False,
+            'regeneration':'scripts/local/README.md; media/build.py; media/capture.py',
+            'native_desktop_verification':'NOT_COMPLETED'}
+        MANIFEST.write_text(json.dumps(self.m,indent=2,ensure_ascii=False)+'\n',encoding='utf-8',newline='\n')
+        (self.out/'edit_manifest.json').write_bytes(MANIFEST.read_bytes())
+        print('EDIT_PACKAGE_HASHED',len(files))
+
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
@@ -346,7 +428,11 @@ if __name__=='__main__':
     mode.add_argument('--prepare-source',action='store_true')
     mode.add_argument('--preview',action='store_true')
     mode.add_argument('--render',action='store_true')
+    mode.add_argument('--derivatives',action='store_true')
+    mode.add_argument('--package',action='store_true')
     args=parser.parse_args();manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
     if args.prepare_source: prepare_source(manifest)
     elif args.preview: Renderer(manifest).previews()
+    elif args.derivatives: Renderer(manifest).derivatives()
+    elif args.package: Renderer(manifest).package()
     else: Renderer(manifest).render()

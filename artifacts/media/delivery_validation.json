@@ -1,0 +1,93 @@
+{
+  "media_milestone": "AWAITING_NATIVE_DESKTOP_REVIEW",
+  "outputs": {
+    "main": {
+      "path": "media/output/main.mp4",
+      "sha256": "179ced3af9d1214c36f1cbc92bc2b226af417d2a23c320940355f6ed96a1b51c",
+      "duration_s": 65,
+      "frames": 1950,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "fps": 30,
+      "audio": false,
+      "full_decode": "PASS"
+    },
+    "hero": {
+      "path": "media/output/hero.mp4",
+      "sha256": "6def55ba8cafb211da9f438ba9ccb972c3b82872399938fad1ea907aead0352c",
+      "duration_s": 12,
+      "frames": 360,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "fps": 30,
+      "audio": false,
+      "full_decode": "PASS"
+    }
+  },
+  "poster": {
+    "path": "media/output/poster.png",
+    "sha256": "ffa2b51de3ca0a4dad790a994fbc63f1832ed9673d569870a87931981d1425e5",
+    "size": [
+      1920,
+      1080
+    ]
+  },
+  "package_files_hash_verified": 57,
+  "manifest": "media/edit_manifest.json",
+  "file_visual_review": {
+    "main_encoded_frames_s": [
+      0,
+      14,
+      42,
+      64
+    ],
+    "all_eleven_shot_previews": true,
+    "hero_encoded_frames_s": [
+      0,
+      6,
+      11
+    ],
+    "poster": true,
+    "scope": "Representative file frames; not native desktop playback"
+  },
+  "native_desktop": {
+    "status": "NOT_COMPLETED",
+    "reason": "Computer Use app approval timed out; no alternate transport used"
+  },
+  "regression": {
+    "command": ".venv/Scripts/python.exe -m unittest discover -s tests -v",
+    "passed": 38,
+    "skipped": 0,
+    "duration_s": 16.085,
+    "log": "artifacts/runtime/final-media-tests.log",
+    "log_sha256": "d4f72f2466d7045b9058beaf136260a3e841dac4ef58e32d7b59fa2e23391045"
+  },
+  "research": {
+    "comparison": "artifacts/eval/data_efficiency.json",
+    "status": "COMPLETE",
+    "task_match": "ANALOGOUS_TASK",
+    "source_informed_improvement_observed": false,
+    "training_seeds": 1,
+    "held_out_per_condition": 20
+  },
+  "environment": {
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "packages": {
+      "numpy": "2.2.6",
+      "scipy": "1.18.1",
+      "pillow": "12.3.0",
+      "matplotlib": "3.11.1"
+    },
+    "ffmpeg": "ffmpeg version 8.0-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers"
+  },
+  "gr00t": {
+    "integration": "PASS",
+    "model_execution": "NOT_RUN",
+    "fine_tuning": "COMPUTE_DEFERRED"
+  },
+  "publication": "NOT_RUN"
+}

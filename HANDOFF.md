@@ -40,7 +40,7 @@ Checkpoint e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa.
 All six training/evaluation conditions completed and verified. Final source-informed50
 is0/20; no source-data benefit was observed for this recipe. The canonical six-condition
 comparison is COMPLETE; original seeds, controller and detector remain unchanged.
-Paired measured results so far:10 demos target-only5/20 vs source-informed0/20;
+Final paired measured results:10 demos target-only5/20 vs source-informed0/20;
 25 demos0/20 vs0/20. Preserve the original0/20 debugging baseline and every failed run.
 The50-demo dataset has2441 frames; original25 episodes are byte-identical prefixes.
 Both50-demo checkpoints passed actual2441-frame action audits and representative input
@@ -51,7 +51,9 @@ Media manifest retains fixed capture seeds1000-1007 and1005; it now selects the 
 target-only checkpoint, explicitly documented without changing any experiment or denominator.
 All four capture cameras executed; expert and three learned captures succeeded.
 Hashes, full decode, unchanged initial conditions and zero-time capture invariance passed.
-The first65s main cut rendered and was visually reviewed; targeted final refinements are rendering.
+Final65s main and12s hero rendered at1920x1080/30fps; poster generated. Full decoding
+and representative encoded frames were inspected. Editing package stores source/sim
+clips, overlays, captions, evidence, credits and file hashes. Native review remains pending.
 
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
@@ -78,15 +80,14 @@ The first65s main cut rendered and was visually reviewed; targeted final refinem
   reload PASS, 0/2 collisions; checkpoint 090185e98a540e369d44fcc5676f3152f8166d0048e38bdbae42f7ddcd245d0c.
 - .venv/Scripts/python.exe -m unittest discover -s tests -v: 35 passed, no skips;
   artifacts/runtime/source-regression-tests.log. E0 PASS strings are mocked fixtures only.
-- Latest evaluator/media regression:38 tests passed in9.393s, artifacts/runtime/media-regression-tests.log.
+- Latest full regression:38 tests passed in16.085s, artifacts/runtime/final-media-tests.log.
 - artifacts/eval/data_efficiency.json:COMPLETE, six fixed20-seed conditions.
 - artifacts/media/capture_validation.json:four actual captures hash/decode verified.
 - artifacts/environment/gr00t_local_contract.json: integration PASS, model/target checkpoint NOT_RUN.
 
 ## Not executed
 Calibrated matched-task changes,
-Final video, native desktop
-verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
+Native desktop verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
 ## Blockers
 Source units/frame/tool geometry and dataset-to-code provenance need verification. ACT achieved
@@ -98,11 +99,12 @@ Canonical AGENTS/README/HANDOFF reconciled; H1 training/evaluation evidence pres
 open-loop diagnostic plot uses physical action bounds for honest scale comparison.
 
 ## Next concrete action
-Finish review of the refined65s main cut, then generate and inspect the12s hero/poster.
-Four camera captures succeeded; actual main evaluation videos supply the first-eight-seed
-wall. Main rendering is reproducible with media/build.py; output files stay ignored.
-The original post-close HERO serialization issue is preserved and fixed by saving before
-SimulationApp.close.38 regression tests passed. Review the actual encoded final frames
-and keep native desktop verification separate: Computer Use app approval timed out.
+Native desktop review of the completed main/hero/poster is the remaining media gate.
+Files:media/output/main.mp4,hero.mp4,poster.png. Current file review and package hashes
+are in media/edit_manifest.json and artifacts/media/delivery_validation.json.
+Computer Use app approval previously timed out; do not substitute another transport
+or claim native review from FFmpeg/file inspection. No further training is required
+for the completed six-condition study. Keep the negative source-informed result.
 Antigravity was NOT_RUN after auto-review rejected external payload transmission;
 no workaround was used. GR00T actual model execution remains COMPUTE_DEFERRED.
+Fresh-machine reproduction and publication are not complete; no push/tag was performed.

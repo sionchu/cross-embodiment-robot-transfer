@@ -305,3 +305,23 @@ speed. Trajectories are derived from actual source poses in the documented norma
 frame, not camera-calibrated image overlays. Wall phases are geometry-derived labels,
 not hidden policy states. Keep the source credit and Apache license with exported media.
 File visual review, full video decode and native desktop inspection are separate gates.
+
+
+After inspecting the actual main cut, record its SHA in the manifest's existing file
+review fields. Then run `python media/build.py --derivatives` for the12s hero/poster
+and `python media/build.py --package` for the editing package and file inventory.
+Never set the native-desktop field from a file-only review. Inspect generated files
+before updating their visual-review status. Existing final videos are not overwritten.
+
+For each validated larger dataset, reproduce the same frozen recipe explicitly:
+
+```powershell
+.venv/Scripts/python.exe scripts/local/act.py --dataset datasets/ur10e_50 --dataset-report artifacts/datasets/ur10e_50.json --output artifacts/training/act-50-reproduction --backbone-weights imagenet --chunk-size 1 --lr 1e-4 --backbone-lr 1e-5 --steps 5000 --batch-size 8 --seed 20260929 --sampling precision-balanced
+.venv/Scripts/python.exe scripts/local/act.py --dataset datasets/ur10e_50 --dataset-report artifacts/datasets/ur10e_50.json --output artifacts/training/act-fire-50-reproduction --backbone-weights imagenet --chunk-size 1 --lr 1e-4 --backbone-lr 1e-5 --steps 5000 --batch-size 8 --seed 20260929 --sampling precision-balanced --source-prior artifacts/datasets/fire_motion_prior/manifest.json --source-steps 1000
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --checkpoint checkpoints/act-50-reproduction --record-all --output artifacts/eval/act-50-reproduction
+& C:\isaacsim\python.bat scripts/local/evaluate.py --policy act --split held_out --checkpoint checkpoints/act-fire-50-reproduction --record-all --output artifacts/eval/act-fire-50-reproduction
+```
+
+Use the25-demo dataset/report and fresh run names for25. Ten uses `ur10e_10` and
+`artifacts/datasets/validation.json`. The controls stay fixed; new training and
+simulation executions receive new measured hashes and outcomes, not copied metrics.

@@ -121,7 +121,7 @@ identify every version, action contract and checkpoint hash. Diagnostic failures
 versioned; the held-out checkpoint is frozen before the source-informed comparison.
 
 The source/target audit is ANALOGOUS_TASK because source geometry and calibration remain
-unverified. Final media still requires the paired data-efficiency study and native inspection.
+unverified. The paired study and media files are complete; native desktop media inspection remains pending.
 
 ## GR00T integration status
 
@@ -136,6 +136,22 @@ The pinned [E0 cloud workflow](scripts/colab/README.md) is preserved. Its last r
 inference failed, and no E0 PASS artifact is committed. E0 gates GR00T runtime claims,
 not local ACT work. GR00T fine-tuning and real UR10e deployment are unexecuted.
 
+## Technical video
+
+The evidence-linked [65-second main cut](media/output/main.mp4),
+[12-second hero](media/output/hero.mp4) and [poster](media/output/poster.png) are generated
+locally at 1920x1080; videos are 30fps and work without audio. Heavy media stays outside Git.
+The [canonical edit manifest](media/edit_manifest.json) maps every shot to actual source,
+checkpoint and evaluation evidence, with file hashes and regeneration instructions.
+It includes real FIRe footage, derived EEF motion, expert/learned Isaac Sim captures,
+actual training loss, the first eight primary evaluation episodes and all six results.
+
+Both videos passed full decoding and representative encoded-frame review. Native desktop
+inspection remains incomplete after an app approval timeout; this is not a full media PASS.
+The final experiment found no source-informed gain under this recipe. Successful footage
+shows target-only ACT; GR00T remains integration-ready with model compute deferred.
+Source attribution and the Apache license accompany the editing package.
+
 ## Reproduce
 
 Follow [local setup, data generation, training and evaluation](scripts/local/README.md).
@@ -148,7 +164,7 @@ own provenance rather than assigning a previous hash.
 ```powershell
 ./scripts/local/setup.ps1
 .venv/Scripts/python.exe -m unittest discover -s tests -v
-python scripts/local/compare.py
+python scripts/local/compare.py --study-runs act-10-precision-heldout-001 act-fire-10-heldout-001 act-25-heldout-001 act-fire-25-heldout-001 act-50-heldout-001 act-fire-50-heldout-001
 ```
 
 Generate the real dataset and checkpoint first for artifact-dependent tests; absent
