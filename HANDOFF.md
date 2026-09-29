@@ -81,7 +81,7 @@ provenance is unresolved. Actual source-informed evaluation exists; no data-effi
 
 ## Not executed
 Calibrated matched-task changes,
-50-demo data/training/evaluation, complete data-efficiency curves, final video, native desktop
+50-demo training/evaluation, complete data-efficiency curves, final video, native desktop
 verification of latest stages, GR00T target training/inference and fresh-machine reproduction.
 
 ## Blockers
@@ -100,7 +100,9 @@ Both frozen25-demo recipes completed and strict reload/tensor audits passed for 
 Target-only checkpoint8cdde69f871115887cc76c98b9982b1d3d9f023632f67de924c1549136068e0a;
 source-informed checkpointeff568cd0adcb52d4fd6d4da9e2bd422c5be091ae9be78139ee43fc14957d549.
 Both unchanged20-seed evaluations completed: target-only0/20 and source-informed0/20, all collisions.
-The10/25 paired plot is regenerated from actual evidence. Generate50 nested demos next.
+The10/25 paired plot is regenerated from actual evidence. The50-demo dataset is now
+generated and official-reader validated; first25 parquet/video files are byte-identical.
+Run both frozen50-demo recipes and complete their20-seed evaluations next.
 Both evaluations use --record-all, saving existing policy RGB without extra physics steps.
 The additional seed pool was committed in f98f854 before generation. Generalized export
 reproduces original archived10-demo dataset bytes with pandas3.0.5/PyArrow25.0.1; ML writer
