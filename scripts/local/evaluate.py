@@ -78,6 +78,7 @@ def main():
     parser.add_argument('--split',choices=['train','development','held_out'],required=True)
     parser.add_argument('--checkpoint',type=Path,default=ROOT/'checkpoints/act-10-001')
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--record-all',action='store_true',help='Save the existing observation RGB stream for every evaluated seed; no extra render/physics steps.')
     parser.add_argument('--seed-offset',type=int,default=0,help=argparse.SUPPRESS)
     parser.add_argument('--seed-count',type=int,help=argparse.SUPPRESS)
     args=parser.parse_args()
@@ -96,6 +97,7 @@ def main():
             command=[sys.executable,str(Path(__file__).resolve()),'--policy',args.policy,
                 '--split',args.split,'--checkpoint',str(args.checkpoint),'--output',str(child),
                 '--seed-offset',str(offset),'--seed-count','10']
+            if args.record_all: command.append('--record-all')
             completed=subprocess.run(command)
             summary_path=child/'summary.json'
             if not summary_path.exists(): raise RuntimeError('EVALUATION_CHILD_NO_SUMMARY')
@@ -132,6 +134,9 @@ def main():
         'model_checkpoint_id':None,'checkpoint_files_sha256':None,
         'action_execution':'first action of a fresh configured ACT chunk each control step; per-axis clipping recorded',
         'action_chunk_size':1,
+        'video_capture':{'selection':'all episodes' if args.record_all else 'first episode per process',
+            'camera':'front observation camera','resolution':[640,480],'fps':15,
+            'frames':'pre-action observations; capture does not advance physics'},
         'gpu':subprocess.check_output(['nvidia-smi','--query-gpu=name,memory.total,driver_version','--format=csv,noheader'],text=True).strip(),
         'execution_status':'FAILED'}
     worker=None; app=None; rows=[]; log=(raw/'policy.log').open('w',encoding='utf-8')
@@ -170,7 +175,7 @@ def main():
                     rgb=env.image()
                     if not np.allclose(env.state(),state,atol=1e-9,rtol=0): raise RuntimeError('CAPTURE_STATE_MISMATCH')
                     if env.steps==0: Image.fromarray(rgb).save(raw/f'{seed}_start.png')
-                    if index==0: frames.append(rgb)
+                    if args.record_all or index==0: frames.append(rgb)
                     if worker:
                         start=time.perf_counter()
                         response=worker.request({'op':'predict','state':state.tolist(),'front':base64.b64encode(rgb.tobytes()).decode('ascii')})
@@ -204,6 +209,10 @@ def main():
                     'inference_ms':float(np.mean(latency)),
                     'raw_artifact_dir':raw.relative_to(ROOT).as_posix(),
                     'trace_sha256':sha(raw/f'{seed}_trace.json'),'end_image_sha256':sha(raw/f'{seed}_end.png')}
+                if frames:
+                    row['video']={'path':(raw/f'{seed}.mp4').relative_to(ROOT).as_posix(),
+                        'sha256':sha(raw/f'{seed}.mp4'),'frames':len(frames),'fps':15,
+                        'source_type':'PROJECT_SIM_LEARNED' if worker else 'PROJECT_SIM_EXPERT' if args.policy=='expert' else 'PROJECT_SIM_REPLAY'}
                 if replay_states is not None:
                     row['replay_max_state_error']=np.max(replay_errors,axis=0).tolist()
                 rows.append(row); results.write(json.dumps(row,allow_nan=False)+'\n'); results.flush()

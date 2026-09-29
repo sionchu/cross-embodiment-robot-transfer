@@ -155,7 +155,7 @@ any floating-point clipping, including tiny rounding excess at a bound.
 Episode JSONL records all successes/failures; summary JSON reports outcome counts,
 Wilson confidence intervals and measured error/time/path/latency statistics. Runner
 `execution_status=PASS` means evaluation finished, not that insertion succeeded.
-The first episode video, all final/start images and action traces remain in ignored
+By default the first episode video, all final/start images and action traces remain in ignored
 `artifacts/runtime/eval-<run-name>/`. Development seeds 0 and 1 are never counted as
 held-out results. No tuning is performed on held-out outcomes.
 
@@ -165,6 +165,10 @@ reset. Evaluation therefore uses fresh simulator processes for blocks of 10 seed
 then verifies and combines all 20 episodes. Both policies use the same isolation.
 Interrupted runs remain recorded as failures and are excluded from the comparison;
 no model parameters or held-out seeds change during this infrastructure recovery.
+
+Use `--record-all` on both paired evaluations to retain every seed for the evaluation
+wall. This saves RGB frames already used by the policy; it does not add rendering or
+physics steps. The full20-episode denominator remains unchanged.
 
 ## GR00T N1.7 integration
 
