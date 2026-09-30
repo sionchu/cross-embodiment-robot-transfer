@@ -98,7 +98,15 @@ class Renderer:
     def __init__(self,manifest):
         self.m=manifest;self.out=ROOT/'media/output';self.out.mkdir(exist_ok=True)
         self.study=read_json('artifacts/eval/data_efficiency.json')
-        if self.study['status']!='COMPLETE' or len(self.study['records'])!=6: raise ValueError('COMPLETE_SIX_CONDITION_STUDY_REQUIRED')
+        if self.study['status']!='COMPLETE' or len(self.study['records']) not in (6,9): raise ValueError('COMPLETE_STUDY_REQUIRED')
+        self.tracks=list(dict.fromkeys(r['track'] for r in self.study['records']))
+        self.diagnosis=None
+        if any(s['mode']=='diagnosis' for s in manifest['shots']):
+            d=manifest['selection']['diagnosis'];self.diagnosis={'figure':Image.open(ROOT/d['figure']).convert('RGB'),'seed':d['seed']}
+            for key in ('target_evaluation','backbone_evaluation'):
+                row=next(json.loads(l) for l in (ROOT/d[key]/'episodes.jsonl').read_text().splitlines() if json.loads(l)['seed']==d['seed'])
+                if sha(ROOT/row['video']['path'])!=row['video']['sha256']: raise ValueError('DIAGNOSIS_CLIP_HASH_MISMATCH')
+                self.diagnosis[key]=(Video(ROOT/row['video']['path']),row)
         self.groot=read_json('artifacts/environment/gr00t_50_contract.json')
         if self.groot['integration_status']!='PASS' or self.groot['model_execution']!='NOT_RUN': raise ValueError('REVIEW_GR00T_STATUS_LABELS')
         self.primary=read_json(manifest['selection']['primary_evaluation']+'/summary.json')
@@ -249,12 +257,12 @@ class Renderer:
             if t>=len(self.videos['hero'].frames)/15: text(c,(130,895),'Terminal frame held',22,MUTED)
         elif mode=='pipeline':
             self.box(c,(90,250,810,405),'REAL FIRe SOURCE','3 episodes → normalized EEF motion')
-            self.box(c,(90,470,810,625),'SOURCE FEATURE PRETRAINING','1000 updates → target head / RNG restored')
+            self.box(c,(90,470,810,625),'SOURCE FEATURE PRETRAINING','1000 updates → full transfer / backbone-only' if 'source-backbone' in self.tracks else '1000 updates → target head / RNG restored')
             self.box(c,(1080,250,1810,405),'UR10e TARGET DATA','10 → 25 → 50 nested demonstrations')
             self.box(c,(1080,470,1810,625),'CANONICAL LeRobot v2','RGB / state6 / ΔEEF6 / modality.json')
             text(c,(430,410),'↓',50,TEAL,True);text(c,(1410,410),'↓',50,TEAL,True)
             text(c,(830,520),'+',65,TEAL,True)
-            self.box(c,(90,745,935,925),'ACT · TRAINED + EVALUATED','Target-only versus FIRe-informed')
+            self.box(c,(90,745,935,925),'ACT · TRAINED + EVALUATED','Target-only vs two FIRe transfer recipes' if 'source-backbone' in self.tracks else 'Target-only versus FIRe-informed')
             self.box(c,(985,745,1810,925),'GR00T N1.7 · INTEGRATION READY','NEW_EMBODIMENT / compute deferred',AMBER)
         elif mode=='training':
             paste_fit(c,self.loss_plot,(75,240,1190,670))
@@ -288,9 +296,26 @@ class Renderer:
         elif mode=='results':
             paste_fit(c,self.curve,(120,205,1680,660))
             pairs={(r['target_demos'],r['track']):r['success_rate'] for r in self.study['records']}
-            if all(pairs[n,'source-informed']<=pairs[n,'target-only'] for n in (10,25,50)):
-                text(c,(180,885),'No source-informed gain in this experiment',34,AMBER,True)
+            gains=[n for n in (10,25,50) for t in self.tracks if t!='target-only' and pairs[n,t]>pairs[n,'target-only']]
+            if not gains:
+                text(c,(180,885),'No source-data gain from either recipe in this experiment',34,AMBER,True)
+            else:
+                text(c,(180,885),'Source gain at '+' / '.join(f'{n} demos' for n in sorted(set(gains)))+' · one training seed',34,TEAL,True)
             text(c,(180,942),'P0 smoke evaluation · one training seed · all failures included',29,MUTED)
+        elif mode=='diagnosis':
+            d=self.diagnosis
+            paste_fit(c,d['figure'],(60,200,1000,560))
+            text(c,(80,785),'Full transfer: transformer ignores UR10e input',32,AMBER,True,max_width=960)
+            text(c,(80,840),'0-step control = target-only, bit-identical',27,MUTED,max_width=960)
+            bb=next(r for r in self.study['records'] if r['track']=='source-backbone' and r['target_demos']==50)
+            text(c,(80,885),f'Backbone-only · 50 demos: {bb["successes"]}/{bb["episodes"]} · mean lateral {bb["mean_lateral_error_m"]*1000:.2f} mm (1 mm clearance)',27,MUTED,max_width=960)
+            for i,(key,label) in enumerate([('target_evaluation','TARGET-ONLY'),('backbone_evaluation','FIRe BACKBONE-ONLY')]):
+                video,row=d[key];y=200+i*395
+                panel(c,(1100,y,1860,y+370));paste_fit(c,video.at(t),(1110,y+45,740,280))
+                text(c,(1120,y+6),f'{label} · 50 demos · seed {d["seed"]}',25,WHITE,True,max_width=720)
+                done=t>=row['steps']/15
+                text(c,(1120,y+330),f'{row["outcome"]} · final lateral {row["lateral_error_m"]*1000:.2f} mm' if done else 'running (recorded 15 Hz)',24,
+                     (TEAL if row['outcome']=='SUCCESS' else AMBER) if done else MUTED,True)
         elif mode=='close':
             text(c,(120,192),'REAL FRANKA / FIRe SOURCE',28,TEAL,True)
             text(c,(1050,192),'SIMULATION / TARGET-ONLY ACT',28,TEAL,True)
@@ -303,13 +328,14 @@ class Renderer:
         return c
 
     def previews(self):
-        folder=self.out/'review';folder.mkdir(exist_ok=True)
+        stem=Path(self.m['delivery'].get('output_name','main.mp4')).stem
+        folder=self.out/('review' if stem=='main' else f'review_{stem}');folder.mkdir(exist_ok=True)
         for shot in self.m['shots']:
             self.frame(shot,(shot['end_s']-shot['start_s'])/2).save(folder/f'{shot["shot_id"]}.png')
         print('ACTUAL_EVIDENCE_PREVIEW_FRAMES_WRITTEN; NATIVE_REVIEW_NOT_COMPLETED')
 
     def render(self):
-        self.previews();output=self.out/'main.mp4'
+        self.previews();output=self.out/self.m['delivery'].get('output_name','main.mp4')
         if output.exists(): raise FileExistsError('Existing main cut must be reviewed before replacement')
         fps=self.m['delivery']['fps'];frames=round(self.m['delivery']['duration_s']*fps)
         process=subprocess.Popen(['ffmpeg','-v','error','-f','rawvideo','-pix_fmt','rgb24','-s','1920x1080','-r',str(fps),
@@ -332,11 +358,11 @@ class Renderer:
         MANIFEST.write_text(json.dumps(self.m,indent=2,ensure_ascii=False)+'\n',encoding='utf-8',newline='\n')
         captions=self.out/'captions';captions.mkdir(exist_ok=True)
         def stamp(seconds):return f'{int(seconds)//3600:02d}:{int(seconds)//60%60:02d}:{int(seconds)%60:02d},000'
-        (captions/'main.srt').write_text('\n\n'.join(f'{i+1}\n{stamp(s["start_s"])} --> {stamp(s["end_s"])}\n{s["caption"]}' for i,s in enumerate(self.m['shots']))+'\n',encoding='utf-8')
-        with (self.out/'shot_list.csv').open('w',newline='',encoding='utf-8') as f:
+        (captions/(output.stem+'.srt')).write_text('\n\n'.join(f'{i+1}\n{stamp(s["start_s"])} --> {stamp(s["end_s"])}\n{s["caption"]}' for i,s in enumerate(self.m['shots']))+'\n',encoding='utf-8')
+        with (self.out/('shot_list.csv' if output.stem=='main' else f'shot_list_{output.stem}.csv')).open('w',newline='',encoding='utf-8') as f:
             w=csv.DictWriter(f,fieldnames=['shot_id','start_s','end_s','caption','claim','evidence_refs']);w.writeheader()
             for s in self.m['shots']:w.writerow({k:'; '.join(s[k]) if k=='evidence_refs' else s[k] for k in w.fieldnames})
-        (self.out/'edit_manifest.json').write_bytes(MANIFEST.read_bytes())
+        (self.out/MANIFEST.name).write_bytes(MANIFEST.read_bytes())
         print(json.dumps(self.m['output'],indent=2))
 
     def derivatives(self):
@@ -430,7 +456,8 @@ if __name__=='__main__':
     mode.add_argument('--render',action='store_true')
     mode.add_argument('--derivatives',action='store_true')
     mode.add_argument('--package',action='store_true')
-    args=parser.parse_args();manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
+    parser.add_argument('--manifest',type=Path,default=MANIFEST,help='Edit manifest; v1 default is preserved.')
+    args=parser.parse_args();MANIFEST=args.manifest.resolve();manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
     if args.prepare_source: prepare_source(manifest)
     elif args.preview: Renderer(manifest).previews()
     elif args.derivatives: Renderer(manifest).derivatives()

@@ -1,0 +1,110 @@
+{
+  "question": "Why did FIRe full-transfer ACT output constant actions at 25/50 demos?",
+  "control_source_steps_0": {
+    "run": "diag-fire0-50-001",
+    "checkpoint_sha256": "e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa",
+    "bit_identical_to_target_only_act_50_001": true
+  },
+  "reproduction_source_steps_1000": {
+    "run": "diag-fire1000-50-001",
+    "checkpoint_sha256": "b344d21bf538e787c3329146f7897f21ffa19a39253d3da1c437c6bc35f6098c",
+    "bit_identical_to_act_fire_50_001": true
+  },
+  "prediction_input_sensitivity": {
+    "before_source@0": [
+      0.06101961061358452,
+      0.08603853732347488,
+      0.05353488773107529,
+      0.08687295764684677,
+      0.10251622647047043,
+      0.047025542706251144
+    ],
+    "after_source_head_restored@0": [
+      9.555296855978668e-07,
+      6.597584615519736e-06,
+      8.643828550702892e-06,
+      6.190010026330128e-06,
+      8.392627933062613e-06,
+      1.822620652092155e-05
+    ],
+    "target@5000": [
+      9.58737516043584e-08,
+      8.435436171794208e-08,
+      1.1692551815656316e-08,
+      1.134262994639812e-08,
+      1.024056306420107e-08,
+      1.23819940966996e-08
+    ]
+  },
+  "layer_across_input_std": {
+    "init_target": {
+      "backbone": 0.21239829063415527,
+      "state_proj": 0.6548961400985718,
+      "encoder": 0.15348467230796814,
+      "decoder": 0.13250739872455597
+    },
+    "init_source": {
+      "backbone": 0.41115492582321167,
+      "state_proj": 0.5968571305274963,
+      "encoder": 0.24677443504333496,
+      "decoder": 0.19616246223449707
+    },
+    "src10_target": {
+      "backbone": 0.20768213272094727,
+      "state_proj": 0.6548904180526733,
+      "encoder": 0.029513565823435783,
+      "decoder": 0.009064296260476112
+    },
+    "src10_source": {
+      "backbone": 0.398394376039505,
+      "state_proj": 0.5968156456947327,
+      "encoder": 0.04355456307530403,
+      "decoder": 0.013725897297263145
+    },
+    "src50_target": {
+      "backbone": 0.20922169089317322,
+      "state_proj": 0.6548638343811035,
+      "encoder": 0.012087606824934483,
+      "decoder": 0.0022524003870785236
+    },
+    "src50_source": {
+      "backbone": 0.40972718596458435,
+      "state_proj": 0.596815288066864,
+      "encoder": 0.03358154371380806,
+      "decoder": 0.009142930619418621
+    },
+    "src200_target": {
+      "backbone": 0.20520702004432678,
+      "state_proj": 0.6547868251800537,
+      "encoder": 0.009610367938876152,
+      "decoder": 0.0017734385328367352
+    },
+    "src200_source": {
+      "backbone": 0.4119237959384918,
+      "state_proj": 0.5962113738059998,
+      "encoder": 0.3236852288246155,
+      "decoder": 0.1534629762172699
+    },
+    "src1000_target": {
+      "backbone": 0.1571710854768753,
+      "state_proj": 0.6543468832969666,
+      "encoder": 0.002262585796415806,
+      "decoder": 0.000290378782665357
+    },
+    "src1000_source": {
+      "backbone": 0.3326755166053772,
+      "state_proj": 0.5940421223640442,
+      "encoder": 0.32091450691223145,
+      "decoder": 0.10394471883773804
+    }
+  },
+  "finding": "Code path innocent (0-step control bit-identical to target-only). After 1000 FIRe source updates the ACT transformer encoder/decoder became input-invariant on UR10e frames while still responsive on FIRe frames; backbone and state projection stayed responsive. Restoring the action head cannot recover it; target training did not recover in 5000 updates.",
+  "status": "ROOT_CAUSE_LAYER_LOCALIZED; mechanism of non-recovery UNKNOWN",
+  "files_sha256": {
+    "source_collapse_driver.py": "ca5e8c7e5d452db850fae940be9f05f8d9546b1468748a95fb990ef995a733af",
+    "layer_probe.py": "d70ec6e383a2651e79bf5b6da0292f6cd791bfad84360b77dc9c17a7120d9ebe",
+    "layer_probe.json": "c46916f71abbdbc6bd746c611893210b2af55057e23f4f50d8a60337d34cfead",
+    "diag-fire0-50-001_probe.jsonl": "521bd07c598ce6f66b7af74e4be127497750fd7325e75061642ec4c4b6ef467d",
+    "diag-fire1000-50-001_probe.jsonl": "edb6a4361ce34fd5ab55e7d5a5233d7239b502a78ff1c8578751df55a64735a3"
+  }
+}

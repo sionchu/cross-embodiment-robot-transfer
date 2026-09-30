@@ -145,11 +145,23 @@ def source_pretrain(model, target_data, args):
             h.update(name.encode());h.update(value.detach().cpu().contiguous().numpy().tobytes())
         return h.hexdigest()
     before=feature_hash()
+    backbone_only=getattr(args,'source_transfer','features')=='backbone'
+    # Backbone-only: measured full-transfer runs left the ACT transformer input-invariant
+    # on target frames; keep only source-trained ResNet weights, restore all else exactly.
+    kept={k:v.detach().clone() for k,v in model.state_dict().items() if not k.startswith('model.backbone.')}
     loader=torch.utils.data.DataLoader(data,batch_size=args.batch_size,shuffle=True,num_workers=0,
         generator=torch.Generator().manual_seed(args.seed+1))
     loss,elapsed,_=optimize(model,loader,args.source_steps,args.output/'source_loss.csv','source_prior')
     after=feature_hash()
     if before==after: raise RuntimeError('SOURCE_FEATURES_DID_NOT_CHANGE')
+    if backbone_only:
+        missing,unexpected=model.load_state_dict(kept,strict=False)
+        if unexpected or any(not k.startswith('model.backbone.') for k in missing):
+            raise RuntimeError('BACKBONE_ONLY_RESTORE_MISMATCH')
+        current=model.state_dict()
+        if any(not torch.equal(current[k],v) for k,v in kept.items()): raise RuntimeError('BACKBONE_ONLY_RESTORE_MISMATCH')
+        after=feature_hash()
+        if before==after: raise RuntimeError('SOURCE_BACKBONE_DID_NOT_CHANGE')
     model.model.action_head.load_state_dict(head,strict=True)
     for k,v in model.model.action_head.state_dict().items():
         if not torch.equal(v,head[k]): raise RuntimeError('TARGET_HEAD_RESET_MISMATCH')
@@ -158,7 +170,9 @@ def source_pretrain(model, target_data, args):
         raise RuntimeError('TARGET_RNG_RESTORE_MISMATCH')
     report={'manifest':args.source_prior.relative_to(ROOT).as_posix(),
         'manifest_sha256':hashlib.sha256(args.source_prior.read_bytes()).hexdigest(),
-        'mechanism':'source pose-motion ACT feature pretraining; reset source action head to exact original target head',
+        'mechanism':('source pose-motion ACT pretraining; transfer ResNet backbone only; all other weights restored to exact target initialization'
+                     if backbone_only else 'source pose-motion ACT feature pretraining; reset source action head to exact original target head'),
+        'transfer_scope':'backbone' if backbone_only else 'features',
         'source_episodes':[e['episode'] for e in data.manifest['episodes']],
         'source_transitions':len(data),'steps':args.source_steps,'batch_size':args.batch_size,
         'elapsed_s':elapsed,'first_loss':loss[0],'last_loss':loss[-1],
@@ -290,7 +304,8 @@ def train(args):
         'packages':{k:importlib.metadata.version(k) for k in ('torch','torchvision','lerobot','av','numpy')},
         'checkpoint':checkpoint.relative_to(ROOT).as_posix(),'resume':False,
         'track':'source-informed' if args.source_prior else 'target-only',
-        'source_prior':None if not args.source_prior else {'manifest':args.source_prior.relative_to(ROOT).as_posix(),'steps':args.source_steps,'target_steps_separate':args.steps}}
+        'source_prior':None if not args.source_prior else {'manifest':args.source_prior.relative_to(ROOT).as_posix(),'steps':args.source_steps,'target_steps_separate':args.steps,
+            'transfer_scope':getattr(args,'source_transfer','features')}}
     write_json(args.output/'run.json',context)
     config.save_pretrained(args.output)
     source_report=source_pretrain(model,data,args) if args.source_prior else None
@@ -329,6 +344,8 @@ if __name__=='__main__':
     parser.add_argument('--episodes',type=int,nargs='+',help='Explicit canonical episode subset for overfit sanity; no data copy.')
     parser.add_argument('--source-prior',type=Path,help='Pinned FIRe motion-prior manifest for source-informed feature initialization.')
     parser.add_argument('--source-steps',type=int,default=1000)
+    parser.add_argument('--source-transfer',choices=['features','backbone'],default='features',
+                        help='Weights kept after source pretraining; features is the historical recipe.')
     parser.add_argument('--steps',type=int,default=1000)
     parser.add_argument('--batch-size',type=int,default=8)
     parser.add_argument('--seed',type=int,default=20260929)

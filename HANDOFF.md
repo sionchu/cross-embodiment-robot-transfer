@@ -55,6 +55,24 @@ Final65s main and12s hero rendered at1920x1080/30fps; poster generated. Full dec
 and representative encoded frames were inspected. Editing package stores source/sim
 clips, overlays, captions, evidence, credits and file hashes. Native review remains pending.
 
+### 2026-09-29 source-transfer diagnosis and third track (uncommitted)
+- Existing audits showed full-transfer FIRe 25/50 checkpoints output constant actions (pred std ~1e-8).
+- diag-fire0-50-001: FIRe path with 0 source updates is bit-identical to act-50-001 (e370cdcb…): code path innocent.
+- diag-fire1000-50-001: reproduces act-fire-50-001 bit-identically (b344d21b…). After source training the
+  transformer encoder/decoder are input-invariant on UR10e frames, responsive on FIRe frames; backbone/state
+  projection stay responsive. Evidence: artifacts/diagnostics/source-collapse-001/. Non-recovery mechanism UNKNOWN.
+- act.py `--source-transfer backbone` (default `features` preserves history): keep only source-trained ResNet.
+- act-firebb-{10,25,50}-001 trained, open-loop audits not collapsed; held-out: 0/20 each, all COLLISION,
+  mean lateral 3.24 / 2.06 / 1.13 mm vs target-only 2.02 / 1.74 / 0.44 mm.
+- compare.py supports three tracks and a lateral-error panel; nine-condition study COMPLETE and verified.
+- media/edit_manifest_v2.json + build.py `--manifest` render media/output/main_v2.mp4 (70 s) with a diagnosis shot;
+  v1 manifest/main/hero/poster unchanged. v2 native desktop review NOT_RUN.
+- Stale field: fire_task_audit.json `source_informed_design_status` still reads NOT_IMPLEMENTED.
+- media/linkedin.py renders media/output/linkedin_4x5.mp4 (1080x1350, 44 s) + receipt JSON. Ecosystem context
+  clips from .external/Isaac-GR00T demo_data (git lfs pulled): DROID, BridgeData V2, Fractal/RT-1, all CC BY 4.0
+  (DROID paper; BridgeData site; open_x_embodiment repo), labeled "not trained or run here". LIBERO/SO-101 excluded
+  (license unverified). Full decode PASS, 8 encoded frames reviewed; native desktop review NOT_RUN.
+
 ## Decisions and reasons
 - Preserve original 0/20 and every later failed run. Task/controller/detector unchanged.
 - Isolated ML .venv and Isaac Python communicate via local stdio worker; no expert fallback.

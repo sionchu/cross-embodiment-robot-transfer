@@ -38,6 +38,24 @@
       "normalization_sha256": "3bcf493d2f77467a881178de851019db0d786dbaa29bce5c0c6aba14a75080c8"
     },
     {
+      "target_demos": 10,
+      "track": "source-backbone",
+      "evaluation_run": "act-firebb-10-heldout-001",
+      "successes": 0,
+      "episodes": 20,
+      "success_rate": 0.0,
+      "wilson_low": 0,
+      "wilson_high": 0.16112515805281938,
+      "mean_lateral_error_m": 0.003241454923323628,
+      "mean_orientation_error_rad": 0.0030165468605394892,
+      "target_steps": 5000,
+      "source_steps": 1000,
+      "source_episodes": 3,
+      "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+      "checkpoint_sha256": "b89f4bb32e91801a8aa51724dbee53c6deb23ecd07873aed3f0482d256feb142",
+      "normalization_sha256": "3bcf493d2f77467a881178de851019db0d786dbaa29bce5c0c6aba14a75080c8"
+    },
+    {
       "target_demos": 25,
       "track": "target-only",
       "evaluation_run": "act-25-heldout-001",
@@ -71,6 +89,24 @@
       "source_episodes": 3,
       "dataset_sha256": "1bc66478af2ef76f24de4be967e093658c91ff71a8f9b49361f12e3b67346bb9",
       "checkpoint_sha256": "eff568cd0adcb52d4fd6d4da9e2bd422c5be091ae9be78139ee43fc14957d549",
+      "normalization_sha256": "1a6a7bfbc1546030d15fef95c45f9b7cc099e8f4e4d1b30696d9cf4688d9aede"
+    },
+    {
+      "target_demos": 25,
+      "track": "source-backbone",
+      "evaluation_run": "act-firebb-25-heldout-001",
+      "successes": 0,
+      "episodes": 20,
+      "success_rate": 0.0,
+      "wilson_low": 0,
+      "wilson_high": 0.16112515805281938,
+      "mean_lateral_error_m": 0.0020558878886933686,
+      "mean_orientation_error_rad": 0.002530396716657818,
+      "target_steps": 5000,
+      "source_steps": 1000,
+      "source_episodes": 3,
+      "dataset_sha256": "1bc66478af2ef76f24de4be967e093658c91ff71a8f9b49361f12e3b67346bb9",
+      "checkpoint_sha256": "c42bd97cba014366f621cf17ebc0cd575748cf58a782a9feaf00c0da4faaa399",
       "normalization_sha256": "1a6a7bfbc1546030d15fef95c45f9b7cc099e8f4e4d1b30696d9cf4688d9aede"
     },
     {
@@ -108,11 +144,29 @@
       "dataset_sha256": "10af25da233a2b9aa1ffe707ac142a21b8462ff385ad35f93745ff5ce0fdcd1d",
       "checkpoint_sha256": "b344d21bf538e787c3329146f7897f21ffa19a39253d3da1c437c6bc35f6098c",
       "normalization_sha256": "ef032a399697a50b2e2fab6e66c1542c7db7e0d5d0f3a723905c14e2c3b0766c"
+    },
+    {
+      "target_demos": 50,
+      "track": "source-backbone",
+      "evaluation_run": "act-firebb-50-heldout-001",
+      "successes": 0,
+      "episodes": 20,
+      "success_rate": 0.0,
+      "wilson_low": 0,
+      "wilson_high": 0.16112515805281938,
+      "mean_lateral_error_m": 0.0011341731346354124,
+      "mean_orientation_error_rad": 0.004363680032897805,
+      "target_steps": 5000,
+      "source_steps": 1000,
+      "source_episodes": 3,
+      "dataset_sha256": "10af25da233a2b9aa1ffe707ac142a21b8462ff385ad35f93745ff5ce0fdcd1d",
+      "checkpoint_sha256": "5f0c322d15d34ead72204b44f695c538b1fb2c49858a60afb862b5b49f38a15c",
+      "normalization_sha256": "ef032a399697a50b2e2fab6e66c1542c7db7e0d5d0f3a723905c14e2c3b0766c"
     }
   ],
   "protocol": "same task/controller/detector; fixed20 seeds; one training seed;5000 target steps; source extra1000 steps reported separately",
   "task_equivalence": "ANALOGOUS_TASK",
   "interpretation": "target-data efficiency, not compute efficiency or a broad benchmark",
   "all_raw_traces_actions_terminal_outcomes_and_initial_states": "VERIFIED",
-  "source_sha256": "acc5615045c87fa4d5d363e12318c09f9ebef5d6bdd0b92d93bd54b9a1f7826f"
+  "source_sha256": "a2d5e71a2bba7853afa5e8f1f0be0eee3df5bd1e806494595e7906f016640f9d"
 }

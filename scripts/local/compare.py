@@ -10,6 +10,9 @@ import numpy as np
 from evaluate import aggregate, ROOT
 from insertion import CONFIG, terminal
 
+TRACKS={'target-only':'Target-only ACT','source-informed':'FIRe full-transfer ACT',
+        'source-backbone':'FIRe backbone-only ACT'}
+
 
 def verified_run(name, require_transitions=False):
     seeds=json.loads((ROOT/'configs/seeds.json').read_text())['held_out']
@@ -66,7 +69,9 @@ def data_efficiency(names):
         training=json.loads((training_folder/'summary.json').read_text())
         config=json.loads((training_folder/'config.json').read_text())
         n=len(training['training_episode_indices']);track=training.get('track','target-only')
-        if n not in (10,25,50) or track not in ('target-only','source-informed'):
+        prior=training.get('source_pretraining')
+        if track=='source-informed' and prior and prior.get('transfer_scope')=='backbone': track='source-backbone'
+        if n not in (10,25,50) or track not in TRACKS:
             raise ValueError('INVALID_STUDY_CONDITION')
         if training['status']!='PASS' or run['checkpoint_files_sha256']!=training['checkpoint_files_sha256']:
             raise ValueError('STUDY_CHECKPOINT_MISMATCH')
@@ -81,8 +86,7 @@ def data_efficiency(names):
         if training['sampling']['mode']!='precision-balanced': raise ValueError('STUDY_SAMPLING_MISMATCH')
         for x,y in zip(reference,rows,strict=True):
             np.testing.assert_allclose(x['initial_state'],y['initial_state'],atol=1e-9,rtol=0)
-        prior=training.get('source_pretraining')
-        if track=='source-informed':
+        if track!='target-only':
             if (not prior or prior['steps']!=1000 or prior['source_transitions']!=381
                     or not prior['target_action_head_restored_exactly'] or not prior['target_rng_restored']
                     or prior['features_before_sha256']==prior['features_after_sha256']):
@@ -99,11 +103,13 @@ def data_efficiency(names):
     pairs={(r['target_demos'],r['track']):r for r in records}
     if len(pairs)!=len(records): raise ValueError('DUPLICATE_STUDY_CONDITION')
     sizes=sorted({r['target_demos'] for r in records})
+    tracks=[t for t in TRACKS if any(r['track']==t for r in records)]
     for n in sizes:
-        if any((n,t) not in pairs for t in ('target-only','source-informed')): raise ValueError('INCOMPLETE_STUDY_PAIR')
-        a,b=[pairs[n,t] for t in ('target-only','source-informed')]
-        if any(a[k]!=b[k] for k in ('dataset_sha256','normalization_sha256')): raise ValueError('PAIRED_DATA_MISMATCH')
-    records=[pairs[n,t] for n in sizes for t in ('target-only','source-informed')]
+        if any((n,t) not in pairs for t in tracks): raise ValueError('INCOMPLETE_STUDY_PAIR')
+        a=pairs[n,'target-only']
+        for t in tracks[1:]:
+            if any(a[k]!=pairs[n,t][k] for k in ('dataset_sha256','normalization_sha256')): raise ValueError('PAIRED_DATA_MISMATCH')
+    records=[pairs[n,t] for n in sizes for t in tracks]
     target=ROOT/'artifacts/eval/data_efficiency'
     with target.with_suffix('.csv').open('w',newline='') as f:
         writer=csv.DictWriter(f,fieldnames=list(records[0]),lineterminator='\n');writer.writeheader();writer.writerows(records)
@@ -116,23 +122,30 @@ def data_efficiency(names):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    fig,ax=plt.subplots(figsize=(7,4),layout='constrained')
-    for track,label,color,marker in [('target-only','Target-only ACT','#536b79','o'),
-            ('source-informed','FIRe-informed ACT (+3 source demos)','#368777','s')]:
+    fig,(ax,ax2)=plt.subplots(1,2,figsize=(12,4.2),layout='constrained')
+    for track,label,color,marker in [(t,TRACKS[t],c,m) for t,c,m in
+            [('target-only','#536b79','o'),('source-informed','#bb7540','s'),('source-backbone','#368777','^')] if t in tracks]:
         rr=[pairs[n,track] for n in sizes];rates=np.array([r['success_rate'] for r in rr])*100
         low=np.array([r['wilson_low'] for r in rr])*100;high=np.array([r['wilson_high'] for r in rr])*100
         ax.errorbar(sizes,rates,yerr=np.maximum(np.stack([rates-low,high-rates]),0),label=label,color=color,marker=marker,capsize=4)
+        ax2.plot(sizes,[r['mean_lateral_error_m']*1000 for r in rr],color=color,marker=marker,label=label)
     ax.set(xticks=[10,25,50],xlim=(5,55),ylim=(-5,105),xlabel='Target demonstrations',ylabel='Closed-loop success (%)',
-        title='UR10e target-data efficiency / fixed 20 held-out seeds')
+        title='Success / fixed 20 held-out seeds')
     ax.legend(fontsize=9);ax.spines[['top','right']].set_visible(False)
     ax.text(.02,.76,'95% Wilson intervals; one training seed',transform=ax.transAxes,va='top',fontsize=8)
+    ax2.axhline(CONFIG['lateral_tolerance_m']*1000,color='#202830',linestyle='--',linewidth=1)
+    ax2.text(51,CONFIG['lateral_tolerance_m']*1000*1.12,'success tolerance',ha='right',fontsize=8)
+    ax2.set(xticks=[10,25,50],xlim=(5,55),yscale='log',xlabel='Target demonstrations',ylabel='Mean final lateral error (mm, log)',
+        title='Final lateral error / same 20 seeds')
+    ax2.spines[['top','right']].set_visible(False)
     fig.savefig(ROOT/'artifacts/figures/data_efficiency.png',dpi=160);plt.close(fig)
-    table=['| Target demos | Target-only ACT | FIRe-informed ACT |','|---|---|---|']
+    table=['| Target demos | '+' | '.join(TRACKS[t] for t in tracks)+' |','|---'*(len(tracks)+1)+'|']
     for n in sizes:
-        results=[f"{pairs[n,t]['successes']}/{pairs[n,t]['episodes']} ({pairs[n,t]['success_rate']:.0%})" for t in ('target-only','source-informed')]
+        results=[f"{pairs[n,t]['successes']}/{pairs[n,t]['episodes']} ({pairs[n,t]['success_rate']:.0%})" for t in tracks]
         table.append(f'| {n} | '+ ' | '.join(results)+' |')
     missing=sorted({10,25,50}-set(sizes))
-    table+=['','Both tracks use 5000 target updates. FIRe-informed adds 3 real source episodes and 1000 source updates.',
+    table+=['','All tracks use 5000 target updates. Source tracks add 3 real FIRe episodes and 1000 source updates.',
+        'Full transfer keeps all source-trained non-head weights; backbone-only keeps only the source-trained ResNet.' if 'source-backbone' in tracks else '',
         'Remaining target-data sizes: '+', '.join(map(str,missing))+'.' if missing else 'All three paired target-data sizes were executed.',
         '', '[Structured evidence](artifacts/eval/data_efficiency.json) · [Measured CSV](artifacts/eval/data_efficiency.csv)',
         '', '![Measured target-data efficiency](artifacts/figures/data_efficiency.png)']

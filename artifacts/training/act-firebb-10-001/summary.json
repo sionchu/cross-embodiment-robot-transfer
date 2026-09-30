@@ -1,0 +1,207 @@
+{
+  "project_commit": "0268a4672e044fe39c713f077e4ebeda6cd3c22c",
+  "source_sha256": "39ae0b0569364ab23a606d62fb375dc8913a4098aff7071d4665d599d0815b84",
+  "dependency_lock_sha256": "bbfe4c75ba9f4f49128d3e33c817e4d62c172e985420e57f2b5d8fef70f4935b",
+  "gr00t_commit": "51d4c89f72fda44cbf77285c6a8114b52676b8a1",
+  "lerobot_commit": "eb7a54c6ff4983fc86075442bf4fa61503e7b5d1",
+  "dataset_id": "ur10e_10",
+  "dataset_sha256": "cd7fb1e8ccc08d37fef7cdc405ceb75db22fe7d9f88dde461bbeb7523092e017",
+  "dataset_validation_report": "artifacts/datasets/validation.json",
+  "train_seeds": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "training_episode_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "training_frames": 487,
+  "sampling": {
+    "mode": "precision-balanced",
+    "unsaturated_action_upper_bound_m": 0.00299999,
+    "phase_order": [
+      "rotation",
+      "saturated_lateral",
+      "unsaturated_lateral",
+      "settled"
+    ],
+    "phase_counts": [
+      23,
+      85,
+      17,
+      362
+    ],
+    "phase_probability_mass": [
+      0.24999999999999997,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "lateral_action_threshold_m": 0.0003,
+    "rotation_threshold_rad": 0.003,
+    "critical_frames": 23,
+    "total_frames": 487,
+    "critical_probability_mass": 0.25000000000000006,
+    "replacement": true,
+    "sampler_seed": 20260929,
+    "target_data_unchanged": true
+  },
+  "normalization_source": "full canonical training dataset; unchanged for subset sanity",
+  "held_out_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "training_seed": 20260929,
+  "steps": 5000,
+  "batch_size": 8,
+  "initialization": "ImageNet ResNet18; fresh ACT transformer/action head",
+  "backbone_initialization": "imagenet",
+  "device": "NVIDIA GeForce RTX 4070 Ti",
+  "device_total_bytes": 12878086144,
+  "packages": {
+    "torch": "2.9.0+cu128",
+    "torchvision": "0.24.0+cu128",
+    "lerobot": "0.6.2",
+    "av": "15.1.0",
+    "numpy": "2.2.6"
+  },
+  "checkpoint": "checkpoints/act-firebb-10-001",
+  "resume": false,
+  "track": "source-informed",
+  "source_prior": {
+    "manifest": "artifacts/datasets/fire_motion_prior/manifest.json",
+    "steps": 1000,
+    "target_steps_separate": 5000,
+    "transfer_scope": "backbone"
+  },
+  "source_pretraining": {
+    "manifest": "artifacts/datasets/fire_motion_prior/manifest.json",
+    "manifest_sha256": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d",
+    "mechanism": "source pose-motion ACT pretraining; transfer ResNet backbone only; all other weights restored to exact target initialization",
+    "transfer_scope": "backbone",
+    "source_episodes": [
+      0,
+      14,
+      29
+    ],
+    "source_transitions": 381,
+    "steps": 1000,
+    "batch_size": 8,
+    "elapsed_s": 98.15409510000609,
+    "first_loss": 67.84315490722656,
+    "last_loss": 0.6297397017478943,
+    "source_action_statistics": {
+      "mean": [
+        2.1659236153936945e-05,
+        -0.00010204036516370252,
+        0.00021508678037207574,
+        -8.265200790447125e-08,
+        -6.383771960827289e-06,
+        0.00023301143664866686
+      ],
+      "std": [
+        0.00020600490097422153,
+        0.00035467397538013756,
+        0.0006126808002591133,
+        1.4175653632264584e-05,
+        3.2104187994264066e-05,
+        0.00047612679190933704
+      ],
+      "min": [
+        -0.0005116055253893137,
+        -0.0016331562073901296,
+        -0.0002345315006095916,
+        -7.078378257574514e-05,
+        -0.00021837028907611966,
+        -0.0009091873653233051
+      ],
+      "max": [
+        0.0016688356408849359,
+        0.0007417982560582459,
+        0.003000000026077032,
+        5.645904457196593e-05,
+        0.00015508255455642939,
+        0.0007505692774429917
+      ],
+      "q01": [
+        -0.00032625204767100513,
+        -0.001485123997554183,
+        -0.00018851421191357076,
+        -5.620343654300086e-05,
+        -0.00015798522508703172,
+        -0.0007136270287446678
+      ],
+      "q99": [
+        0.0010954671306535602,
+        0.0001415632723364979,
+        0.002657066099345684,
+        4.2220573959639296e-05,
+        6.434273382183164e-05,
+        0.0007278295233845711
+      ]
+    },
+    "state_normalization": "unchanged target training statistics",
+    "image": "actual FIRe wrist RGB256x256 -> bilinear320x240 -> CHW/ImageNet normalization; no crop",
+    "features_before_sha256": "8c96e4ddfb5a776c53dc0f1c4396d27ffe235c0c8af912419a78679ee28bb772",
+    "features_after_sha256": "ac3e5cd61fa39ffd8c5820cde40fc5014872a8ebe8c9a1bc926de231ad9b5c8e",
+    "target_action_head_restored_exactly": true,
+    "target_rng_restored": true,
+    "target_optimizer": "fresh AdamW; source optimizer discarded",
+    "source_commands_used": false,
+    "source_physical_unit_calibration": false
+  },
+  "status": "PASS",
+  "elapsed_s": 452.8027564000804,
+  "first_loss": 68.7094497680664,
+  "last_loss": 0.10910055786371231,
+  "first_50_mean_loss": 9.757978296279907,
+  "last_50_mean_loss": 0.10158239230513573,
+  "peak_allocated_bytes": 1025966080,
+  "tracked_parameter_max_change": 0.013540614396333694,
+  "checkpoint_files_sha256": {
+    "config.json": "575a3e3953fa1278fd6dcebce356bdda50af41b8df4ca7614815b7e2896af0ba",
+    "model.safetensors": "b89f4bb32e91801a8aa51724dbee53c6deb23ecd07873aed3f0482d256feb142",
+    "normalization.json": "3bcf493d2f77467a881178de851019db0d786dbaa29bce5c0c6aba14a75080c8"
+  },
+  "reload": "PASS",
+  "reload_chunk_shape": [
+    1,
+    1,
+    6
+  ],
+  "evaluation": "NOT_RUN"
+}

@@ -1,0 +1,449 @@
+{
+  "title": "GR00T N1.7 × UR10e",
+  "subtitle": "Real-World Cross-Embodiment Robot Learning",
+  "delivery": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration_s": 70,
+    "audio": "none; must be understandable muted",
+    "output_name": "main_v2.mp4"
+  },
+  "selection": {
+    "learned_checkpoint": "checkpoints/act-50-001",
+    "checkpoint_sha256": "e370cdcbfaf844c15a47770a6212dd7720270e73794737fb8920e93029eaf8fa",
+    "success_seed": 1005,
+    "success_selection": "Keep previously chosen seed1005; now independently capture the final50-demo checkpoint on that same condition",
+    "wall_seeds": [
+      1000,
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007
+    ],
+    "wall_selection": "First eight fixed protocol seeds1000-1007, selected before50-demo evaluation; use their actual primary evaluation recordings without a replacement run.",
+    "shown_policy": "target-only ACT; do not label successful footage source-informed",
+    "primary_evaluation": "artifacts/eval/act-50-heldout-001",
+    "training_run": "artifacts/training/act-50-001",
+    "wall_evaluation": "artifacts/eval/act-50-heldout-001",
+    "checkpoint_selection": "Final50-demo target-only condition. Media checkpoint updated after its complete20/20 evaluation; previously fixed capture seeds are unchanged. No experiment, seed or denominator was altered.",
+    "diagnosis": {
+      "figure": "artifacts/figures/source_collapse_layers.png",
+      "seed": 1000,
+      "seed_rule": "first fixed held-out seed; chosen by seed order before viewing backbone-only footage",
+      "target_evaluation": "artifacts/eval/act-50-heldout-001",
+      "backbone_evaluation": "artifacts/eval/act-firebb-50-heldout-001"
+    }
+  },
+  "assembly_gate": {
+    "complete_six_condition_study": true,
+    "actual_successful_learned_capture": true,
+    "all_asset_hashes_valid": true
+  },
+  "assets": {
+    "real_right": {
+      "source_type": "PUBLIC_REAL_DATA",
+      "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+      "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+      "license": "apache-2.0",
+      "episode": 29,
+      "camera": "right_view",
+      "frame_range_half_open": [
+        0,
+        60
+      ],
+      "fps": 15,
+      "source_file": "videos/chunk-000/observation.images.right_view/episode_000029.mp4",
+      "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.right_view/episode_000029.mp4",
+      "sha256": "41911597336b87ca90f8094a1048e233b6b94925fa2fd054d8e29eef57840e42",
+      "truth_status": "CLIP_VERIFIED",
+      "clip": "media/output/source/real_franka_e29_right_f000-059.mp4",
+      "clip_sha256": "3e7f6685a8fb51f591813a9383ff3bb4463230155fc2916b6e4f479b73db45e7",
+      "clip_probe": {
+        "width": 256,
+        "height": 256,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "60"
+      },
+      "modifications": "frame trim and H.264 re-encoding; no speed or geometry changes"
+    },
+    "real_wrist": {
+      "source_type": "PUBLIC_REAL_DATA",
+      "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+      "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+      "license": "apache-2.0",
+      "episode": 29,
+      "camera": "wrist_view",
+      "frame_range_half_open": [
+        60,
+        120
+      ],
+      "fps": 15,
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
+      "truth_status": "CLIP_VERIFIED",
+      "clip": "media/output/source/real_franka_e29_wrist_f060-119.mp4",
+      "clip_sha256": "22da061cf05698db4f733ebc9debe7579a8742fe14d1828fe91e03070d53534b",
+      "clip_probe": {
+        "width": 256,
+        "height": 256,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "60"
+      },
+      "modifications": "frame trim and H.264 re-encoding; no speed or geometry changes"
+    },
+    "hero": {
+      "receipt": "artifacts/media/media-hero-expert-1000-002.json",
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-hero-expert-1000-002/hero.mp4",
+      "sha256": "7ea3ac756af692e30aa6b20e4bb3595f93822fc9f3df90332ccca7b8f951c167"
+    },
+    "matched": {
+      "receipt": "artifacts/media/media-matched-act-1005.json",
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-matched-act-1005/matched_source.mp4",
+      "sha256": "2075667e059e66e4e41f3503bd1417e241e62434d9a0e862d5aa2d99a836d3c8"
+    },
+    "close": {
+      "receipt": "artifacts/media/media-close-act-1005.json",
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-close-act-1005/close_insertion.mp4",
+      "sha256": "594520c8af1cf094532654b188a44e9834aa8e3e94426251b65dfab3110038d4"
+    },
+    "evaluation": {
+      "receipt": "artifacts/media/media-evaluation-act-1005.json",
+      "truth_status": "CAPTURE_VERIFIED",
+      "path": "media/output/sim/media-evaluation-act-1005/evaluation.mp4",
+      "sha256": "5336f0fc618504f19e69cd8c5e6655f0cef427c67da323b58f94d4b2acdca5ba"
+    },
+    "real_hook": {
+      "source_type": "PUBLIC_REAL_DATA",
+      "dataset": "bhe1004/FIRe-VLA-GR00T-PegInsert-Real",
+      "revision": "ad5e895d53254caa61b7535e10a8a7790536451e",
+      "license": "apache-2.0",
+      "episode": 29,
+      "camera": "wrist_view",
+      "frame_range_half_open": [
+        0,
+        60
+      ],
+      "fps": 15,
+      "source_file": "videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "path": "artifacts/runtime/fire-inspection/videos/chunk-000/observation.images.wrist_view/episode_000029.mp4",
+      "sha256": "97530cec2b00a5d901707141cccce5fd422cb4c3b7caf96a3b6a6a52e550d5f1",
+      "truth_status": "CLIP_VERIFIED",
+      "clip": "media/output/source/real_franka_e29_wrist_f000-059.mp4",
+      "clip_sha256": "2744c6f0091982f87f3befab6853c1189e6d8778f16ff9b704df10b5cb316cfb",
+      "clip_probe": {
+        "width": 256,
+        "height": 256,
+        "r_frame_rate": "15/1",
+        "nb_read_frames": "60"
+      },
+      "modifications": "frame trim and H.264 re-encoding; no speed or geometry changes"
+    }
+  },
+  "shots": [
+    {
+      "shot_id": "S01_REAL",
+      "start_s": 0,
+      "end_s": 4,
+      "mode": "real",
+      "caption": "REAL ROBOT DATA",
+      "source_types": [
+        "PUBLIC_REAL_DATA"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/fire_source.json"
+      ],
+      "claim": "Actual FIRe episode29 synchronized dataset wrist/right views; wrist is the main task view",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [
+        "real_hook",
+        "real_right"
+      ],
+      "evidence_sha256": {
+        "artifacts/datasets/fire_source.json": "297b7146f4f928790ccd14e8293baf662519bc087a52de132e497468c4f5d5b3"
+      }
+    },
+    {
+      "shot_id": "S02_SOURCE",
+      "start_s": 4,
+      "end_s": 8,
+      "mode": "source",
+      "caption": "REAL FRANKA EXPERIENCE",
+      "source_types": [
+        "PUBLIC_REAL_DATA"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/fire_source.json"
+      ],
+      "claim": "Actual FIRe episode29 wrist camera, original cadence",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [
+        "real_wrist"
+      ],
+      "evidence_sha256": {
+        "artifacts/datasets/fire_source.json": "297b7146f4f928790ccd14e8293baf662519bc087a52de132e497468c4f5d5b3"
+      }
+    },
+    {
+      "shot_id": "S03_BRIDGE",
+      "start_s": 8,
+      "end_s": 16,
+      "mode": "bridge",
+      "caption": "RELATIVE EEF MOTION",
+      "source_types": [
+        "PUBLIC_REAL_DATA",
+        "ARCHITECTURE_GRAPHIC",
+        "PROJECT_SIM_EXPERT"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/fire_motion_prior/manifest.json",
+        "artifacts/training/act-fire-10-001/source_pretraining.json"
+      ],
+      "claim": "Measured source motion normalized to task bounds informs ACT feature pretraining; not joint replay or calibrated image projection",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [
+        "real_wrist",
+        "hero"
+      ],
+      "evidence_sha256": {
+        "artifacts/datasets/fire_motion_prior/manifest.json": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d",
+        "artifacts/training/act-fire-10-001/source_pretraining.json": "4486e25f8f395272c262d7c6f5405b3f4dfc6728f149c4381294143883f81b91"
+      },
+      "transition_note": "Actual source-derived trajectory persists; target scene revealed from a held expert initial frame, not learned control or calibrated path replay."
+    },
+    {
+      "shot_id": "S04_ECOSYSTEM",
+      "start_s": 16,
+      "end_s": 20,
+      "mode": "ecosystem",
+      "caption": "GR00T N1.7",
+      "source_types": [
+        "ARCHITECTURE_GRAPHIC"
+      ],
+      "evidence_refs": [
+        "references/source_manifest.json"
+      ],
+      "claim": "Official GR00T ecosystem with distinct pretrain/posttrain categories; not project-trained robots",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "references/source_manifest.json": "fbc9f9afdefe2bcdb773d853867ff79bcd1922d8129101103c75daf025b36616"
+      }
+    },
+    {
+      "shot_id": "S05_TARGET",
+      "start_s": 20,
+      "end_s": 25,
+      "mode": "target",
+      "caption": "NEW EMBODIMENT",
+      "source_types": [
+        "PROJECT_SIM_EXPERT"
+      ],
+      "evidence_refs": [
+        "artifacts/simulation/g1_smoke.json",
+        "artifacts/datasets/fire_task_audit.json"
+      ],
+      "claim": "Official UR10e asset, analogous insertion task; expert control is labeled",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [
+        "hero"
+      ],
+      "evidence_sha256": {
+        "artifacts/simulation/g1_smoke.json": "d9b27b126c4f6438da264e7f4f21ba3d09a52dfd9898a6e640dc08848cf24202",
+        "artifacts/datasets/fire_task_audit.json": "2d475303f8dc9cead5dabbcbf48ef18debcb5fb6ffc7e2a7bd787ca2c5098c0e"
+      }
+    },
+    {
+      "shot_id": "S06_PIPELINE",
+      "start_s": 25,
+      "end_s": 31,
+      "mode": "pipeline",
+      "caption": "ONE CONTROLLED COMPARISON",
+      "source_types": [
+        "ARCHITECTURE_GRAPHIC"
+      ],
+      "evidence_refs": [
+        "artifacts/datasets/fire_motion_prior/manifest.json",
+        "artifacts/datasets/ur10e_25.json",
+        "artifacts/datasets/ur10e_50.json",
+        "artifacts/datasets/validation.json",
+        "artifacts/eval/data_efficiency.json"
+      ],
+      "claim": "Target-only ACT versus two FIRe source-pretraining recipes (full transfer, backbone-only) at 10/25/50 target demos.",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/datasets/fire_motion_prior/manifest.json": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d",
+        "artifacts/datasets/ur10e_25.json": "b9e474f56268a8fd913e397244486782e2c0f58e7b37ee2a31d42da8658359a9",
+        "artifacts/datasets/ur10e_50.json": "5e7eaac7dcddc7a06f143e518db9f8de901125eda4c0cd26d277a4a99dc4db73",
+        "artifacts/datasets/validation.json": "93f77daca95ad71819344a8e11dbba89d6d4c7acef7f5a2fd22e1f4591fb47e3",
+        "artifacts/eval/data_efficiency.json": "c3d1f3264a4430556016ceab1333ff000e3624b74187cdae2fde206244bc5468"
+      }
+    },
+    {
+      "shot_id": "S07_TRAINING",
+      "start_s": 31,
+      "end_s": 38,
+      "mode": "training",
+      "caption": "ACTUAL GPU TRAINING",
+      "source_types": [
+        "PROJECT_TRAINING"
+      ],
+      "evidence_refs": [
+        "artifacts/training/act-50-001/summary.json",
+        "artifacts/training/act-50-001/loss.csv"
+      ],
+      "claim": "Actual final50-demo target-only training receipt; source pretraining budget remains separate",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/training/act-50-001/summary.json": "e7c5bbc8f83a5178f788eb500d4397b381917ef58d07a11ece951424e8975d41",
+        "artifacts/training/act-50-001/loss.csv": "94a526acd65d92eae8031b7fde932af2f7da99bd4bfdf4649df76c7589b6c92f"
+      }
+    },
+    {
+      "shot_id": "S08_WALL",
+      "start_s": 38,
+      "end_s": 45,
+      "mode": "wall",
+      "caption": "CLOSED-LOOP ACT",
+      "source_types": [
+        "PROJECT_SIM_LEARNED"
+      ],
+      "evidence_refs": [
+        "artifacts/eval/act-50-heldout-001/summary.json"
+      ],
+      "claim": "First eight previously fixed seeds repeated with final50-demo target-only checkpoint; all tile outcomes retained",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/eval/act-50-heldout-001/summary.json": "b13ac17922d5243d0a094389fed6e67a3ba5c23c9ade3be17f3dff146b8a4bb8"
+      }
+    },
+    {
+      "shot_id": "S09_PAYOFF",
+      "start_s": 45,
+      "end_s": 53,
+      "mode": "payoff",
+      "caption": "REAL DATA / LEARNED CONTROL",
+      "source_types": [
+        "PUBLIC_REAL_DATA",
+        "PROJECT_SIM_LEARNED"
+      ],
+      "evidence_refs": [
+        "artifacts/eval/act-50-heldout-001/summary.json"
+      ],
+      "claim": "Real source versus final target-only ACT success, not proof that source pretraining improved performance",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [
+        "real_hook",
+        "real_wrist",
+        "close"
+      ],
+      "evidence_sha256": {
+        "artifacts/eval/act-50-heldout-001/summary.json": "b13ac17922d5243d0a094389fed6e67a3ba5c23c9ade3be17f3dff146b8a4bb8"
+      }
+    },
+    {
+      "shot_id": "S10_RESULTS",
+      "start_s": 53,
+      "end_s": 60,
+      "mode": "results",
+      "caption": "MEASURED DATA EFFICIENCY",
+      "source_types": [
+        "PROJECT_EVALUATION"
+      ],
+      "evidence_refs": [
+        "artifacts/eval/data_efficiency.json"
+      ],
+      "claim": "Measured nine-condition closed-loop success on fixed seeds 1000-1019; one training seed.",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [],
+      "evidence_sha256": {
+        "artifacts/eval/data_efficiency.json": "c3d1f3264a4430556016ceab1333ff000e3624b74187cdae2fde206244bc5468"
+      }
+    },
+    {
+      "shot_id": "S10B_DIAGNOSIS",
+      "start_s": 60,
+      "end_s": 65,
+      "mode": "diagnosis",
+      "caption": "WHY SOURCE TRANSFER FAILED",
+      "claim": "Full transfer made the ACT transformer input-invariant on UR10e frames (0-step control bit-identical to target-only); backbone-only transfer learned but missed the 1 mm clearance at 50 demos.",
+      "evidence_refs": [
+        "artifacts/diagnostics/source-collapse-001/summary.json",
+        "artifacts/figures/source_collapse_layers.png",
+        "artifacts/eval/act-50-heldout-001/episodes.jsonl",
+        "artifacts/eval/act-firebb-50-heldout-001/episodes.jsonl",
+        "artifacts/eval/data_efficiency.json"
+      ],
+      "evidence_sha256": {
+        "artifacts/diagnostics/source-collapse-001/summary.json": "c7086a9c053e007d98c421b93c0e2b10cb9f63991b892fa43d9d06cfaafdbab1",
+        "artifacts/figures/source_collapse_layers.png": "e160494029f08dd4975bd3907eb024bea020ec1a71c6e6d9c7b151d2d8db0490",
+        "artifacts/eval/act-50-heldout-001/episodes.jsonl": "07657b68ebb517521612447179bdb77d6e3c8803201f36eaee0e790ee406501d",
+        "artifacts/eval/act-firebb-50-heldout-001/episodes.jsonl": "b2f53160093ef2d046c06e835db4f3facbb1aaa2384c268b5aad80f2f48b4056",
+        "artifacts/eval/data_efficiency.json": "c3d1f3264a4430556016ceab1333ff000e3624b74187cdae2fde206244bc5468"
+      },
+      "truth_status": "ARTIFACTS_VERIFIED"
+    },
+    {
+      "shot_id": "S11_CLOSE",
+      "start_s": 65,
+      "end_s": 70,
+      "mode": "close",
+      "caption": "GR00T N1.7 × UR10e",
+      "source_types": [
+        "PUBLIC_REAL_DATA",
+        "PROJECT_SIM_LEARNED",
+        "ARCHITECTURE_GRAPHIC"
+      ],
+      "evidence_refs": [
+        "artifacts/environment/gr00t_50_contract.json"
+      ],
+      "claim": "NEW_EMBODIMENT integration ready; GR00T model execution and fine-tuning deferred",
+      "truth_status": "ARTIFACTS_VERIFIED",
+      "asset_ids": [
+        "real_wrist",
+        "close"
+      ],
+      "evidence_sha256": {
+        "artifacts/environment/gr00t_50_contract.json": "8bcfba7de69ce5ae3df385def80a54a7f42f946742b373459d61c8838378e9f5"
+      }
+    }
+  ],
+  "verification": {
+    "assembly": "FORMAT_AND_EVIDENCE_CHECKS_PASS",
+    "file_review": "REPRESENTATIVE_ENCODED_FRAMES_REVIEWED (preview of all 12 shots; encoded t=64.5s diagnosis, t=67s close)",
+    "native_desktop": "NOT_RUN",
+    "full_decode": "PASS",
+    "main_file_review_sha256": "c3d59ef6e38a9f56b4cd10436b47a8e818b8173e066b15db820488c90346e0c1"
+  },
+  "credit": "FIRe public research data: bhe1004/FIRe-VLA-GR00T-PegInsert-Real; Apache-2.0; episode29. Project UR10e footage is simulation.",
+  "license_reference": "references/FIRe-source-credit.md",
+  "source_preparation": {
+    "script_sha256": "3e975e7171afee99df5d08d7255483e8d0446b94bcf4ceeb9fe641afb56a33b4",
+    "ffmpeg": "ffmpeg version 8.0-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+    "licensing": "references/FIRe-source-credit.md and references/FIRe-Apache-2.0.txt"
+  },
+  "wall_phase_rules": "Derived geometric labels, not internal ACT states: terminal from trace; depth<-35mm APPROACH; outside pose tolerance ALIGN; aligned above hole APPROACH; aligned positive depth INSERT.",
+  "version_note": "v2 adds FIRe backbone-only track and full-transfer collapse diagnosis; v1 manifest and main.mp4 preserved unchanged.",
+  "output": {
+    "path": "media/output/main_v2.mp4",
+    "sha256": "c3d59ef6e38a9f56b4cd10436b47a8e818b8173e066b15db820488c90346e0c1",
+    "probe": {
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "30/1",
+      "nb_read_frames": "2100"
+    },
+    "script_sha256": "cc2cd3665373b8d744643ceed2de5faa9605795c1777c2a6ddfeb0566a1a0b41",
+    "playback": "15Hz recorded footage frame-duplicated to30fps; static terminal holds; no audio"
+  }
+}

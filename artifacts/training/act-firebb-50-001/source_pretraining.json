@@ -1,0 +1,76 @@
+{
+  "manifest": "artifacts/datasets/fire_motion_prior/manifest.json",
+  "manifest_sha256": "a3497d5d9427318f0630004ebdc44c8a53fae22079d78e201f3e93e6322cf48d",
+  "mechanism": "source pose-motion ACT pretraining; transfer ResNet backbone only; all other weights restored to exact target initialization",
+  "transfer_scope": "backbone",
+  "source_episodes": [
+    0,
+    14,
+    29
+  ],
+  "source_transitions": 381,
+  "steps": 1000,
+  "batch_size": 8,
+  "elapsed_s": 90.0669932999881,
+  "first_loss": 68.0953598022461,
+  "last_loss": 0.6780723333358765,
+  "source_action_statistics": {
+    "mean": [
+      2.1659236153936945e-05,
+      -0.00010204036516370252,
+      0.00021508678037207574,
+      -8.265200790447125e-08,
+      -6.383771960827289e-06,
+      0.00023301143664866686
+    ],
+    "std": [
+      0.00020600490097422153,
+      0.00035467397538013756,
+      0.0006126808002591133,
+      1.4175653632264584e-05,
+      3.2104187994264066e-05,
+      0.00047612679190933704
+    ],
+    "min": [
+      -0.0005116055253893137,
+      -0.0016331562073901296,
+      -0.0002345315006095916,
+      -7.078378257574514e-05,
+      -0.00021837028907611966,
+      -0.0009091873653233051
+    ],
+    "max": [
+      0.0016688356408849359,
+      0.0007417982560582459,
+      0.003000000026077032,
+      5.645904457196593e-05,
+      0.00015508255455642939,
+      0.0007505692774429917
+    ],
+    "q01": [
+      -0.00032625204767100513,
+      -0.001485123997554183,
+      -0.00018851421191357076,
+      -5.620343654300086e-05,
+      -0.00015798522508703172,
+      -0.0007136270287446678
+    ],
+    "q99": [
+      0.0010954671306535602,
+      0.0001415632723364979,
+      0.002657066099345684,
+      4.2220573959639296e-05,
+      6.434273382183164e-05,
+      0.0007278295233845711
+    ]
+  },
+  "state_normalization": "unchanged target training statistics",
+  "image": "actual FIRe wrist RGB256x256 -> bilinear320x240 -> CHW/ImageNet normalization; no crop",
+  "features_before_sha256": "8c96e4ddfb5a776c53dc0f1c4396d27ffe235c0c8af912419a78679ee28bb772",
+  "features_after_sha256": "716551452c5d56c13b333c3b62e262607a9296f4c242bd2c4ad085712def3943",
+  "target_action_head_restored_exactly": true,
+  "target_rng_restored": true,
+  "target_optimizer": "fresh AdamW; source optimizer discarded",
+  "source_commands_used": false,
+  "source_physical_unit_calibration": false
+}

@@ -1,0 +1,182 @@
+{
+ "init_target": {
+  "backbone": {
+   "across_input_std_mean": 0.21239829063415527,
+   "abs_mean": 0.7122397422790527
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.6548961400985718,
+   "abs_mean": 0.39859360456466675
+  },
+  "encoder": {
+   "across_input_std_mean": 0.15348467230796814,
+   "abs_mean": 0.80291748046875
+  },
+  "decoder": {
+   "across_input_std_mean": 0.13250739872455597,
+   "abs_mean": 0.7978877425193787
+  }
+ },
+ "init_source": {
+  "backbone": {
+   "across_input_std_mean": 0.41115492582321167,
+   "abs_mean": 0.7279626727104187
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.5968571305274963,
+   "abs_mean": 1.2140625715255737
+  },
+  "encoder": {
+   "across_input_std_mean": 0.24677443504333496,
+   "abs_mean": 0.8012804388999939
+  },
+  "decoder": {
+   "across_input_std_mean": 0.19616246223449707,
+   "abs_mean": 0.8159917593002319
+  }
+ },
+ "src10_target": {
+  "backbone": {
+   "across_input_std_mean": 0.20768213272094727,
+   "abs_mean": 0.6909765005111694
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.6548904180526733,
+   "abs_mean": 0.39862483739852905
+  },
+  "encoder": {
+   "across_input_std_mean": 0.029513565823435783,
+   "abs_mean": 0.7904680967330933
+  },
+  "decoder": {
+   "across_input_std_mean": 0.009064296260476112,
+   "abs_mean": 0.7945718169212341
+  }
+ },
+ "src10_source": {
+  "backbone": {
+   "across_input_std_mean": 0.398394376039505,
+   "abs_mean": 0.6732431650161743
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.5968156456947327,
+   "abs_mean": 1.2140281200408936
+  },
+  "encoder": {
+   "across_input_std_mean": 0.04355456307530403,
+   "abs_mean": 0.7898038625717163
+  },
+  "decoder": {
+   "across_input_std_mean": 0.013725897297263145,
+   "abs_mean": 0.7956211566925049
+  }
+ },
+ "src50_target": {
+  "backbone": {
+   "across_input_std_mean": 0.20922169089317322,
+   "abs_mean": 0.6902097463607788
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.6548638343811035,
+   "abs_mean": 0.39862334728240967
+  },
+  "encoder": {
+   "across_input_std_mean": 0.012087606824934483,
+   "abs_mean": 0.7709857225418091
+  },
+  "decoder": {
+   "across_input_std_mean": 0.0022524003870785236,
+   "abs_mean": 0.7804707884788513
+  }
+ },
+ "src50_source": {
+  "backbone": {
+   "across_input_std_mean": 0.40972718596458435,
+   "abs_mean": 0.6632691025733948
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.596815288066864,
+   "abs_mean": 1.2141567468643188
+  },
+  "encoder": {
+   "across_input_std_mean": 0.03358154371380806,
+   "abs_mean": 0.7713172435760498
+  },
+  "decoder": {
+   "across_input_std_mean": 0.009142930619418621,
+   "abs_mean": 0.7803884744644165
+  }
+ },
+ "src200_target": {
+  "backbone": {
+   "across_input_std_mean": 0.20520702004432678,
+   "abs_mean": 0.6599974036216736
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.6547868251800537,
+   "abs_mean": 0.3985925614833832
+  },
+  "encoder": {
+   "across_input_std_mean": 0.009610367938876152,
+   "abs_mean": 0.7810617089271545
+  },
+  "decoder": {
+   "across_input_std_mean": 0.0017734385328367352,
+   "abs_mean": 0.7571865916252136
+  }
+ },
+ "src200_source": {
+  "backbone": {
+   "across_input_std_mean": 0.4119237959384918,
+   "abs_mean": 0.6292623281478882
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.5962113738059998,
+   "abs_mean": 1.2121481895446777
+  },
+  "encoder": {
+   "across_input_std_mean": 0.3236852288246155,
+   "abs_mean": 0.7830531597137451
+  },
+  "decoder": {
+   "across_input_std_mean": 0.1534629762172699,
+   "abs_mean": 0.7588074207305908
+  }
+ },
+ "src1000_target": {
+  "backbone": {
+   "across_input_std_mean": 0.1571710854768753,
+   "abs_mean": 0.458754301071167
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.6543468832969666,
+   "abs_mean": 0.3984900712966919
+  },
+  "encoder": {
+   "across_input_std_mean": 0.002262585796415806,
+   "abs_mean": 0.7522046566009521
+  },
+  "decoder": {
+   "across_input_std_mean": 0.000290378782665357,
+   "abs_mean": 0.4908507168292999
+  }
+ },
+ "src1000_source": {
+  "backbone": {
+   "across_input_std_mean": 0.3326755166053772,
+   "abs_mean": 0.5323765277862549
+  },
+  "state_proj": {
+   "across_input_std_mean": 0.5940421223640442,
+   "abs_mean": 1.2055795192718506
+  },
+  "encoder": {
+   "across_input_std_mean": 0.32091450691223145,
+   "abs_mean": 0.7557280659675598
+  },
+  "decoder": {
+   "across_input_std_mean": 0.10394471883773804,
+   "abs_mean": 0.5022882223129272
+  }
+ }
+}

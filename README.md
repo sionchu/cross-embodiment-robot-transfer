@@ -13,7 +13,12 @@ closed-loop evaluation and a GR00T N1.7 NEW_EMBODIMENT integration path.
 The canonical real source is [FIRe Franka peg insertion](https://huggingface.co/datasets/bhe1004/FIRe-VLA-GR00T-PegInsert-Real),
 third-party public research data declaring Apache-2.0. [Actual source inspection](artifacts/datasets/fire_source.json) selected episode 29 wrist_view;
 [the task audit](artifacts/datasets/fire_task_audit.json) currently classifies the tasks as
-ANALOGOUS_TASK. The completed 10/25/50-demo comparison found no improvement from this source pretraining mechanism. Target-only reached 20/20 at 50 demos; source-informed reached 0/20 at each size. This single-training-seed study does not establish a general limit on real-source learning.
+ANALOGOUS_TASK. The completed 10/25/50-demo comparison found no improvement from either source-pretraining
+recipe. Target-only reached 20/20 at 50 demos. The original full-transfer recipe reached 0/20 at every size
+because it left the ACT transformer input-invariant on UR10e frames ([diagnosis](#source-transfer-diagnosis));
+the corrected backbone-only recipe learned normally but also reached 0/20, ending about 1.1 mm off-center
+at 50 demos against 0.44 mm for target-only. This single-training-seed study does not establish a general
+limit on real-source learning.
 
 ![Actual FIRe episode 29 wrist-camera frame](artifacts/datasets/fire_real_source.png)
 
@@ -57,22 +62,45 @@ bounds; it does not assume calibrated source units or replay Franka joints. Sour
 features initialize target learning, while the original target action head and random
 state are restored before target training. [Transform and provenance](artifacts/datasets/fire_motion_prior/manifest.json)
 and [actual source training](artifacts/training/act-fire-10-001/source_pretraining.json)
-record the mechanism, budget and changed feature hashes.
+record the mechanism, budget and changed feature hashes. The backbone-only track (`--source-transfer backbone`)
+runs the identical source phase, then keeps only the source-trained ResNet and restores every other weight
+to its exact target initialization.
 
 <!-- STUDY:START -->
-| Target demos | Target-only ACT | FIRe-informed ACT |
-|---|---|---|
-| 10 | 5/20 (25%) | 0/20 (0%) |
-| 25 | 0/20 (0%) | 0/20 (0%) |
-| 50 | 20/20 (100%) | 0/20 (0%) |
+| Target demos | Target-only ACT | FIRe full-transfer ACT | FIRe backbone-only ACT |
+|---|---|---|---|
+| 10 | 5/20 (25%) | 0/20 (0%) | 0/20 (0%) |
+| 25 | 0/20 (0%) | 0/20 (0%) | 0/20 (0%) |
+| 50 | 20/20 (100%) | 0/20 (0%) | 0/20 (0%) |
 
-Both tracks use 5000 target updates. FIRe-informed adds 3 real source episodes and 1000 source updates.
+All tracks use 5000 target updates. Source tracks add 3 real FIRe episodes and 1000 source updates.
+Full transfer keeps all source-trained non-head weights; backbone-only keeps only the source-trained ResNet.
 All three paired target-data sizes were executed.
 
 [Structured evidence](artifacts/eval/data_efficiency.json) · [Measured CSV](artifacts/eval/data_efficiency.csv)
 
 ![Measured target-data efficiency](artifacts/figures/data_efficiency.png)
 <!-- STUDY:END -->
+
+### Source-transfer diagnosis
+
+The full-transfer checkpoints at 25 and 50 demos predict the same action for every training frame
+(prediction std ~1e-8 versus ~1e-3 for target-only). A controlled pair isolates the cause
+([evidence](artifacts/diagnostics/source-collapse-001/summary.json)):
+
+- Same FIRe code path with 0 source updates reproduces the target-only 50-demo checkpoint bit-for-bit
+  (`e370cdcb…`), so the head/RNG/optimizer restoration code is not the cause.
+- Re-running 1000 source updates reproduces the collapsed checkpoint bit-for-bit (`b344d21b…`).
+  After source training, the ResNet and state projection still respond to UR10e inputs, but the
+  transformer encoder/decoder outputs become input-invariant on UR10e frames while staying responsive
+  on FIRe frames. Target training does not recover within 5000 updates; why it does not is unresolved.
+
+![Layer input sensitivity before and after FIRe source training](artifacts/figures/source_collapse_layers.png)
+
+Backbone-only transfer removes the collapse (open-loop prediction variation matches target-only at all
+three sizes), yet its closed-loop lateral error stays above target-only at every size. The result is
+consistent with the source-trained visual features being slightly less precise for this 1 mm-clearance
+task. Only one source-transfer budget and one training seed were run.
 
 ## Closed-loop recovery
 
@@ -148,7 +176,9 @@ actual training loss, the first eight primary evaluation episodes and all six re
 
 Both videos passed full decoding and representative encoded-frame review. Native desktop
 inspection remains incomplete after an app approval timeout; this is not a full media PASS.
-The final experiment found no source-informed gain under this recipe. Successful footage
+A 70-second v2 cut (`media/output/main_v2.mp4`, from [edit_manifest_v2.json](media/edit_manifest_v2.json))
+adds the three-track results and the source-transfer diagnosis; v1 files are unchanged.
+Neither source recipe produced a gain. Successful footage
 shows target-only ACT; GR00T remains integration-ready with model compute deferred.
 Source attribution and the Apache license accompany the editing package.
 
@@ -164,7 +194,7 @@ own provenance rather than assigning a previous hash.
 ```powershell
 ./scripts/local/setup.ps1
 .venv/Scripts/python.exe -m unittest discover -s tests -v
-python scripts/local/compare.py --study-runs act-10-precision-heldout-001 act-fire-10-heldout-001 act-25-heldout-001 act-fire-25-heldout-001 act-50-heldout-001 act-fire-50-heldout-001
+python scripts/local/compare.py --study-runs act-10-precision-heldout-001 act-fire-10-heldout-001 act-firebb-10-heldout-001 act-25-heldout-001 act-fire-25-heldout-001 act-firebb-25-heldout-001 act-50-heldout-001 act-fire-50-heldout-001 act-firebb-50-heldout-001
 ```
 
 Generate the real dataset and checkpoint first for artifact-dependent tests; absent
